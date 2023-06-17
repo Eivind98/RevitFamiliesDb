@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33516.290
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RevitFamiliesDb", "RevitFamiliesDb\RevitFamiliesDb\RevitFamiliesDb.csproj", "{7FE549FC-5E67-42EC-9739-4AC954B2299D}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "RevitFamiliesDb.Setup", "RevitFamiliesDb\RevitFamiliesDb.Setup\RevitFamiliesDb.Setup.vdproj", "{FF9F19C4-6204-47BC-9941-B07F2F9024C0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7FE549FC-5E67-42EC-9739-4AC954B2299D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FE549FC-5E67-42EC-9739-4AC954B2299D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FE549FC-5E67-42EC-9739-4AC954B2299D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FE549FC-5E67-42EC-9739-4AC954B2299D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF9F19C4-6204-47BC-9941-B07F2F9024C0}.Debug|Any CPU.ActiveCfg = Debug
+		{FF9F19C4-6204-47BC-9941-B07F2F9024C0}.Debug|Any CPU.Build.0 = Debug
+		{FF9F19C4-6204-47BC-9941-B07F2F9024C0}.Release|Any CPU.ActiveCfg = Release
+		{FF9F19C4-6204-47BC-9941-B07F2F9024C0}.Release|Any CPU.Build.0 = Release
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {15AB519E-40C9-476D-880D-F77EE62BEAFA}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<RevitAddIns>
+	<AddIn Type="Application">
+		<Name>Application RevitFamiliesDb</Name>
+		<Assembly>RevitFamiliesDb.dll</Assembly>
+		<AddInId>a90f714d-3bcf-43df-ab4e-823a4b42e1a2</AddInId>
+		<FullClassName>RevitFamiliesDb.App</FullClassName>
+		<VendorId>com.vormadal</VendorId>
+		<VendorDescription>The Building Coder, http://thebuildingcoder.typepad.com</VendorDescription>
+	</AddIn>
+</RevitAddIns>
