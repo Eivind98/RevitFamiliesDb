@@ -34,6 +34,7 @@ namespace RevitFamiliesDb
 
             var elId = sel.GetElementIds().FirstOrDefault();
 
+
             if (elId == null) return Result.Succeeded;
 
 
@@ -54,7 +55,7 @@ namespace RevitFamiliesDb
                 var newElement = element.Duplicate(newElementId) as FloorType;
                 var structure = CompoundStructure.CreateSimpleCompoundStructure(new List<CompoundStructureLayer>()
                 {
-                    new CompoundStructureLayer(100, MaterialFunctionAssignment.Structure, new ElementId(BuiltInCategory.INVALID))
+                    new CompoundStructureLayer(100/304.8, MaterialFunctionAssignment.Structure, new ElementId(BuiltInCategory.INVALID))
                 });
                 structure.EndCap = EndCapCondition.NoEndCap;
 
@@ -62,15 +63,48 @@ namespace RevitFamiliesDb
                 IDictionary<int, int> twoErrors = new Dictionary<int, int>();
                 structure.IsValid(doc, out errors, out twoErrors);
 
+                //string testN = "";
+                //string testV = "";
+
+                //var testing = new FamilyTypeObject("");
+
+                var yo = new FamilyTypeObject(elId, doc);
+
+
                 foreach (Parameter param in newElement.Parameters)
                 {
+                    
+                    if(param.HasValue && !param.IsReadOnly)
+                    {
+                        switch (param.StorageType)
+                        {
+                            case StorageType.String:
+                                param.Set("");
+                                break;
+                            case StorageType.Integer:
+                                param.Set(0);
+                                break;
+                            case StorageType.Double:
+                                param.Set(0.0);
+                                break;
+                            case StorageType.ElementId:
+                                param.Set(ElementId.InvalidElementId); 
+                                break;
 
-                    param.SetValueString("");
+                        }
 
+                        //testN = param.Definition.ToString();
+                        //testV = param.AsDouble().ToString();
+                        
+
+                    }
+                    
                 }
 
                 //dialog.MainContent = newElement.Location?.ToString();
-                dialog.MainContent = JsonConvert.SerializeObject(errors, Formatting.Indented);
+                //dialog.MainContent = JsonConvert.SerializeObject(errors, Formatting.Indented);
+                dialog.MainContent = JsonConvert.SerializeObject(yo.layerStructure, Formatting.Indented);
+                //dialog.MainContent = yo.typeName + element.GetType().ToString();
                 dialog.Show();
                 newElement.SetCompoundStructure(structure);
                 tx.Commit();

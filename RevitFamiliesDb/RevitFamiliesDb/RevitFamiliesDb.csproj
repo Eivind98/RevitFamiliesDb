@@ -59,6 +59,7 @@
     <Compile Include="App.cs" />
     <Compile Include="ButtonBuilder.cs" />
     <Compile Include="Command.cs" />
+    <Compile Include="FamilyTypeObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
