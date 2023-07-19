@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 
 #endregion
@@ -52,61 +53,65 @@ namespace RevitFamiliesDb
             using (var tx = new Transaction(doc))
             {
                 tx.Start("Douche bag");
-                var newElement = element.Duplicate(newElementId) as FloorType;
-                var structure = CompoundStructure.CreateSimpleCompoundStructure(new List<CompoundStructureLayer>()
-                {
-                    new CompoundStructureLayer(100/304.8, MaterialFunctionAssignment.Structure, new ElementId(BuiltInCategory.INVALID))
-                });
-                structure.EndCap = EndCapCondition.NoEndCap;
+                //var newElement = element.Duplicate(newElementId) as FloorType;
+                //var structure = CompoundStructure.CreateSimpleCompoundStructure(new List<CompoundStructureLayer>()
+                //{
+                //    new CompoundStructureLayer(100/304.8, MaterialFunctionAssignment.Structure, new ElementId(BuiltInCategory.INVALID))
+                //});
+                //structure.EndCap = EndCapCondition.NoEndCap;
 
-                IDictionary<int, CompoundStructureError> errors = new Dictionary<int, CompoundStructureError>();
-                IDictionary<int, int> twoErrors = new Dictionary<int, int>();
-                structure.IsValid(doc, out errors, out twoErrors);
+                //IDictionary<int, CompoundStructureError> errors = new Dictionary<int, CompoundStructureError>();
+                //IDictionary<int, int> twoErrors = new Dictionary<int, int>();
+                //structure.IsValid(doc, out errors, out twoErrors);
 
-                //string testN = "";
-                //string testV = "";
 
-                //var testing = new FamilyTypeObject("");
+
+
 
                 var yo = new FamilyTypeObject(elId, doc);
 
 
-                foreach (Parameter param in newElement.Parameters)
-                {
-                    
-                    if(param.HasValue && !param.IsReadOnly)
-                    {
-                        switch (param.StorageType)
-                        {
-                            case StorageType.String:
-                                param.Set("");
-                                break;
-                            case StorageType.Integer:
-                                param.Set(0);
-                                break;
-                            case StorageType.Double:
-                                param.Set(0.0);
-                                break;
-                            case StorageType.ElementId:
-                                param.Set(ElementId.InvalidElementId); 
-                                break;
+                //foreach (Parameter param in newElement.Parameters)
+                //{
 
-                        }
+                //    if(param.HasValue && !param.IsReadOnly)
+                //    {
+                //        switch (param.StorageType)
+                //        {
+                //            case StorageType.String:
+                //                param.Set("");
+                //                break;
+                //            case StorageType.Integer:
+                //                param.Set(0);
+                //                break;
+                //            case StorageType.Double:
+                //                param.Set(0.0);
+                //                break;
+                //            case StorageType.ElementId:
+                //                param.Set(ElementId.InvalidElementId); 
+                //                break;
 
-                        //testN = param.Definition.ToString();
-                        //testV = param.AsDouble().ToString();
-                        
+                //        }
 
-                    }
-                    
-                }
+                //        //testN = param.Definition.ToString();
+                //        //testV = param.AsDouble().ToString();
+
+
+                //    }
+
+                //}
 
                 //dialog.MainContent = newElement.Location?.ToString();
                 //dialog.MainContent = JsonConvert.SerializeObject(errors, Formatting.Indented);
-                dialog.MainContent = JsonConvert.SerializeObject(yo.layerStructure, Formatting.Indented);
-                //dialog.MainContent = yo.typeName + element.GetType().ToString();
+                dialog.MainContent = FamilyTypeObject.PrintTypeObject(yo);
+                File.WriteAllText("C:\\Users\\eev_9\\OneDrive\\02 - Projects\\Programming stuff\\Test.json", FamilyTypeObject.PrintTypeObject(yo));
+
+                //dialog.MainContent = yo.Element.Id + " - " + elId + " - " + yo.ElementId;
                 dialog.Show();
-                newElement.SetCompoundStructure(structure);
+
+                yo.CreateElement(doc);
+
+                //newElement.SetCompoundStructure(structure);
                 tx.Commit();
             }
 

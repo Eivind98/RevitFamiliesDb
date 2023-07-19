@@ -1,38 +1,82 @@
 ﻿using Autodesk.Revit.DB;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media.Media3D;
 
 namespace RevitFamiliesDb
 {
     public class FamilyTypeObject
     {
-        public string typeName {  get; set; }
-        public Type type { get; set; }
-        public CompoundStructure layerStructure { get; set; }
+        //public string AssemblyInstanceId { get; set; }
+        //public string BoundingBox { get; set; }
+        public string Name { get; set; }
+        //public string CreatedPhaseId { get; set; }
+        //public string DemolishedPhaseId { get; set; }
+        //public string DesignOption { get; set; }
+
+        //public Document Doc { get; set; }
+
+        //public string Geometry { get; set; }
+        //public string GroupId { get; set; }
+        public int Id { get; set; }
+        //public string IsModifiable { get; set; }
+        //public string IsTransient { get; set; }
+        public string Type { get; set; }
+        public DemCompoundStructure ComStructureLayers { get; set; }
 
 
         public FamilyTypeObject(ElementId elementId, Document doc)
         {
-            var element = new FilteredElementCollector(doc)
+            Id = elementId.IntegerValue;
+            
+
+            Element Ele = new FilteredElementCollector(doc)
                 .WhereElementIsElementType()
                 .FirstOrDefault(x => x.Id == elementId);
             
-            switch (element.GetType().ToString())
+            Name = Ele.Name;
+            Type = Ele.GetType().ToString();
+
+            try
             {
-                case "Autodesk.Revit.DB.FloorType":
-                    FloorType ele = element as FloorType;
-                    typeName = ele.Name;
-                    type = typeof(FloorType);
-                    layerStructure = ele.GetCompoundStructure();
-                    break;
+                ComStructureLayers = new DemCompoundStructure((Ele as HostObjAttributes).GetCompoundStructure());
+            }
+            catch
+            {
 
             }
+            
+        }
+
+
+        public Element CreateElement(Document doc)
+        {
+            var element = new FilteredElementCollector(doc)
+            .WhereElementIsElementType()
+                .FirstOrDefault(x => x.Id == new ElementId(785)) as FloorType;
+
+            FloorType ele = element.Duplicate(Guid.NewGuid().ToString()) as FloorType;
+
+            ele.SetCompoundStructure(ComStructureLayers.Create());
+
+
+            return null;
+        }
 
 
 
+        public static string PrintTypeObject(FamilyTypeObject obj)
+        {
+            //string output = obj.Id.ToString() + Environment.NewLine + obj.Name + Environment.NewLine + obj.Type.ToString() + Environment.NewLine ;
+
+            string output = JsonConvert.SerializeObject(obj);
+
+            return output;
         }
 
 
