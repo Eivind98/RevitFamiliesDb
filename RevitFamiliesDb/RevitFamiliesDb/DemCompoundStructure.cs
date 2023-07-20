@@ -26,12 +26,12 @@ namespace RevitFamiliesDb
         public bool CanSplitAndMergeRegionsBeUsed { get; set; }
         public int GetFirstCoreLayerIndex { get; set; }
         public int GetLastCoreLayerIndex { get; set; }
-        public List<DemLayers> GetLayeres { get; set; }
+        public List<DemLayers> GetLayers { get; set; }
         public IList<int> GetRegionIds { get; set; }
         public IList<int> GetSegmentIds { get; set; }
         public double GetWidth { get; set; }
         public bool IsVerticallyHomogeneous { get; set; }
-        //public int Test { get; set; }
+        
 
         public DemCompoundStructure(CompoundStructure comStructure)
         {
@@ -49,10 +49,10 @@ namespace RevitFamiliesDb
             CanSplitAndMergeRegionsBeUsed = comStructure.CanSplitAndMergeRegionsBeUsed();
             GetFirstCoreLayerIndex = comStructure.GetFirstCoreLayerIndex();
             GetLastCoreLayerIndex = comStructure.GetLastCoreLayerIndex();
-            GetLayeres = comStructure.GetLayers().Select(layer => new DemLayers(layer)).ToList();
+            GetLayers = comStructure.GetLayers().Select(layer => new DemLayers(layer, HasStructuralDeck)).ToList(); ;
             GetWidth = comStructure.GetWidth();
             IsVerticallyHomogeneous = comStructure.IsVerticallyHomogeneous();
-            //Test = GetLayeres.Count;
+            
 
             if (IsVerticalCompound)
             {
@@ -67,16 +67,15 @@ namespace RevitFamiliesDb
         public CompoundStructure Create()
         {
 
-            IList<CompoundStructureLayer> test = GetLayeres.Select(layer => layer.CreateLayer()).ToList();
+            IList<CompoundStructureLayer> layers = GetLayers.CreateLayers();
 
-
-            CompoundStructure output = CompoundStructure.CreateSimpleCompoundStructure(test);
+            CompoundStructure output = CompoundStructure.CreateSimpleCompoundStructure(layers);
             output.EndCap = (EndCapCondition)EndCap;
             output.OpeningWrapping = (OpeningWrappingCondition)OpeningWrapping;
             output.StructuralMaterialIndex = StructuralMaterialIndex;
             output.VariableLayerIndex = VariableLayerIndex;
             output.SetNumberOfShellLayers(ShellLayerType.Exterior, GetFirstCoreLayerIndex);
-            output.SetNumberOfShellLayers(ShellLayerType.Interior, GetLayeres.Count - (GetLastCoreLayerIndex + 1));
+            output.SetNumberOfShellLayers(ShellLayerType.Interior, GetLayers.Count - (GetLastCoreLayerIndex + 1));
 
 
 

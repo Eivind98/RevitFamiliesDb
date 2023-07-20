@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,6 +11,7 @@ namespace RevitFamiliesDb
 {
     public class DemLayers
     {
+        public bool HasDeckProfile { get; set; }
         public int DeckEmbeddingType { get; set; }
         public int DeckProfileId { get; set; }
         public int Function { get; set; }
@@ -18,12 +20,17 @@ namespace RevitFamiliesDb
         public int LayerId { get; set; }
         public int MaterialId { get; set; }
         public double Width { get; set; }
-        public bool test { get; set; }
 
-        public DemLayers(CompoundStructureLayer strucLayer)
+        public DemLayers(CompoundStructureLayer strucLayer, bool hasDeckProfile)
         {
-            //DeckEmbeddingType = (int)strucLayer.DeckEmbeddingType;
-            //DeckProfileId = strucLayer.DeckProfileId.IntegerValue;
+            HasDeckProfile = hasDeckProfile;
+
+            if (HasDeckProfile)
+            {
+                DeckEmbeddingType = (int)strucLayer.DeckEmbeddingType;
+                DeckProfileId = strucLayer.DeckProfileId.IntegerValue;
+            }
+            
             Function = (int)strucLayer.Function;
             IsValidObject = strucLayer.IsValidObject;
             LayerCapFlag = strucLayer.LayerCapFlag;
@@ -37,7 +44,12 @@ namespace RevitFamiliesDb
         {
             CompoundStructureLayer Output = new CompoundStructureLayer();
 
+            if (HasDeckProfile)
+            {
+                Output.DeckEmbeddingType = (StructDeckEmbeddingType)DeckEmbeddingType;
+                Output.DeckProfileId = new ElementId(DeckProfileId);
 
+            }
             //Output.DeckEmbeddingType = (StructDeckEmbeddingType)DeckEmbeddingType;
             //if(DeckEmbeddingType != -1)
             //{
@@ -51,15 +63,8 @@ namespace RevitFamiliesDb
 
             return Output;
         }
-
-        public IList<CompoundStructureLayer> CreateLayers()
-        {
-            IList<CompoundStructureLayer> Layers = new List<CompoundStructureLayer>();
-
-
-
-            return null;
-        }
+        
+        
 
 
         public string PrintThisShit()
@@ -69,4 +74,22 @@ namespace RevitFamiliesDb
         }
 
     }
+
+    public static class DemLayersExtensions
+    {
+        // Extension method to create a list of CompoundStructureLayers from a list of DemLayers objects
+        public static IList<CompoundStructureLayer> CreateLayers(this List<DemLayers> demLayersList)
+        {
+            IList<CompoundStructureLayer> layersList = new List<CompoundStructureLayer>();
+
+            foreach (var demLayer in demLayersList)
+            {
+                var compoundStructureLayer = demLayer.CreateLayer();
+                layersList.Add(compoundStructureLayer);
+            }
+
+            return layersList;
+        }
+    }
+
 }

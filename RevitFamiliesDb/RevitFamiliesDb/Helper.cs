@@ -9,7 +9,7 @@ namespace RevitFamiliesDb
 {
     public class Helper
     {
-
+        
         public static CompoundStructure GetCompound(Element element)
         {
             HostObjAttributes test = element as HostObjAttributes;
