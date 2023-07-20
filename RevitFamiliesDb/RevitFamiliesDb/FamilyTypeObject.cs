@@ -56,11 +56,18 @@ namespace RevitFamiliesDb
 
         public Element CreateElement(Document doc)
         {
-            var element = new FilteredElementCollector(doc)
-            .WhereElementIsElementType()
-                .FirstOrDefault(x => x.Id == new ElementId(785)) as FloorType;
 
-            FloorType ele = element.Duplicate(Guid.NewGuid().ToString()) as FloorType;
+            //FilteredElementCollector collector = new FilteredElementCollector(doc);
+            //ICollection<Element> floorTypes = collector.OfClass(typeof(FloorType)).ToElements();
+
+            FloorType bullShitStuff = new FilteredElementCollector(doc).OfClass(typeof(FloorType)).First() as FloorType;
+
+
+            //var element = new FilteredElementCollector(doc)
+            //    .WhereElementIsElementType()
+            //    .FirstOrDefault(x => x.Id == new ElementId(785)) as FloorType;
+
+            FloorType ele = bullShitStuff.Duplicate(Guid.NewGuid().ToString()) as FloorType;
 
             ele.SetCompoundStructure(ComStructureLayers.Create());
 

@@ -31,6 +31,7 @@ namespace RevitFamiliesDb
         public IList<int> GetSegmentIds { get; set; }
         public double GetWidth { get; set; }
         public bool IsVerticallyHomogeneous { get; set; }
+        //public int Test { get; set; }
 
         public DemCompoundStructure(CompoundStructure comStructure)
         {
@@ -51,6 +52,7 @@ namespace RevitFamiliesDb
             GetLayeres = comStructure.GetLayers().Select(layer => new DemLayers(layer)).ToList();
             GetWidth = comStructure.GetWidth();
             IsVerticallyHomogeneous = comStructure.IsVerticallyHomogeneous();
+            //Test = GetLayeres.Count;
 
             if (IsVerticalCompound)
             {
@@ -73,7 +75,8 @@ namespace RevitFamiliesDb
             output.OpeningWrapping = (OpeningWrappingCondition)OpeningWrapping;
             output.StructuralMaterialIndex = StructuralMaterialIndex;
             output.VariableLayerIndex = VariableLayerIndex;
-
+            output.SetNumberOfShellLayers(ShellLayerType.Exterior, GetFirstCoreLayerIndex);
+            output.SetNumberOfShellLayers(ShellLayerType.Interior, GetLayeres.Count - (GetLastCoreLayerIndex + 1));
 
 
 
