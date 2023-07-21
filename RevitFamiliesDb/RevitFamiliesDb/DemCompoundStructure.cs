@@ -49,7 +49,7 @@ namespace RevitFamiliesDb
             CanSplitAndMergeRegionsBeUsed = comStructure.CanSplitAndMergeRegionsBeUsed();
             GetFirstCoreLayerIndex = comStructure.GetFirstCoreLayerIndex();
             GetLastCoreLayerIndex = comStructure.GetLastCoreLayerIndex();
-            GetLayers = comStructure.GetLayers().Select(layer => new DemLayers(layer, HasStructuralDeck)).ToList(); ;
+            GetLayers = comStructure.GetLayers().Select(layer => new DemLayers(layer)).ToList(); ;
             GetWidth = comStructure.GetWidth();
             IsVerticallyHomogeneous = comStructure.IsVerticallyHomogeneous();
             
