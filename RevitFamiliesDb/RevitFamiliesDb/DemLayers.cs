@@ -11,7 +11,7 @@ namespace RevitFamiliesDb
 {
     public class DemLayers
     {
-        public bool HasDeckProfile { get; set; }
+        
         public int DeckEmbeddingType { get; set; }
         public int DeckProfileId { get; set; }
         public int Function { get; set; }
@@ -21,11 +21,10 @@ namespace RevitFamiliesDb
         public int MaterialId { get; set; }
         public double Width { get; set; }
 
-        public DemLayers(CompoundStructureLayer strucLayer, bool hasDeckProfile)
+        public DemLayers(CompoundStructureLayer strucLayer)
         {
-            HasDeckProfile = hasDeckProfile;
-
-            if (HasDeckProfile)
+            
+            if (Function == 200)
             {
                 DeckEmbeddingType = (int)strucLayer.DeckEmbeddingType;
                 DeckProfileId = strucLayer.DeckProfileId.IntegerValue;
@@ -44,17 +43,12 @@ namespace RevitFamiliesDb
         {
             CompoundStructureLayer Output = new CompoundStructureLayer();
 
-            if (HasDeckProfile)
+            if (Function == 200)
             {
                 Output.DeckEmbeddingType = (StructDeckEmbeddingType)DeckEmbeddingType;
                 Output.DeckProfileId = new ElementId(DeckProfileId);
 
             }
-            //Output.DeckEmbeddingType = (StructDeckEmbeddingType)DeckEmbeddingType;
-            //if(DeckEmbeddingType != -1)
-            //{
-            //    Output.DeckProfileId = new ElementId(DeckProfileId);
-            //}
             
             Output.Function = (MaterialFunctionAssignment)Function;
             Output.LayerCapFlag = LayerCapFlag;
@@ -64,9 +58,6 @@ namespace RevitFamiliesDb
             return Output;
         }
         
-        
-
-
         public string PrintThisShit()
         {
             return JsonConvert.SerializeObject(this);
