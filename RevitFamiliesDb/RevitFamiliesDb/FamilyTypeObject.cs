@@ -28,6 +28,12 @@ namespace RevitFamiliesDb
         //public string IsTransient { get; set; }
         public string Type { get; set; }
         public DemCompoundStructure ComStructureLayers { get; set; }
+        public List<DemParameter> Parameters { get; set; }
+
+        public FamilyTypeObject()
+        {
+
+        }
 
 
         public FamilyTypeObject(ElementId elementId, Document doc)
@@ -50,27 +56,37 @@ namespace RevitFamiliesDb
             {
 
             }
-            
+
+            Parameters = new List<DemParameter>();
+
+            foreach (Parameter parameter in Ele.Parameters)
+            {
+                if (!parameter.IsReadOnly)
+                {
+                    Parameters.Add(new DemParameter(parameter));
+                }
+
+            }
+
         }
 
 
         public Element CreateElement(Document doc)
         {
 
-            //FilteredElementCollector collector = new FilteredElementCollector(doc);
-            //ICollection<Element> floorTypes = collector.OfClass(typeof(FloorType)).ToElements();
-
             FloorType bullShitStuff = new FilteredElementCollector(doc).OfClass(typeof(FloorType)).First() as FloorType;
 
-
-            //var element = new FilteredElementCollector(doc)
-            //    .WhereElementIsElementType()
-            //    .FirstOrDefault(x => x.Id == new ElementId(785)) as FloorType;
 
             FloorType ele = bullShitStuff.Duplicate(Guid.NewGuid().ToString()) as FloorType;
 
             ele.SetCompoundStructure(ComStructureLayers.Create());
 
+            foreach (DemParameter para in Parameters)
+            {
+                para.CreateThoseMF(ele);
+
+
+            }
 
             return null;
         }
@@ -81,9 +97,14 @@ namespace RevitFamiliesDb
         {
             //string output = obj.Id.ToString() + Environment.NewLine + obj.Name + Environment.NewLine + obj.Type.ToString() + Environment.NewLine ;
 
-            string output = JsonConvert.SerializeObject(obj);
+            return JsonConvert.SerializeObject(obj);
+        }
 
-            return output;
+        public static string PrintTypeObject(List<FamilyTypeObject> obj)
+        {
+
+
+            return JsonConvert.SerializeObject(obj);
         }
 
 

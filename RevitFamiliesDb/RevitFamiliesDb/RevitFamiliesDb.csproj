@@ -56,11 +56,13 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddToList.cs" />
     <Compile Include="App.cs" />
     <Compile Include="ButtonBuilder.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="DemCompoundStructure.cs" />
     <Compile Include="DemLayers.cs" />
+    <Compile Include="DemParameter.cs" />
     <Compile Include="FamilyTypeObject.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

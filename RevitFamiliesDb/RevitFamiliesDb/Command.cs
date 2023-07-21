@@ -66,8 +66,6 @@ namespace RevitFamiliesDb
 
 
 
-
-
                 var yo = new FamilyTypeObject(elId, doc);
 
 

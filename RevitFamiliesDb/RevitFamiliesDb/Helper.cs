@@ -17,23 +17,7 @@ namespace RevitFamiliesDb
             return test.GetCompoundStructure();
 
 
-            switch (element.GetType().ToString())
-            {
-                case "Autodesk.Revit.DB.FloorType":
-                    FloorType floor = element as FloorType;
-                    return floor.GetCompoundStructure();
-                case "Autodesk.Revit.DB.WallType":
-                    WallType wall = element as WallType;
-                    return wall.GetCompoundStructure();
-                case "Autodesk.Revit.DB.CeilingType":
-                    CeilingType ceiling = element as CeilingType;
-                    return ceiling.GetCompoundStructure();
-                case "Autodesk.Revit.DB.RoofType":
-                    RoofType roof = element as RoofType;
-                    return roof.GetCompoundStructure();
-                default:
-                    return null;
-            }
+            
 
         }
 

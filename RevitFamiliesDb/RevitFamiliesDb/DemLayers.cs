@@ -23,14 +23,15 @@ namespace RevitFamiliesDb
 
         public DemLayers(CompoundStructureLayer strucLayer)
         {
-            
+            Function = (int)strucLayer.Function;
+
             if (Function == 200)
             {
                 DeckEmbeddingType = (int)strucLayer.DeckEmbeddingType;
                 DeckProfileId = strucLayer.DeckProfileId.IntegerValue;
             }
             
-            Function = (int)strucLayer.Function;
+            
             IsValidObject = strucLayer.IsValidObject;
             LayerCapFlag = strucLayer.LayerCapFlag;
             LayerId = strucLayer.LayerId;
@@ -43,14 +44,14 @@ namespace RevitFamiliesDb
         {
             CompoundStructureLayer Output = new CompoundStructureLayer();
 
+            Output.Function = (MaterialFunctionAssignment)Function;
+
             if (Function == 200)
             {
                 Output.DeckEmbeddingType = (StructDeckEmbeddingType)DeckEmbeddingType;
                 Output.DeckProfileId = new ElementId(DeckProfileId);
-
             }
             
-            Output.Function = (MaterialFunctionAssignment)Function;
             Output.LayerCapFlag = LayerCapFlag;
             Output.MaterialId = new ElementId(MaterialId);
             Output.Width = Width;
