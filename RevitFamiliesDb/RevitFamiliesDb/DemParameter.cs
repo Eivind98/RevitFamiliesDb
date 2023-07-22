@@ -27,7 +27,10 @@ namespace RevitFamiliesDb
         public int GetAssociatedGlobalParameter { get; set; }
 
 
+        public DemParameter()
+        {
 
+        }
 
         public DemParameter(Parameter parameter)
         {

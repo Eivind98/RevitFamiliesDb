@@ -40,28 +40,17 @@ namespace RevitFamiliesDb
                 .WhereElementIsElementType()
                 .FirstOrDefault(x => x.Id == elId) as FloorType;
 
-            FamilyTypeObject demObjects = new FamilyTypeObject();
+            List<FamilyTypeObject> demObjects = new List<FamilyTypeObject>();
 
-            //demObjects = JsonConvert.DeserializeObject<FamilyTypeObject>(File.ReadAllText("C:\\Users\\eev_9\\OneDrive\\02 - Projects\\Programming stuff\\Test.json"));
-
-            try
-            {
-                
-            }
-            catch
-            {
-
-            }
+            demObjects = JsonConvert.DeserializeObject<List<FamilyTypeObject>>(File.ReadAllText("C:\\Users\\eev_9\\OneDrive\\02 - Projects\\Programming stuff\\Test.json"));
 
             
-
             using (var tx = new Transaction(doc))
             {
                 tx.Start("Douche bag");
 
-                demObjects = new FamilyTypeObject(elId, doc);
+                demObjects.Add(new FamilyTypeObject(elId, doc));
                 
-
                 tx.Commit();
             }
 

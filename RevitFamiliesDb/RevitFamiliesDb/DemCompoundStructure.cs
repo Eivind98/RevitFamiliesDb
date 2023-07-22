@@ -31,7 +31,12 @@ namespace RevitFamiliesDb
         public IList<int> GetSegmentIds { get; set; }
         public double GetWidth { get; set; }
         public bool IsVerticallyHomogeneous { get; set; }
-        
+
+
+        public DemCompoundStructure()
+        {
+
+        }
 
         public DemCompoundStructure(CompoundStructure comStructure)
         {

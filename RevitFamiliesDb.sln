@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RevitFamiliesDb", "RevitFam
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "RevitFamiliesDb.Setup", "RevitFamiliesDb\RevitFamiliesDb.Setup\RevitFamiliesDb.Setup.vdproj", "{FF9F19C4-6204-47BC-9941-B07F2F9024C0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemWPF", "DemWPF\DemWPF.csproj", "{9BF7BB35-C2FE-4B65-8214-FCD4B17D2C16}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{FF9F19C4-6204-47BC-9941-B07F2F9024C0}.Debug|Any CPU.Build.0 = Debug
 		{FF9F19C4-6204-47BC-9941-B07F2F9024C0}.Release|Any CPU.ActiveCfg = Release
 		{FF9F19C4-6204-47BC-9941-B07F2F9024C0}.Release|Any CPU.Build.0 = Release
+		{9BF7BB35-C2FE-4B65-8214-FCD4B17D2C16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BF7BB35-C2FE-4B65-8214-FCD4B17D2C16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BF7BB35-C2FE-4B65-8214-FCD4B17D2C16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BF7BB35-C2FE-4B65-8214-FCD4B17D2C16}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

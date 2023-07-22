@@ -21,6 +21,11 @@ namespace RevitFamiliesDb
         public int MaterialId { get; set; }
         public double Width { get; set; }
 
+        public DemLayers()
+        {
+
+        }
+
         public DemLayers(CompoundStructureLayer strucLayer)
         {
             Function = (int)strucLayer.Function;
