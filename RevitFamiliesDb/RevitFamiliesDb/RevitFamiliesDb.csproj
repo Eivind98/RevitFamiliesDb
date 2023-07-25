@@ -55,6 +55,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xaml" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
@@ -68,10 +69,10 @@
     <Compile Include="App.cs" />
     <Compile Include="ButtonBuilder.cs" />
     <Compile Include="00Starters\Command.cs" />
-    <Compile Include="DemCompoundStructure.cs" />
-    <Compile Include="DemLayers.cs" />
-    <Compile Include="DemParameter.cs" />
-    <Compile Include="FamilyTypeObject.cs" />
+    <Compile Include="Objects\DemCompoundStructure.cs" />
+    <Compile Include="Objects\DemLayers.cs" />
+    <Compile Include="Objects\DemParameter.cs" />
+    <Compile Include="Objects\FamilyTypeObject.cs" />
     <Compile Include="Global.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -87,6 +88,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="UI\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

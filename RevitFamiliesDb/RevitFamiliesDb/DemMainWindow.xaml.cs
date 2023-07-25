@@ -1,4 +1,5 @@
-﻿using Autodesk.Revit.UI;
+﻿using Autodesk.Revit.DB;
+using Autodesk.Revit.UI;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -28,35 +29,40 @@ namespace RevitFamiliesDb
         {
             InitializeComponent();
 
+
             Global.AllDemFamilyTypeObject = LoadElementsToList();
 
             LstDemItems.ItemsSource = Global.AllDemFamilyTypeObject;
-            //LstDemItems.DisplayMemberPath = "Name";
-            //LstDemItems.SelectedValuePath = "Id";
-            
+            LstDemItems.SelectedValuePath = "DemGuid";
+
 
             Window window = new Window() { 
             Name = "MFStuff",
             Content = Content
-            
             };
 
             window.Show();
 
-            
-            
         }
 
         private List<FamilyTypeObject> LoadElementsToList()
         {
             string path = "C:\\Users\\eev_9\\OneDrive\\02 - Projects\\Programming stuff\\Test.json";
-            _ = new List<FamilyTypeObject>();
 
-            List<FamilyTypeObject> allDemObjects = JsonConvert.DeserializeObject<List<FamilyTypeObject>>(File.ReadAllText(path));
+            try
+            {
+                List<FamilyTypeObject> allDemObjects = JsonConvert.DeserializeObject<List<FamilyTypeObject>>(File.ReadAllText(path));
+                return allDemObjects;
+            }
+            catch
+            {
+                return null;
+            }
+
 
             
 
-            return allDemObjects;
+            
         }
 
 
@@ -64,8 +70,10 @@ namespace RevitFamiliesDb
         {
             if(LstDemItems.SelectedValue != null)
             {
-                var dialog = new TaskDialog("Debug");
-                dialog.MainContent = LstDemItems.SelectedValue.ToString();
+                var dialog = new TaskDialog("Debug")
+                {
+                    MainContent = LstDemItems.SelectedValue.ToString()
+                };
                 dialog.Show();
 
             }
@@ -76,6 +84,60 @@ namespace RevitFamiliesDb
         private void BtnClose_Click(object sender, RoutedEventArgs e)
         {
             
+        }
+
+        private void BtnAdd_Click(object sender, RoutedEventArgs e)
+        {
+            var sel = Global.UIDoc.Selection;
+
+            if (sel.IsValidObject)
+            {
+                var elId = sel.GetElementIds().FirstOrDefault();
+
+                try
+                {
+                    var element = new FilteredElementCollector(Global.Doc)
+                        .WhereElementIsElementType()
+                        .FirstOrDefault(x => x.Id == elId) as FloorType;
+                    Global.AllDemFamilyTypeObject.Add(new FamilyTypeObject(elId, Global.Doc));
+
+                    //LstDemItems.ItemsSource = Global.AllDemFamilyTypeObject;
+                    LstDemItems.Items.Refresh();
+                }
+                catch
+                {
+                    return;
+                }
+
+            }
+
+        }
+
+        private void BtnDelete_Click(object sender, RoutedEventArgs e)
+        {
+            //if (LstDemItems.SelectedValue != null)
+            //{
+            //    foreach (FamilyTypeObject obj in Global.AllDemFamilyTypeObject)
+            //    {
+            //        if (LstDemItems.SelectedValue.ToString() == obj.DemGuid)
+            //        {
+            //            Global.AllDemFamilyTypeObject.Remove(obj);
+            //        }
+                    
+            //    }
+            //    LstDemItems.ItemsSource = null;
+            //    LstDemItems.ItemsSource = Global.AllDemFamilyTypeObject;
+
+                
+            //}
+
+
+
+        }
+
+        private void DemWindow_ContextMenuClosing(object sender, ContextMenuEventArgs e)
+        {
+            File.WriteAllText("C:\\Users\\eev_9\\OneDrive\\02 - Projects\\Programming stuff\\Test.json", FamilyTypeObject.PrintTypeObject(Global.AllDemFamilyTypeObject));
         }
     }
 }

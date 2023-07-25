@@ -34,9 +34,9 @@ namespace RevitFamiliesDb
           ElementSet elements)
         {
             var uiapp = commandData.Application;
-            var uidoc = uiapp.ActiveUIDocument;
+            Global.UIDoc = uiapp.ActiveUIDocument;
             Global.App = uiapp.Application;
-            Global.Doc = uidoc.Document;
+            Global.Doc = Global.UIDoc.Document;
 
 
             DemMainWindow test = new DemMainWindow();

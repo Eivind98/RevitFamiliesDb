@@ -42,9 +42,17 @@ namespace RevitFamiliesDb
 
             List<FamilyTypeObject> demObjects = new List<FamilyTypeObject>();
 
-            demObjects = JsonConvert.DeserializeObject<List<FamilyTypeObject>>(File.ReadAllText("C:\\Users\\eev_9\\OneDrive\\02 - Projects\\Programming stuff\\Test.json"));
-            
-            
+            try
+            {
+                demObjects = JsonConvert.DeserializeObject<List<FamilyTypeObject>>(File.ReadAllText("C:\\Users\\eev_9\\OneDrive\\02 - Projects\\Programming stuff\\Test.json"));
+
+            }
+            catch
+            {
+
+            }
+
+
             using (var tx = new Transaction(doc))
             {
                 tx.Start("Douche bag");

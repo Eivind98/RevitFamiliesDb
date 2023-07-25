@@ -2,10 +2,13 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
 
 namespace RevitFamiliesDb
@@ -27,20 +30,37 @@ namespace RevitFamiliesDb
         //public string IsModifiable { get; set; }
         //public string IsTransient { get; set; }
         public string Type { get; set; }
+        public string DemGuid { get; set; }
         public string Path { get; set; }
         public DemCompoundStructure ComStructureLayers { get; set; }
         public List<DemParameter> Parameters { get; set; }
 
         public FamilyTypeObject()
         {
+            
+            DemGuid = Guid.NewGuid().ToString();
 
         }
 
+        static BitmapSource ConvertBitmapToBitmapSource(Bitmap bmp)
+        {
+            return System.Windows.Interop.Imaging
+              .CreateBitmapSourceFromHBitmap(
+                bmp.GetHbitmap(),
+                IntPtr.Zero,
+                Int32Rect.Empty,
+                BitmapSizeOptions.FromEmptyOptions());
+        }
 
         public FamilyTypeObject(ElementId elementId, Document doc)
         {
+            
+            DemGuid = Guid.NewGuid().ToString();
+            Path = "C:\\Users\\eev_9\\OneDrive\\02 - Projects\\Programming stuff\\Pic\\" + DemGuid + ".jpg";
             Id = elementId.IntegerValue;
             
+
+
 
             Element Ele = new FilteredElementCollector(doc)
                 .WhereElementIsElementType()
@@ -48,6 +68,24 @@ namespace RevitFamiliesDb
             
             Name = Ele.Name;
             Type = Ele.GetType().ToString();
+
+            System.Drawing.Size imgSize = new System.Drawing.Size(200, 200);
+
+            var test = ((ElementType)Ele).GetPreviewImage(imgSize);
+
+            JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+
+            encoder.Frames.Add(BitmapFrame.Create(ConvertBitmapToBitmapSource(test)));
+
+            encoder.QualityLevel = 25;
+
+            string filename = Path;
+
+            FileStream file = new FileStream(filename, FileMode.Create, FileAccess.Write);
+
+            encoder.Save(file);
+            
+            file.Close();
 
             try
             {
