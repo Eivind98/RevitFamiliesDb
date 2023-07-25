@@ -27,6 +27,7 @@ namespace RevitFamiliesDb
         //public string IsModifiable { get; set; }
         //public string IsTransient { get; set; }
         public string Type { get; set; }
+        public string Path { get; set; }
         public DemCompoundStructure ComStructureLayers { get; set; }
         public List<DemParameter> Parameters { get; set; }
 
@@ -91,6 +92,25 @@ namespace RevitFamiliesDb
             return null;
         }
 
+        public static List<string> ToListStrings(List<FamilyTypeObject> ls)
+        {
+            if (ls == null || ls.Count == 0)
+            {
+                return null;
+            }
+
+            List<string> list = new List<string>();
+
+            foreach(FamilyTypeObject obj in ls)
+            {
+                list.Add(obj.Name);
+
+            }
+
+
+
+            return list;
+        }
 
 
         public static string PrintTypeObject(FamilyTypeObject obj)

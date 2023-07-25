@@ -43,7 +43,7 @@ namespace RevitFamiliesDb
             List<FamilyTypeObject> demObjects = new List<FamilyTypeObject>();
 
             demObjects = JsonConvert.DeserializeObject<List<FamilyTypeObject>>(File.ReadAllText("C:\\Users\\eev_9\\OneDrive\\02 - Projects\\Programming stuff\\Test.json"));
-
+            
             
             using (var tx = new Transaction(doc))
             {

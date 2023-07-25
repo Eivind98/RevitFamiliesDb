@@ -6,8 +6,90 @@
         xmlns:local="clr-namespace:DemWPF"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <StackPanel>
-        
-        <Button Content="Testing Stuff"></Button>
-    </StackPanel>
+    <Window.Resources>
+        <DataTemplate x:Key="DemItemTemplate">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="32"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Image Grid.Column="0" Source="/Myndir úr Danmark 013.JPG"/>
+
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Row="0" x:Name="LblFirst" Content="Yo Bitches"/>
+                    <Label Grid.Row="1" x:Name="LblSecond" Content="Yo Bitches too?"/>
+
+
+                </Grid>
+                
+            </Grid>
+        </DataTemplate>
+    </Window.Resources>
+    
+    <Border Padding="10">
+        <Grid>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="20"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="20"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Button Margin="5 0" Grid.Column="0" Content="Walls"></Button>
+                <Button Margin="5 0" Grid.Column="1" Content="Floors"></Button>
+                <Button Margin="5 0" Grid.Column="2" Content="Roofs"></Button>
+                <Button Margin="5 0" Grid.Column="3" Content="Ceilings"></Button>
+                
+                
+            </Grid>
+
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" MinWidth="100"/>
+                    <ColumnDefinition Width="3*" MinWidth="200"/>
+                </Grid.ColumnDefinitions>
+
+
+
+
+                <ListBox ItemTemplate="{DynamicResource DemItemTemplate}" x:Name="LstDemItems" Grid.Column="1">
+                    
+
+
+
+                </ListBox>
+                
+            </Grid>
+
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="200"/>
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="0" Content="Close"></Button>
+                <Button Grid.Column="2" Content="Add To Project"></Button>
+                
+                
+            </Grid>
+            
+        </Grid>
+
+    </Border>
+    
 </Window>

@@ -15,14 +15,24 @@ using System.Windows.Shapes;
 
 namespace DemWPF
 {
+    
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
+
+
         public MainWindow()
         {
+
             InitializeComponent();
+
+            List<string> list = new List<string>() { "Yo", "Bro", "Do" };
+
+            LstDemItems.ItemsSource = list;
+
+
         }
     }
 }
