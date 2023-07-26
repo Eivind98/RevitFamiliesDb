@@ -3,6 +3,9 @@ using Autodesk.Revit.UI;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,6 +15,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
@@ -34,16 +38,25 @@ namespace RevitFamiliesDb
 
             LstDemItems.ItemsSource = Global.AllDemFamilyTypeObject;
             LstDemItems.SelectedValuePath = "DemGuid";
-
+            
 
             Window window = new Window() { 
             Name = "MFStuff",
             Content = Content
             };
 
+            // Get the handle of the Revit window
+            IntPtr revitWindowHandle = Process.GetCurrentProcess().MainWindowHandle;
+
+            // Get the Revit window as a WindowInteropHelper object
+            WindowInteropHelper helper = new WindowInteropHelper(window);
+            helper.Owner = revitWindowHandle;
+
             window.Show();
 
         }
+
+        public int ColumnsCount { get; set; }
 
         private List<FamilyTypeObject> LoadElementsToList()
         {
@@ -59,12 +72,7 @@ namespace RevitFamiliesDb
                 return null;
             }
 
-
-            
-
-            
         }
-
 
         private void BtnAddToProject_Click(object sender, RoutedEventArgs e)
         {
@@ -77,8 +85,6 @@ namespace RevitFamiliesDb
                 dialog.Show();
 
             }
-
-
         }
 
         private void BtnClose_Click(object sender, RoutedEventArgs e)
@@ -115,23 +121,27 @@ namespace RevitFamiliesDb
 
         private void BtnDelete_Click(object sender, RoutedEventArgs e)
         {
-            //if (LstDemItems.SelectedValue != null)
-            //{
-            //    foreach (FamilyTypeObject obj in Global.AllDemFamilyTypeObject)
-            //    {
-            //        if (LstDemItems.SelectedValue.ToString() == obj.DemGuid)
-            //        {
-            //            Global.AllDemFamilyTypeObject.Remove(obj);
-            //        }
-                    
-            //    }
-            //    LstDemItems.ItemsSource = null;
-            //    LstDemItems.ItemsSource = Global.AllDemFamilyTypeObject;
+            if (LstDemItems.SelectedValue != null)
+            {
+                foreach (FamilyTypeObject obj in Global.AllDemFamilyTypeObject)
+                {
+                    if (LstDemItems.SelectedValue.ToString() == obj.DemGuid)
+                    {
+                        var dialog = new TaskDialog("Debug")
+                        {
+                            MainContent = obj.DemGuid
+                        };
+                        dialog.Show();
 
-                
-            //}
+                        //Global.AllDemFamilyTypeObject.Remove(obj);
 
+                    }
 
+                }
+                //LstDemItems.ItemsSource = null;
+                //LstDemItems.ItemsSource = Global.AllDemFamilyTypeObject;
+
+            }
 
         }
 
@@ -139,5 +149,41 @@ namespace RevitFamiliesDb
         {
             File.WriteAllText("C:\\Users\\eev_9\\OneDrive\\02 - Projects\\Programming stuff\\Test.json", FamilyTypeObject.PrintTypeObject(Global.AllDemFamilyTypeObject));
         }
+
+        // Implement INotifyPropertyChanged to notify the UI of property changes
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void LstDemItems_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            //var test = LstDemItems.Width;
+
+            //WrapPanel wrpPanel = (WrapPanel)LstDemItems.ItemsPanel.FindName("WrpPanel", LstDemItems);
+
+            //LstDemItems.Items.Refresh();
+
+
+        }
     }
+
+    public class SubtractConverter : IValueConverter
+    {
+        public double Value { get; set; }
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            double val = System.Convert.ToDouble(value);
+            return val - Value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+
 }
