@@ -32,6 +32,7 @@ namespace RevitFamiliesDb
         public string Type { get; set; }
         public string DemGuid { get; set; }
         public string Path { get; set; }
+        public BitmapImage Image { get; set; }
         public DemCompoundStructure ComStructureLayers { get; set; }
         public List<DemParameter> Parameters { get; set; }
 
@@ -71,11 +72,11 @@ namespace RevitFamiliesDb
 
             System.Drawing.Size imgSize = new System.Drawing.Size(200, 200);
 
-            var test = ((ElementType)Ele).GetPreviewImage(imgSize);
-
+            Bitmap bitmap = ((ElementType)Ele).GetPreviewImage(imgSize);
+            
             JpegBitmapEncoder encoder = new JpegBitmapEncoder();
 
-            encoder.Frames.Add(BitmapFrame.Create(ConvertBitmapToBitmapSource(test)));
+            encoder.Frames.Add(BitmapFrame.Create(ConvertBitmapToBitmapSource(bitmap)));
 
             encoder.QualityLevel = 25;
 
