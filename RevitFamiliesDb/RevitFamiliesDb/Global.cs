@@ -15,6 +15,7 @@ namespace RevitFamiliesDb
         public static Document Doc { get; set; }
         public static Application App { get; set; }
         public static List<FamilyTypeObject> AllDemFamilyTypeObject { get; set; }
+        public static string ThePath { get; set; } = "C:\\Users\\eev_9\\OneDrive\\02 - Projects\\Programming stuff\\Test.json";
 
 
     }

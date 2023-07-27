@@ -9,19 +9,19 @@
              MinWidth="800"
              d:DesignHeight="500" d:DesignWidth="800">
 
+    
+    
     <UserControl.Resources>
-        <local:SubtractConverter x:Key="Subtract20" Value="20"/>
+        <local:SubtractConverter x:Key="Subtract20" Value="32"/>
     </UserControl.Resources>
 
     <Border x:Name="DemWindow" 
             Background="White" 
-            Padding="10"
-            ContextMenuClosing="DemWindow_ContextMenuClosing">
-        
-        
-        
-        <Grid>
+            Padding="10">
 
+
+
+        <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="20"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
@@ -44,15 +44,15 @@
 
             </Grid>
 
-            <Grid Grid.Row="1">
+            <Grid x:Name="GridMain" Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" MinWidth="100"/>
                     <ColumnDefinition x:Name="ColumnTest" Width="3*" MinWidth="300"/>
-                    <ColumnDefinition Width="*" MinWidth="100"/>
+                    <ColumnDefinition x:Name="ColumnTestToo" Width="*" MinWidth="100"/>
                 </Grid.ColumnDefinitions>
 
 
-                
+
 
                 <ListView x:Name="LstDemItems"
                           ScrollViewer.VerticalScrollBarVisibility="Auto"
@@ -62,10 +62,11 @@
 
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <WrapPanel Name="WrpPanel" Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Border}, Converter={StaticResource Subtract20}}"/>
+                            <WrapPanel Name="WrpPanel" 
+                                       Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Border}, Converter={StaticResource Subtract20}}"/>
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
- 
+
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Grid Margin="5" MaxWidth="64">
@@ -82,49 +83,29 @@
                         </DataTemplate>
                     </ListBox.ItemTemplate>
 
-                    
-
-
-                    <!--<ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="32"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-
-                                <Image Grid.Column="0" Source="{Binding Path}"/>
-
-                                <Grid Grid.Column="1">
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="*"/>
-                                    </Grid.RowDefinitions>
-
-                                    <Label x:Name="LblName" Content="{Binding Name}" Grid.Row="0"/>
-                                    <Label x:Name="LblId" Content="{Binding Id}" Grid.Row="1"/>
-
-                                </Grid>
-
-                            </Grid>
-
-
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>-->
-
                 </ListView>
 
-                <StackPanel Grid.Column="2">
-                    <TextBlock HorizontalAlignment="Center" Text="{Binding ElementName=LstDemItems, Path=ActualWidth}"/>
-                    <TextBlock HorizontalAlignment="Center" Text="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Border}}"/>
+                <StackPanel Margin="5" Grid.Column="2">
+
+                    <Image Stretch="Uniform" Source="{Binding ElementName=LstDemItems, Path=SelectedItem.Path}"/>
 
 
                 </StackPanel>
 
-                
+                <!--<Grid x:Name="GridInfo" Grid.Column="2" Width="{Binding ElementName=ColumnTestToo, Path=ActualWidth}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="{Binding ElementName=ColumnTestToo, Path=ActualWidth}"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    
+                </Grid>-->
+
+
+
             </Grid>
 
-            <Grid Grid.Row="2">
+            <Grid Grid.Row="2" Grid.ColumnSpan="2">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="50"/>
                     <ColumnDefinition Width="100"/>
@@ -135,7 +116,7 @@
                     <ColumnDefinition Width="200"/>
                 </Grid.ColumnDefinitions>
 
-                <Button x:Name="BtnClose" Grid.Column="0" Content="Close" Click="BtnClose_Click"></Button>
+                <Button x:Name="BtnThatShouldCloseTheFuckingWindow" Click="BtnThatShouldCloseTheFuckingWindow_Click" Grid.Column="0" Content="Close"></Button>
                 <Button x:Name="BtnAdd" Grid.Column="2" Content="+" Click="BtnAdd_Click"/>
                 <Button x:Name="BtnDelete" Grid.Column="4" Content="-" Click="BtnDelete_Click"/>
                 <Button x:Name="BtnAddToProject" Grid.Column="6" Content="Add To Project" Click="BtnAddToProject_Click"></Button>

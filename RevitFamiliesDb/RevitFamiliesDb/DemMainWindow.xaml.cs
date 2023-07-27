@@ -29,38 +29,39 @@ namespace RevitFamiliesDb
     /// </summary>
     public partial class DemMainWindow : UserControl
     {
+        public Window AWindow { get; set; }
+
         public DemMainWindow()
         {
             InitializeComponent();
-
 
             Global.AllDemFamilyTypeObject = LoadElementsToList();
 
             LstDemItems.ItemsSource = Global.AllDemFamilyTypeObject;
             LstDemItems.SelectedValuePath = "DemGuid";
-            
 
-            Window window = new Window() { 
+
+            AWindow = new Window() { 
             Name = "MFStuff",
             Content = Content
             };
 
-            // Get the handle of the Revit window
             IntPtr revitWindowHandle = Process.GetCurrentProcess().MainWindowHandle;
 
-            // Get the Revit window as a WindowInteropHelper object
-            WindowInteropHelper helper = new WindowInteropHelper(window);
+            WindowInteropHelper helper = new WindowInteropHelper(AWindow);
             helper.Owner = revitWindowHandle;
 
-            window.Show();
+            AWindow.Show();
+
+            AWindow.Closing += MainWindow_Closing;
 
         }
 
-        public int ColumnsCount { get; set; }
+        
 
         private List<FamilyTypeObject> LoadElementsToList()
         {
-            string path = "C:\\Users\\eev_9\\OneDrive\\02 - Projects\\Programming stuff\\Test.json";
+            string path = Global.ThePath;
 
             try
             {
@@ -87,10 +88,25 @@ namespace RevitFamiliesDb
             }
         }
 
-        private void BtnClose_Click(object sender, RoutedEventArgs e)
+        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            
+            try
+            {
+                File.WriteAllText(Global.ThePath, FamilyTypeObject.PrintTypeObject(Global.AllDemFamilyTypeObject));
+
+            }
+            catch(Exception ex)
+            {
+                var dialog2 = new TaskDialog("Debug")
+                {
+                    MainContent = ex.Message
+                };
+                dialog2.Show();
+            }
+
+
         }
+
 
         private void BtnAdd_Click(object sender, RoutedEventArgs e)
         {
@@ -98,20 +114,22 @@ namespace RevitFamiliesDb
 
             if (sel.IsValidObject)
             {
-                var elId = sel.GetElementIds().FirstOrDefault();
-
+                
+                var elIds = sel.GetElementIds();
+                
                 try
                 {
-                    var element = new FilteredElementCollector(Global.Doc)
-                        .WhereElementIsElementType()
-                        .FirstOrDefault(x => x.Id == elId) as FloorType;
-                    Global.AllDemFamilyTypeObject.Add(new FamilyTypeObject(elId, Global.Doc));
-
-                    //LstDemItems.ItemsSource = Global.AllDemFamilyTypeObject;
+                    Global.AllDemFamilyTypeObject.AddRange(HelpingMan(elIds));
+                    
                     LstDemItems.Items.Refresh();
                 }
-                catch
+                catch(Exception ex)
                 {
+                    var dialog = new TaskDialog("Debug")
+                    {
+                        MainContent = ex.Message
+                    };
+                    dialog.Show();
                     return;
                 }
 
@@ -119,42 +137,52 @@ namespace RevitFamiliesDb
 
         }
 
-        private void BtnDelete_Click(object sender, RoutedEventArgs e)
+        public List<FamilyTypeObject> HelpingMan(ICollection<ElementId> eleIds)
         {
-            if (LstDemItems.SelectedValue != null)
+            List<FamilyTypeObject> lsObj = new List<FamilyTypeObject>();
+
+            foreach(ElementId eleId in eleIds)
             {
-                foreach (FamilyTypeObject obj in Global.AllDemFamilyTypeObject)
+                try
                 {
-                    if (LstDemItems.SelectedValue.ToString() == obj.DemGuid)
-                    {
-                        var dialog = new TaskDialog("Debug")
-                        {
-                            MainContent = obj.DemGuid
-                        };
-                        dialog.Show();
-
-                        //Global.AllDemFamilyTypeObject.Remove(obj);
-
-                    }
+                    lsObj.Add(new FamilyTypeObject(eleId, Global.Doc));
+                }
+                catch
+                {
 
                 }
-                //LstDemItems.ItemsSource = null;
-                //LstDemItems.ItemsSource = Global.AllDemFamilyTypeObject;
-
             }
 
+            return lsObj;
         }
 
-        private void DemWindow_ContextMenuClosing(object sender, ContextMenuEventArgs e)
-        {
-            File.WriteAllText("C:\\Users\\eev_9\\OneDrive\\02 - Projects\\Programming stuff\\Test.json", FamilyTypeObject.PrintTypeObject(Global.AllDemFamilyTypeObject));
-        }
 
-        // Implement INotifyPropertyChanged to notify the UI of property changes
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string propertyName)
+        private void BtnDelete_Click(object sender, RoutedEventArgs e)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            
+            try
+            {
+                string selectedGuid = LstDemItems.SelectedValue?.ToString();
+                var selected = LstDemItems.SelectedItems;
+
+                if (selected != null)
+                {
+                    while (selected.Count > 0)
+                    {
+                        Global.AllDemFamilyTypeObject.RemoveAll(obj => obj.DemGuid == LstDemItems.SelectedValue?.ToString());
+                        LstDemItems.Items.Refresh();
+                        selected = LstDemItems.SelectedItems;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                var dialog = new TaskDialog("Debug")
+                {
+                    MainContent = ex.Message
+                };
+                dialog.Show();
+            }
         }
 
         private void LstDemItems_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -165,6 +193,25 @@ namespace RevitFamiliesDb
 
             //LstDemItems.Items.Refresh();
 
+
+        }
+
+        private void BtnThatShouldCloseTheFuckingWindow_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                AWindow.Close();
+
+            }
+            catch (Exception ex)
+            {
+                var dialog = new TaskDialog("Debug")
+                {
+                    MainContent = ex.Message
+                };
+                dialog.Show();
+            }
+            
 
         }
     }

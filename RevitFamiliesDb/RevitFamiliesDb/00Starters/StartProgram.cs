@@ -40,9 +40,8 @@ namespace RevitFamiliesDb
 
 
             DemMainWindow test = new DemMainWindow();
-            
-            test.InitializeComponent();
 
+            test.InitializeComponent();
 
             return Result.Succeeded;
         }
