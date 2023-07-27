@@ -44,7 +44,7 @@ namespace RevitFamiliesDb
 
             try
             {
-                demObjects = JsonConvert.DeserializeObject<List<FamilyTypeObject>>(File.ReadAllText("C:\\Users\\eev_9\\OneDrive\\02 - Projects\\Programming stuff\\Test.json"));
+                demObjects = JsonConvert.DeserializeObject<List<FamilyTypeObject>>(File.ReadAllText(Global.TheJsonPath));
 
             }
             catch
@@ -62,7 +62,7 @@ namespace RevitFamiliesDb
                 tx.Commit();
             }
 
-            File.WriteAllText("C:\\Users\\eev_9\\OneDrive\\02 - Projects\\Programming stuff\\Test.json", FamilyTypeObject.PrintTypeObject(demObjects));
+            File.WriteAllText(Global.TheJsonPath, FamilyTypeObject.PrintTypeObject(demObjects));
 
             return Result.Succeeded;
         }

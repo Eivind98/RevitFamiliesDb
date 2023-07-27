@@ -56,7 +56,7 @@ namespace RevitFamiliesDb
         {
             
             DemGuid = Guid.NewGuid().ToString();
-            Path = "C:\\Users\\eev_9\\OneDrive\\02 - Projects\\Programming stuff\\Pic\\" + DemGuid + ".jpg";
+            Path = Global.TheDirPath + DemGuid + ".jpg";
             Id = elementId.IntegerValue;
             
 

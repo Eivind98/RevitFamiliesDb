@@ -61,7 +61,7 @@ namespace RevitFamiliesDb
 
         private List<FamilyTypeObject> LoadElementsToList()
         {
-            string path = Global.ThePath;
+            string path = Global.TheJsonPath;
 
             try
             {
@@ -92,7 +92,39 @@ namespace RevitFamiliesDb
         {
             try
             {
-                File.WriteAllText(Global.ThePath, FamilyTypeObject.PrintTypeObject(Global.AllDemFamilyTypeObject));
+                
+                if (Directory.Exists(Global.TheDirPath))
+                {
+                    try
+                    {
+                        // Get all file names in the specified folder
+                        List<string> files = Directory.GetFiles(Global.TheDirPath).ToList();
+                        foreach (var file in files)
+                        {
+                            foreach (FamilyTypeObject famObj in Global.AllDemFamilyTypeObject)
+                            {
+                                if (System.IO.Path.GetFileNameWithoutExtension(file) == famObj.DemGuid)
+                                {
+                                    File.Delete(file);
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        var dialog2 = new TaskDialog("Debug")
+                        {
+                            MainContent = ex.Message
+                        };
+                        dialog2.Show();
+                    }
+                }
+
+
+
+                File.WriteAllText(Global.TheJsonPath, FamilyTypeObject.PrintTypeObject(Global.AllDemFamilyTypeObject));
+
+
 
             }
             catch(Exception ex)
@@ -169,7 +201,9 @@ namespace RevitFamiliesDb
                 {
                     while (selected.Count > 0)
                     {
+                        
                         Global.AllDemFamilyTypeObject.RemoveAll(obj => obj.DemGuid == LstDemItems.SelectedValue?.ToString());
+                        
                         LstDemItems.Items.Refresh();
                         selected = LstDemItems.SelectedItems;
                     }
