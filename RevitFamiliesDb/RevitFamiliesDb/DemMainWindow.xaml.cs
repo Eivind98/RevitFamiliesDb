@@ -54,7 +54,6 @@ namespace RevitFamiliesDb
             AWindow.Show();
 
             AWindow.Closing += MainWindow_Closing;
-
         }
 
         
@@ -92,7 +91,6 @@ namespace RevitFamiliesDb
         {
             try
             {
-                
                 if (Directory.Exists(Global.TheDirPath))
                 {
                     try
@@ -112,17 +110,6 @@ namespace RevitFamiliesDb
                             }
                         }
 
-                        //List<string> files = Directory.GetFiles(Global.TheDirPath).ToList();
-                        //foreach (var file in files)
-                        //{
-                        //    foreach (FamilyTypeObject famObj in Global.AllDemFamilyTypeObject)
-                        //    {
-                        //        if (System.IO.Path.GetFileNameWithoutExtension(file) != System.IO.Path.GetFileNameWithoutExtension(famObj.ThePath))
-                        //        {
-                        //            File.Delete(file);
-                        //        }
-                        //    }
-                        //}
                     }
                     catch (Exception ex)
                     {
@@ -134,11 +121,7 @@ namespace RevitFamiliesDb
                     }
                 }
 
-
-
                 File.WriteAllText(Global.TheJsonPath, FamilyTypeObject.PrintTypeObject(Global.AllDemFamilyTypeObject));
-
-
 
             }
             catch(Exception ex)
@@ -149,8 +132,6 @@ namespace RevitFamiliesDb
                 };
                 dialog2.Show();
             }
-
-
         }
 
 
@@ -160,7 +141,6 @@ namespace RevitFamiliesDb
 
             if (sel.IsValidObject)
             {
-                
                 var elIds = sel.GetElementIds();
                 
                 try
@@ -205,7 +185,6 @@ namespace RevitFamiliesDb
 
         private void BtnDelete_Click(object sender, RoutedEventArgs e)
         {
-            
             try
             {
                 string selectedGuid = LstDemItems.SelectedValue?.ToString();

@@ -12,7 +12,7 @@
     
     
     <UserControl.Resources>
-        <local:SubtractConverter x:Key="Subtract20" Value="32"/>
+        <local:SubtractConverter x:Key="Subtract20" Value="40"/>
     </UserControl.Resources>
 
     <Border x:Name="DemWindow" 
@@ -89,7 +89,6 @@
 
                     <Image Stretch="Uniform" Source="{Binding ElementName=LstDemItems, Path=SelectedItem.Image}"/>
 
-
                 </StackPanel>
 
             </Grid>
@@ -110,10 +109,7 @@
                 <Button x:Name="BtnDelete" Grid.Column="4" Content="-" Click="BtnDelete_Click"/>
                 <Button x:Name="BtnAddToProject" Grid.Column="6" Content="Add To Project" Click="BtnAddToProject_Click"></Button>
 
-
             </Grid>
-
         </Grid>
-
     </Border>
 </UserControl>

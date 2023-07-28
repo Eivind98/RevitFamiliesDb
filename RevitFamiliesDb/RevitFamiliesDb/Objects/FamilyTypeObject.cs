@@ -55,8 +55,6 @@ namespace RevitFamiliesDb
                     {
                         
                     }
-
-
                 }
 
                 return null;
@@ -87,9 +85,6 @@ namespace RevitFamiliesDb
             ThePath = Global.TheDirPath + DemGuid + ".jpg";
             Id = elementId.IntegerValue;
             
-
-
-
             Element Ele = new FilteredElementCollector(doc)
                 .WhereElementIsElementType()
                 .FirstOrDefault(x => x.Id == elementId);
@@ -100,16 +95,6 @@ namespace RevitFamiliesDb
             System.Drawing.Size imgSize = new System.Drawing.Size(200, 200);
 
             Bitmap bitmap = ((ElementType)Ele).GetPreviewImage(imgSize);
-
-            //MemoryStream ms = new MemoryStream();
-            //bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
-            //Image = new BitmapImage();
-            //Image.BeginInit();
-            //ms.Seek(0, SeekOrigin.Begin);
-            //Image.StreamSource = ms;
-            //Image.EndInit();
-
-
 
             JpegBitmapEncoder encoder = new JpegBitmapEncoder();
 
@@ -144,7 +129,6 @@ namespace RevitFamiliesDb
                 }
 
             }
-
         }
 
 
@@ -161,7 +145,6 @@ namespace RevitFamiliesDb
             foreach (DemParameter para in Parameters)
             {
                 para.CreateThoseMF(ele);
-
 
             }
 
@@ -183,26 +166,17 @@ namespace RevitFamiliesDb
 
             }
 
-
-
             return list;
         }
 
-
         public static string PrintTypeObject(FamilyTypeObject obj)
         {
-            //string output = obj.Id.ToString() + Environment.NewLine + obj.Name + Environment.NewLine + obj.Type.ToString() + Environment.NewLine ;
-
             return JsonConvert.SerializeObject(obj);
         }
 
         public static string PrintTypeObject(List<FamilyTypeObject> obj)
         {
-
-
             return JsonConvert.SerializeObject(obj);
         }
-
-
     }
 }
