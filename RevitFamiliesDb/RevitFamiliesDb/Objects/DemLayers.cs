@@ -15,11 +15,14 @@ namespace RevitFamiliesDb
         public int DeckEmbeddingType { get; set; }
         public int DeckProfileId { get; set; }
         public int Function { get; set; }
+        public MaterialFunctionAssignment RevitFunction { get { return (MaterialFunctionAssignment)Function; } }
         public bool IsValidObject { get; set; }
         public bool LayerCapFlag { get; set; }
         public int LayerId { get; set; }
         public int MaterialId { get; set; }
+        public string MaterialName { get; set; }
         public double Width { get; set; }
+        public double MetricWidth { get { return Math.Round(Width * 0.3048, 3); } }
 
         public DemLayers()
         {
@@ -41,6 +44,7 @@ namespace RevitFamiliesDb
             LayerCapFlag = strucLayer.LayerCapFlag;
             LayerId = strucLayer.LayerId;
             MaterialId = strucLayer.MaterialId.IntegerValue;
+            
             Width = strucLayer.Width;
             
         }

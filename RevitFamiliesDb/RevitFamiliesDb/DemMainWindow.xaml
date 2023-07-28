@@ -13,6 +13,20 @@
     
     <UserControl.Resources>
         <local:SubtractConverter x:Key="Subtract20" Value="40"/>
+        <local:MetersToMM x:Key="MetersToMM"/>
+
+        <Style x:Key="ListViewItemBorderStyle" TargetType="ListViewItem">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListViewItem">
+                        <Border BorderBrush="Black" BorderThickness="1">
+                            <ContentPresenter />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
     </UserControl.Resources>
 
     <Border x:Name="DemWindow" 
@@ -56,6 +70,7 @@
 
                 <ListView x:Name="LstDemItems"
                           ScrollViewer.VerticalScrollBarVisibility="Auto"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                           Padding="8"
                           Grid.Column="1" 
                           SizeChanged="LstDemItems_SizeChanged">
@@ -89,6 +104,89 @@
 
                     <Image Stretch="Uniform" Source="{Binding ElementName=LstDemItems, Path=SelectedItem.Image}"/>
 
+                    <ListView x:Name="LayersLs"
+                              Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Border}, Converter={StaticResource Subtract20}}"
+                              ScrollViewer.VerticalScrollBarVisibility="Auto"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                              ItemsSource="{Binding ElementName=LstDemItems, Path=SelectedItem.ComStructureLayers.GetLayers}">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Function" DisplayMemberBinding="{Binding RevitFunction}"/>
+                                <GridViewColumn Header="Material" DisplayMemberBinding="{Binding MaterialId}"/>
+                                <GridViewColumn Header="mm">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding MetricWidth, Converter={StaticResource MetersToMM}}" Margin="5" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+
+
+
+                    <!--<ListView x:Name="LayersLs"
+                              ScrollViewer.VerticalScrollBarVisibility="Auto"
+                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                              ItemContainerStyle="{StaticResource ListViewItemBorderStyle}"
+                              ItemsSource="{Binding ElementName=LstDemItems, Path=SelectedItem.ComStructureLayers.GetLayers}">
+
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Function" 
+                                                
+                                                DisplayMemberBinding="{Binding Function}" />
+                                <GridViewColumn Header="Material" 
+                                                
+                                                DisplayMemberBinding="{Binding MaterialId}" />
+                                <GridViewColumn Header="Width" 
+                                                
+                                                DisplayMemberBinding="{Binding MetricWidth, Converter={StaticResource MetersToMM}}" />
+                            </GridView>
+                        </ListView.View>
+                        
+                        
+
+
+
+                        --><!--<ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Border}, Converter={StaticResource Subtract20}}">
+                                    <Grid.ColumnDefinitions>
+                                        
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="2*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    --><!--<Border BorderBrush="Black" BorderThickness="1">
+                                        
+                                    </Border>--><!--
+
+
+                                    <TextBlock x:Name="LblFunction" 
+                                               Grid.Column="0"
+                                               TextWrapping="NoWrap" 
+                                               Text="{Binding RevitFunction}"/>
+
+                                    <TextBlock x:Name="LblMaterial" 
+                                               Grid.Column="1"
+                                               TextWrapping="NoWrap" 
+                                               Text="{Binding MaterialId}"/>
+
+                                    <TextBlock x:Name="LblWidth" 
+                                               Grid.Column="2"
+                                               TextWrapping="NoWrap" 
+                                               Text="{Binding MetricWidth, Converter={StaticResource MetersToMM}}"/>
+                                    
+                                    
+
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>--><!--
+
+                    </ListView>-->
                 </StackPanel>
 
             </Grid>

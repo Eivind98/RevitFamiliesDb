@@ -259,5 +259,22 @@ namespace RevitFamiliesDb
         }
     }
 
+    public class MetersToMM : IValueConverter
+    {
+        public double Value = 1000;
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            double val = System.Convert.ToDouble(value);
+            return val * Value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            double val = System.Convert.ToDouble(value);
+            return val / Value;
+        }
+    }
+
 
 }
