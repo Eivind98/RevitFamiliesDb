@@ -75,7 +75,7 @@
                                     <RowDefinition Height="*"/>
                                 </Grid.RowDefinitions>
 
-                                <Image Stretch="Uniform" Grid.Row="0" Source="{Binding Path}"/>
+                                <Image Stretch="Uniform" Grid.Row="0" Source="{Binding Image}"/>
 
                                 <TextBlock x:Name="LblName" TextWrapping="WrapWithOverflow" Text="{Binding Name}" Grid.Row="1"/>
 
@@ -87,21 +87,10 @@
 
                 <StackPanel Margin="5" Grid.Column="2">
 
-                    <Image Stretch="Uniform" Source="{Binding ElementName=LstDemItems, Path=SelectedItem.Path}"/>
+                    <Image Stretch="Uniform" Source="{Binding ElementName=LstDemItems, Path=SelectedItem.Image}"/>
 
 
                 </StackPanel>
-
-                <!--<Grid x:Name="GridInfo" Grid.Column="2" Width="{Binding ElementName=ColumnTestToo, Path=ActualWidth}">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="{Binding ElementName=ColumnTestToo, Path=ActualWidth}"/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
-
-                    
-                </Grid>-->
-
-
 
             </Grid>
 

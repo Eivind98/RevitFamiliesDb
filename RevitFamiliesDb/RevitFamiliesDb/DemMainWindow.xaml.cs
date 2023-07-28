@@ -97,13 +97,27 @@ namespace RevitFamiliesDb
                 {
                     try
                     {
-                        
+                        string[] filesInFolder = Directory.GetFiles(Global.TheDirPath);
+                        List<string> objPaths = new List<string>();
+                        foreach (FamilyTypeObject famObj in Global.AllDemFamilyTypeObject)
+                        {
+                            objPaths.Add(famObj.ThePath);
+                        }
+
+                        foreach (string str in filesInFolder)
+                        {
+                            if (!objPaths.Contains(str))
+                            {
+                                File.Delete(str);
+                            }
+                        }
+
                         //List<string> files = Directory.GetFiles(Global.TheDirPath).ToList();
                         //foreach (var file in files)
                         //{
                         //    foreach (FamilyTypeObject famObj in Global.AllDemFamilyTypeObject)
                         //    {
-                        //        if (System.IO.Path.GetFileNameWithoutExtension(file) == famObj.DemGuid)
+                        //        if (System.IO.Path.GetFileNameWithoutExtension(file) != System.IO.Path.GetFileNameWithoutExtension(famObj.ThePath))
                         //        {
                         //            File.Delete(file);
                         //        }

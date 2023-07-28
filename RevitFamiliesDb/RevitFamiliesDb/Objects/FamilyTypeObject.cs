@@ -31,10 +31,37 @@ namespace RevitFamiliesDb
         //public string IsTransient { get; set; }
         public string Type { get; set; }
         public string DemGuid { get; set; }
-        public string Path { get; set; }
-        public BitmapImage Image { get; set; }
+        public string ThePath { get; set; }
+        
         public DemCompoundStructure ComStructureLayers { get; set; }
         public List<DemParameter> Parameters { get; set; }
+
+        public BitmapImage Image 
+        { 
+            get 
+            {
+                if (File.Exists(ThePath))
+                {
+                    try
+                    {
+                        BitmapImage bitmapImage = new BitmapImage();
+                        bitmapImage.BeginInit();
+                        bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                        bitmapImage.UriSource = new Uri(ThePath);
+                        bitmapImage.EndInit();
+                        return bitmapImage;
+                    }
+                    catch (Exception)
+                    {
+                        
+                    }
+
+
+                }
+
+                return null;
+            } 
+        }
 
         public FamilyTypeObject()
         {
@@ -57,7 +84,7 @@ namespace RevitFamiliesDb
         {
             
             DemGuid = Guid.NewGuid().ToString();
-            Path = Global.TheDirPath + DemGuid + ".jpg";
+            ThePath = Global.TheDirPath + DemGuid + ".jpg";
             Id = elementId.IntegerValue;
             
 
@@ -73,14 +100,24 @@ namespace RevitFamiliesDb
             System.Drawing.Size imgSize = new System.Drawing.Size(200, 200);
 
             Bitmap bitmap = ((ElementType)Ele).GetPreviewImage(imgSize);
-            
+
+            //MemoryStream ms = new MemoryStream();
+            //bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
+            //Image = new BitmapImage();
+            //Image.BeginInit();
+            //ms.Seek(0, SeekOrigin.Begin);
+            //Image.StreamSource = ms;
+            //Image.EndInit();
+
+
+
             JpegBitmapEncoder encoder = new JpegBitmapEncoder();
 
             encoder.Frames.Add(BitmapFrame.Create(ConvertBitmapToBitmapSource(bitmap)));
 
             encoder.QualityLevel = 25;
 
-            string filename = Path;
+            string filename = ThePath;
 
             FileStream file = new FileStream(filename, FileMode.Create, FileAccess.Write);
 
