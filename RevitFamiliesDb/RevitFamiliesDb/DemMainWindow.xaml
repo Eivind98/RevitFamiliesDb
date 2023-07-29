@@ -14,6 +14,7 @@
     <UserControl.Resources>
         <local:SubtractConverter x:Key="Subtract20" Value="40"/>
         <local:MetersToMM x:Key="MetersToMM"/>
+        <local:SliderValueToWidthConverter x:Key="SliderValueToWidthConverter" />
 
         <Style x:Key="ListViewItemBorderStyle" TargetType="ListViewItem">
             <Setter Property="Template">
@@ -26,6 +27,25 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <DataTemplate x:Key="IconTemplate">
+            <Grid x:Name="IconTemplateGrid"
+                  Loaded="IconTemplateGrid_Loaded"
+                  Unloaded="IconTemplateGrid_Unloaded"
+                  Width="64"
+                  Margin="5">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="64"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Image Stretch="Uniform" Grid.Row="0" Source="{Binding Image}"/>
+
+                <TextBlock x:Name="LblName" TextWrapping="WrapWithOverflow" Text="{Binding Name}" Grid.Row="1"/>
+
+            </Grid>
+        </DataTemplate>
 
     </UserControl.Resources>
 
@@ -65,9 +85,6 @@
                     <ColumnDefinition x:Name="ColumnTestToo" Width="*" MinWidth="100"/>
                 </Grid.ColumnDefinitions>
 
-
-
-
                 <ListView x:Name="LstDemItems"
                           ScrollViewer.VerticalScrollBarVisibility="Auto"
                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -82,21 +99,9 @@
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
 
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Margin="5" MaxWidth="64">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="64"/>
-                                    <RowDefinition Height="*"/>
-                                </Grid.RowDefinitions>
-
-                                <Image Stretch="Uniform" Grid.Row="0" Source="{Binding Image}"/>
-
-                                <TextBlock x:Name="LblName" TextWrapping="WrapWithOverflow" Text="{Binding Name}" Grid.Row="1"/>
-
-                            </Grid>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
+                    <ListView.ItemTemplate>
+                        <StaticResource ResourceKey="IconTemplate" />
+                    </ListView.ItemTemplate>
 
                 </ListView>
 
@@ -199,13 +204,21 @@
                     <ColumnDefinition Width="10"/>
                     <ColumnDefinition Width="32"/>
                     <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="200"/>
                 </Grid.ColumnDefinitions>
 
                 <Button x:Name="BtnThatShouldCloseTheFuckingWindow" Click="BtnThatShouldCloseTheFuckingWindow_Click" Grid.Column="0" Content="Close"></Button>
                 <Button x:Name="BtnAdd" Grid.Column="2" Content="+" Click="BtnAdd_Click"/>
                 <Button x:Name="BtnDelete" Grid.Column="4" Content="-" Click="BtnDelete_Click"/>
-                <Button x:Name="BtnAddToProject" Grid.Column="6" Content="Add To Project" Click="BtnAddToProject_Click"></Button>
+                <Button x:Name="BtnAddToProject" Grid.Column="8" Content="Add To Project" Click="BtnAddToProject_Click"></Button>
+                <Slider x:Name="SizeSlider" 
+                        Grid.Column="6"
+                        ValueChanged="SizeSlider_ValueChanged"
+                        Value="65"
+                        Minimum="64" 
+                        Maximum="192"/>
 
             </Grid>
         </Grid>

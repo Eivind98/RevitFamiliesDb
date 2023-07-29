@@ -56,8 +56,6 @@ namespace RevitFamiliesDb
             AWindow.Closing += MainWindow_Closing;
         }
 
-        
-
         private List<FamilyTypeObject> LoadElementsToList()
         {
             string path = Global.TheJsonPath;
@@ -69,9 +67,8 @@ namespace RevitFamiliesDb
             }
             catch
             {
-                return null;
+                return new List<FamilyTypeObject>();
             }
-
         }
 
         private void BtnAddToProject_Click(object sender, RoutedEventArgs e)
@@ -91,7 +88,7 @@ namespace RevitFamiliesDb
         {
             try
             {
-                if (Directory.Exists(Global.TheDirPath))
+                if (Directory.Exists(Global.TheDirPath) && Directory.Exists(System.IO.Path.GetDirectoryName(Global.TheJsonPath)))
                 {
                     try
                     {
@@ -109,31 +106,36 @@ namespace RevitFamiliesDb
                                 File.Delete(str);
                             }
                         }
-
                     }
                     catch (Exception ex)
                     {
-                        var dialog2 = new TaskDialog("Debug")
+                        var dialog = new TaskDialog("Debug")
                         {
                             MainContent = ex.Message
                         };
-                        dialog2.Show();
+                        dialog.Show();
                     }
+
+                    File.WriteAllText(Global.TheJsonPath, FamilyTypeObject.PrintTypeObject(Global.AllDemFamilyTypeObject));
                 }
-
-                File.WriteAllText(Global.TheJsonPath, FamilyTypeObject.PrintTypeObject(Global.AllDemFamilyTypeObject));
-
+                else
+                {
+                    var dialog = new TaskDialog("Debug")
+                    {
+                        MainContent = "one of these paths do not exist:" + Global.TheJsonPath + " - - - - - - - " + Global.TheDirPath
+                    };
+                    dialog.Show();
+                }
             }
             catch(Exception ex)
             {
-                var dialog2 = new TaskDialog("Debug")
+                var dialog = new TaskDialog("Debug")
                 {
                     MainContent = ex.Message
                 };
-                dialog2.Show();
+                dialog.Show();
             }
         }
-
 
         private void BtnAdd_Click(object sender, RoutedEventArgs e)
         {
@@ -158,9 +160,7 @@ namespace RevitFamiliesDb
                     dialog.Show();
                     return;
                 }
-
             }
-
         }
 
         public List<FamilyTypeObject> HelpingMan(ICollection<ElementId> eleIds)
@@ -214,12 +214,6 @@ namespace RevitFamiliesDb
 
         private void LstDemItems_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            //var test = LstDemItems.Width;
-
-            //WrapPanel wrpPanel = (WrapPanel)LstDemItems.ItemsPanel.FindName("WrpPanel", LstDemItems);
-
-            //LstDemItems.Items.Refresh();
-
 
         }
 
@@ -228,7 +222,6 @@ namespace RevitFamiliesDb
             try
             {
                 AWindow.Close();
-
             }
             catch (Exception ex)
             {
@@ -238,8 +231,66 @@ namespace RevitFamiliesDb
                 };
                 dialog.Show();
             }
-            
+        }
 
+        private void SizeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            try
+            {
+                if (ItemRefernce.Count != 0)
+                {
+                    foreach (var item in ItemRefernce)
+                    {
+                        item.Width = e.NewValue;
+
+                        GridLengthConverter gridLengthConverter = new GridLengthConverter();
+
+                        item.RowDefinitions[0].Height = (GridLength)gridLengthConverter.ConvertFrom(e.NewValue.ToString());
+                    }
+                }
+            }
+            catch (Exception ex) 
+            {
+                var dialog = new TaskDialog("Debug")
+                {
+                    MainContent = ex.Message
+                };
+                dialog.Show();
+            }
+        }
+
+        public List<System.Windows.Controls.Grid> ItemRefernce { get; private set; } = new List<System.Windows.Controls.Grid>();
+
+        private void IconTemplateGrid_Loaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                ItemRefernce.Add(sender as System.Windows.Controls.Grid);
+            }
+            catch(Exception ex)
+            {
+                var dialog = new TaskDialog("Debug")
+                {
+                    MainContent = "Loader...." + ex.Message
+                };
+                dialog.Show();
+            }
+        }
+
+        private void IconTemplateGrid_Unloaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                ItemRefernce.Remove(sender as System.Windows.Controls.Grid);
+            }
+            catch (Exception ex)
+            {
+                var dialog = new TaskDialog("Debug")
+                {
+                    MainContent = "Unloader...." + ex.Message
+                };
+                dialog.Show();
+            }
         }
     }
 
@@ -273,6 +324,22 @@ namespace RevitFamiliesDb
         {
             double val = System.Convert.ToDouble(value);
             return val / Value;
+        }
+    }
+
+    public class SliderValueToWidthConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            
+            double sliderValue = (double)value;
+
+            return sliderValue;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
         }
     }
 
