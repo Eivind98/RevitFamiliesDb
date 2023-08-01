@@ -3,6 +3,7 @@ using Autodesk.Revit.UI;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
@@ -30,16 +31,17 @@ namespace RevitFamiliesDb
     public partial class DemMainWindow : UserControl
     {
         public Window AWindow { get; set; }
+        public List<string> SortingStuff { get; set; } = new List<string>();
+        public ListSortDirection AsOrDes { get; set; } = ListSortDirection.Ascending;
 
         public DemMainWindow()
         {
             InitializeComponent();
 
             Global.AllDemFamilyTypeObject = LoadElementsToList();
-
-            LstDemItems.ItemsSource = Global.AllDemFamilyTypeObject;
+            RefreshThisMF();
+            
             LstDemItems.SelectedValuePath = "DemGuid";
-
 
             AWindow = new Window() { 
             Name = "MFStuff",
@@ -71,6 +73,27 @@ namespace RevitFamiliesDb
             }
         }
 
+        private void RefreshThisMF()
+        {
+            try
+            {
+                LstDemItems.ItemsSource = null;
+                LstDemItems.ItemsSource = Global.AllDemFamilyTypeObject;
+
+                LstDemItems.Items.SortDescriptions.Clear();
+
+                foreach(string s in SortingStuff)
+                {
+                    LstDemItems.Items.SortDescriptions.Add(new SortDescription(s, AsOrDes));
+                }
+            }
+            catch
+            {
+
+            }
+        }
+
+
         private void BtnAddToProject_Click(object sender, RoutedEventArgs e)
         {
             if(LstDemItems.SelectedValue != null)
@@ -80,7 +103,6 @@ namespace RevitFamiliesDb
                     MainContent = LstDemItems.SelectedValue.ToString()
                 };
                 dialog.Show();
-
             }
         }
 
@@ -149,7 +171,7 @@ namespace RevitFamiliesDb
                 {
                     Global.AllDemFamilyTypeObject.AddRange(HelpingMan(elIds));
                     
-                    LstDemItems.Items.Refresh();
+                    RefreshThisMF();
                 }
                 catch(Exception ex)
                 {
@@ -187,20 +209,17 @@ namespace RevitFamiliesDb
         {
             try
             {
-                string selectedGuid = LstDemItems.SelectedValue?.ToString();
-                var selected = LstDemItems.SelectedItems;
 
-                if (selected != null)
+                var selectedItems = LstDemItems.SelectedItems.Cast<FamilyTypeObject>().ToList();
+
+                foreach (var selectedItem in selectedItems)
                 {
-                    while (selected.Count > 0)
-                    {
-                        
-                        Global.AllDemFamilyTypeObject.RemoveAll(obj => obj.DemGuid == LstDemItems.SelectedValue?.ToString());
-                        
-                        LstDemItems.Items.Refresh();
-                        selected = LstDemItems.SelectedItems;
-                    }
+                    Global.AllDemFamilyTypeObject.RemoveAll(obj => obj.DemGuid == selectedItem.DemGuid);
+
                 }
+
+                RefreshThisMF();
+
             }
             catch (Exception ex)
             {
@@ -291,6 +310,61 @@ namespace RevitFamiliesDb
                 };
                 dialog.Show();
             }
+        }
+
+        private void SortComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            try 
+            {
+                if (e != null)
+                {
+                    string yo = ((ComboBoxItem)e.AddedItems[0]).Tag.ToString();
+
+                    switch (yo)
+                    {
+                        case "Name":
+                            SortingStuff.Clear();
+                            SortingStuff.Add("Name");
+                            SortingStuff.Add("ComStructureLayers.GetWidth");
+                            break;
+                        case "Thickness":
+                            SortingStuff.Clear();
+                            SortingStuff.Add("ComStructureLayers.GetWidth");
+                            SortingStuff.Add("Name");
+                            break;
+                        default:
+                            var dialog = new TaskDialog("Debug")
+                            {
+                                MainContent = yo
+                            };
+                            dialog.Show();
+                            break;
+
+                    }
+
+                    RefreshThisMF();
+                }
+            }
+            catch (Exception ex)
+            {
+                var dialog = new TaskDialog("Debug")
+                {
+                    MainContent = "Selection Changed stuff ..... " + ex.Message + " - - - - " + ((ComboBoxItem)e.AddedItems[0]).Tag.ToString()
+                };
+                dialog.Show();
+            }
+        }
+
+        private void BtnToggleAsOrDes_Checked(object sender, RoutedEventArgs e)
+        {
+            AsOrDes = ListSortDirection.Descending;
+            RefreshThisMF();
+        }
+
+        private void BtnToggleAsOrDes_Unchecked(object sender, RoutedEventArgs e)
+        {
+            AsOrDes = ListSortDirection.Ascending;
+            RefreshThisMF();
         }
     }
 

@@ -79,6 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="RevitFamiliesDb.addin" />
+    <Content Include="UI\Pictures\5585523.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -89,8 +90,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="UI\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
