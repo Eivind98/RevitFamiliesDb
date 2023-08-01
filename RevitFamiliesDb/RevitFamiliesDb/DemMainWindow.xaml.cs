@@ -33,6 +33,7 @@ namespace RevitFamiliesDb
         public Window AWindow { get; set; }
         public List<string> SortingStuff { get; set; } = new List<string>();
         public ListSortDirection AsOrDes { get; set; } = ListSortDirection.Ascending;
+        public List<FamilyTypeObject> RelevantItems { get; set; } = new List<FamilyTypeObject>();
 
         public DemMainWindow()
         {
@@ -77,9 +78,19 @@ namespace RevitFamiliesDb
         {
             try
             {
+                string yo = TxBoxSearch.Text.ToLower();
                 LstDemItems.ItemsSource = null;
-                LstDemItems.ItemsSource = Global.AllDemFamilyTypeObject;
+                if (yo.Length > 0)
+                {
+                    List<FamilyTypeObject> test = Global.AllDemFamilyTypeObject.FindAll(i => i.Name.ToLower().Contains(yo));
 
+                    LstDemItems.ItemsSource = test;
+                }
+                else
+                {
+                    LstDemItems.ItemsSource = Global.AllDemFamilyTypeObject;
+                }
+                
                 LstDemItems.Items.SortDescriptions.Clear();
 
                 foreach(string s in SortingStuff)
@@ -365,6 +376,37 @@ namespace RevitFamiliesDb
         {
             AsOrDes = ListSortDirection.Ascending;
             RefreshThisMF();
+        }
+
+        private void TxBoxSearch_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            try
+            {
+                
+
+                RefreshThisMF();
+
+
+
+
+                //var dialog = new TaskDialog("Debug")
+                //{
+                //    MainContent = yo
+                //};
+                //dialog.Show();
+
+            }
+            catch(Exception ex)
+            {
+                var dialog = new TaskDialog("Debug")
+                {
+                    MainContent = "Something -   " + ex.Message
+                };
+                dialog.Show();
+            }
+
+
+
         }
     }
 

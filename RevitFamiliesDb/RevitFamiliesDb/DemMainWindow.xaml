@@ -85,10 +85,9 @@
                     <ColumnDefinition x:Name="ColumnTestToo" Width="*" MinWidth="100"/>
                 </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Column="0">
+                <StackPanel Grid.Column="0" Margin="0 0 5 0">
                     <Label Content="Sort By:"/>
-
-                    <Grid Height="22" Margin="0 0 5 0">
+                    <Grid Height="22">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="22"/>
@@ -100,7 +99,6 @@
                                   SelectionChanged="SortComboBox_SelectionChanged">
                             <ComboBoxItem Content="Name" Tag="Name" IsSelected="True"/>
                             <ComboBoxItem Content="Thickness" Tag="Thickness"/>
-
                         </ComboBox>
 
                         <ToggleButton x:Name="BtnToggleAsOrDes" 
@@ -108,14 +106,18 @@
                                       Checked="BtnToggleAsOrDes_Checked" 
                                       Unchecked="BtnToggleAsOrDes_Unchecked">
                             <Grid>
-                                <Image Source="/RevitFamiliesDb;component/UI/Pictures/5585523.png"/>
+                                <Image Source="/RevitFamiliesDb;component/UI/Pictures/AsOrDes.png"/>
                             </Grid>
                         </ToggleButton>
-
-
                     </Grid>
 
+                    <Label Content="Search:" Margin="0 5 0 0"/>
+
+                    <TextBox x:Name="TxBoxSearch" Margin="0 0 0 0" TextChanged="TxBoxSearch_TextChanged"/>
                     
+                    
+                    
+
 
                 </StackPanel>
 

@@ -79,7 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="RevitFamiliesDb.addin" />
-    <Content Include="UI\Pictures\5585523.png" />
+    <Content Include="UI\Pictures\AsOrDes.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
