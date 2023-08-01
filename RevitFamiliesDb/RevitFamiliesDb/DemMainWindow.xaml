@@ -108,7 +108,7 @@
                                       Checked="BtnToggleAsOrDes_Checked" 
                                       Unchecked="BtnToggleAsOrDes_Unchecked">
                             <Grid>
-                                <Image Source="C:\Users\eev_9\source\repos\RevitFamiliesDb\RevitFamiliesDb\RevitFamiliesDb\UI\Pictures\5585523.png"/>
+                                <Image Source="/RevitFamiliesDb;component/UI/Pictures/5585523.png"/>
                             </Grid>
                         </ToggleButton>
 
