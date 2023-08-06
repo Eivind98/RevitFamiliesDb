@@ -57,12 +57,12 @@
 
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="20"></RowDefinition>
+                <RowDefinition Height="30"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
                 <RowDefinition Height="20"></RowDefinition>
             </Grid.RowDefinitions>
 
-            <Grid Grid.Row="0">
+            <Grid Grid.Row="0" Margin="0 0 0 5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                     <ColumnDefinition Width="*"></ColumnDefinition>
@@ -70,10 +70,10 @@
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
-                <Button Margin="5 0" Grid.Column="0" Content="Walls"></Button>
-                <Button Margin="5 0" Grid.Column="1" Content="Floors"></Button>
-                <Button Margin="5 0" Grid.Column="2" Content="Roofs"></Button>
-                <Button Margin="5 0" Grid.Column="3" Content="Ceilings"></Button>
+                <Button Margin="5 0" Grid.Column="0" Content="Types"></Button>
+                <Button Margin="5 0" Grid.Column="1" Content="Families"></Button>
+                <Button Margin="5 0" Grid.Column="2" Content="Other"></Button>
+                <Button Margin="5 0" Grid.Column="3" Content="Buckets"></Button>
 
 
             </Grid>
@@ -99,6 +99,7 @@
                                   SelectionChanged="SortComboBox_SelectionChanged">
                             <ComboBoxItem Content="Name" Tag="Name" IsSelected="True"/>
                             <ComboBoxItem Content="Thickness" Tag="Thickness"/>
+                            <ComboBoxItem Content="Type" Tag="Type"/>
                         </ComboBox>
 
                         <ToggleButton x:Name="BtnToggleAsOrDes" 
@@ -114,8 +115,59 @@
                     <Label Content="Search:" Margin="0 5 0 0"/>
 
                     <TextBox x:Name="TxBoxSearch" Margin="0 0 0 0" TextChanged="TxBoxSearch_TextChanged"/>
-                    
-                    
+
+                    <Grid Margin="0 10 0 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="27"/>
+                            <RowDefinition Height="27"/>
+                        </Grid.RowDefinitions>
+
+                        <ToggleButton x:Name="BtnToggleCeiling" 
+                                      Margin="0 2 2 2"
+                                      Grid.Column="0"
+                                      Grid.Row="0"
+                                      Content="Ceiling"
+                                      Checked="BtnToggleCeiling_Checked"
+                                      Unchecked="BtnToggleCeiling_Unchecked"
+                                      >
+                        </ToggleButton>
+
+                        <ToggleButton x:Name="BtnToggleFloor" 
+                                      Margin="2 2 0 2"
+                                      Grid.Column="1"
+                                      Grid.Row="0"
+                                      Content="Floor"
+                                      Checked="BtnToggleFloor_Checked"
+                                      Unchecked="BtnToggleFloor_Unchecked"
+                                      >
+                        </ToggleButton>
+
+                        <ToggleButton x:Name="BtnToggleRoof" 
+                                      Margin="0 2 2 2"
+                                      Grid.Column="0"
+                                      Grid.Row="1"
+                                      Content="Roof"
+                                      Checked="BtnToggleRoof_Checked"
+                                      Unchecked="BtnToggleRoof_Unchecked"
+                                      >
+                        </ToggleButton>
+
+                        <ToggleButton x:Name="BtnToggleWall" 
+                                      Margin="2 2 0 2"
+                                      Grid.Column="1"
+                                      Grid.Row="1"
+                                      Content="Wall"
+                                      Checked="BtnToggleWall_Checked"
+                                      Unchecked="BtnToggleWall_Unchecked"
+                                      >
+                        </ToggleButton>
+
+                    </Grid>
                     
 
 
@@ -168,68 +220,6 @@
                     </ListView>
 
 
-
-                    <!--<ListView x:Name="LayersLs"
-                              ScrollViewer.VerticalScrollBarVisibility="Auto"
-                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                              ItemContainerStyle="{StaticResource ListViewItemBorderStyle}"
-                              ItemsSource="{Binding ElementName=LstDemItems, Path=SelectedItem.ComStructureLayers.GetLayers}">
-
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn Header="Function" 
-                                                
-                                                DisplayMemberBinding="{Binding Function}" />
-                                <GridViewColumn Header="Material" 
-                                                
-                                                DisplayMemberBinding="{Binding MaterialId}" />
-                                <GridViewColumn Header="Width" 
-                                                
-                                                DisplayMemberBinding="{Binding MetricWidth, Converter={StaticResource MetersToMM}}" />
-                            </GridView>
-                        </ListView.View>
-                        
-                        
-
-
-
-                        --><!--<ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Grid Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Border}, Converter={StaticResource Subtract20}}">
-                                    <Grid.ColumnDefinitions>
-                                        
-                                        <ColumnDefinition Width="2*"/>
-                                        <ColumnDefinition Width="2*"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-
-                                    --><!--<Border BorderBrush="Black" BorderThickness="1">
-                                        
-                                    </Border>--><!--
-
-
-                                    <TextBlock x:Name="LblFunction" 
-                                               Grid.Column="0"
-                                               TextWrapping="NoWrap" 
-                                               Text="{Binding RevitFunction}"/>
-
-                                    <TextBlock x:Name="LblMaterial" 
-                                               Grid.Column="1"
-                                               TextWrapping="NoWrap" 
-                                               Text="{Binding MaterialId}"/>
-
-                                    <TextBlock x:Name="LblWidth" 
-                                               Grid.Column="2"
-                                               TextWrapping="NoWrap" 
-                                               Text="{Binding MetricWidth, Converter={StaticResource MetersToMM}}"/>
-                                    
-                                    
-
-                                </Grid>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>--><!--
-
-                    </ListView>-->
                 </StackPanel>
 
             </Grid>
@@ -250,13 +240,17 @@
                 <Button x:Name="BtnThatShouldCloseTheFuckingWindow" Click="BtnThatShouldCloseTheFuckingWindow_Click" Grid.Column="0" Content="Close"></Button>
                 <Button x:Name="BtnAdd" Grid.Column="2" Content="+" Click="BtnAdd_Click"/>
                 <Button x:Name="BtnDelete" Grid.Column="4" Content="-" Click="BtnDelete_Click"/>
-                <Button x:Name="BtnAddToProject" Grid.Column="8" Content="Add To Project" Click="BtnAddToProject_Click"></Button>
                 <Slider x:Name="SizeSlider" 
                         Grid.Column="6"
                         ValueChanged="SizeSlider_ValueChanged"
                         Value="65"
                         Minimum="64" 
                         Maximum="192"/>
+                <Button x:Name="BtnAddToProject" 
+                        Grid.Column="8" 
+                        Content="Add Selected To Project" 
+                        Click="BtnAddToProject_Click"/>
+
 
             </Grid>
         </Grid>

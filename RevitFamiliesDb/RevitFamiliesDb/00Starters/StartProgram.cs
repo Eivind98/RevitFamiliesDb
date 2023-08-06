@@ -38,8 +38,10 @@ namespace RevitFamiliesDb
             Global.App = uiapp.Application;
             Global.Doc = Global.UIDoc.Document;
 
+            MyEventHandler handler = new MyEventHandler();
+            ExternalEvent exEvent = ExternalEvent.Create(handler);
 
-            DemMainWindow test = new DemMainWindow();
+            DemMainWindow test = new DemMainWindow(Global.UIDoc, exEvent, handler);
 
             test.InitializeComponent();
 

@@ -35,18 +35,28 @@ namespace RevitFamiliesDb
         public ListSortDirection AsOrDes { get; set; } = ListSortDirection.Ascending;
         public List<FamilyTypeObject> RelevantItems { get; set; } = new List<FamilyTypeObject>();
 
-        public DemMainWindow()
+        Document Doc { get; set; }
+        ExternalEvent M_exEvent { get; set; }
+        MyEventHandler MyEvent { get; set; }
+
+        public DemMainWindow(UIDocument UiDoc, ExternalEvent exEvent, MyEventHandler handler)
         {
+            
+            Doc = UiDoc.Document;
             InitializeComponent();
+            M_exEvent = exEvent;
+            MyEvent = handler;
+
 
             Global.AllDemFamilyTypeObject = LoadElementsToList();
             RefreshThisMF();
-            
+
             LstDemItems.SelectedValuePath = "DemGuid";
 
-            AWindow = new Window() { 
-            Name = "MFStuff",
-            Content = Content
+            AWindow = new Window()
+            {
+                Name = "MFStuff",
+                Content = Content
             };
 
             IntPtr revitWindowHandle = Process.GetCurrentProcess().MainWindowHandle;
@@ -78,22 +88,53 @@ namespace RevitFamiliesDb
         {
             try
             {
-                string yo = TxBoxSearch.Text.ToLower();
+                string searchString = TxBoxSearch.Text.ToLower();
                 LstDemItems.ItemsSource = null;
-                if (yo.Length > 0)
-                {
-                    List<FamilyTypeObject> test = Global.AllDemFamilyTypeObject.FindAll(i => i.Name.ToLower().Contains(yo));
 
-                    LstDemItems.ItemsSource = test;
+                List<string> filteringTypes = new List<string>
+                {
+                    (bool)BtnToggleCeiling.IsChecked ? "Ceilings" : null,
+                    (bool)BtnToggleFloor.IsChecked ? "Floors" : null,
+                    (bool)BtnToggleRoof.IsChecked ? "Roofs" : null,
+                    (bool)BtnToggleWall.IsChecked ? "Walls" : null
+                };
+
+                bool noValuesToFilter = filteringTypes.All(type => type == null);
+                bool hasSearchString = !string.IsNullOrWhiteSpace(searchString);
+
+                List<FamilyTypeObject> filteredList;
+
+                if (hasSearchString && noValuesToFilter)
+                {
+                    filteredList = Global.AllDemFamilyTypeObject
+                        .Where(item => item.Name.ToLower().Contains(searchString))
+                        .ToList();
+                }
+                else if (hasSearchString && !noValuesToFilter)
+                {
+                    filteredList = Global.AllDemFamilyTypeObject
+                        .Where(item => filteringTypes.Contains(item.Type))
+                        .Where(item => item.Name.ToLower().Contains(searchString))
+                        .ToList();
+                }
+                else if (!noValuesToFilter)
+                {
+                    filteredList = Global.AllDemFamilyTypeObject
+                        .Where(item => filteringTypes.Contains(item.Type))
+                        .ToList();
                 }
                 else
                 {
-                    LstDemItems.ItemsSource = Global.AllDemFamilyTypeObject;
+                    filteredList = Global.AllDemFamilyTypeObject;
                 }
-                
+
+                LstDemItems.ItemsSource = filteredList;
+
+
+
                 LstDemItems.Items.SortDescriptions.Clear();
 
-                foreach(string s in SortingStuff)
+                foreach (string s in SortingStuff)
                 {
                     LstDemItems.Items.SortDescriptions.Add(new SortDescription(s, AsOrDes));
                 }
@@ -107,14 +148,63 @@ namespace RevitFamiliesDb
 
         private void BtnAddToProject_Click(object sender, RoutedEventArgs e)
         {
-            if(LstDemItems.SelectedValue != null)
+            try
+            {
+
+                
+
+                M_exEvent.Raise();
+
+
+
+
+                var testing = LstDemItems.SelectedItems;
+
+                if (testing.Count > 0)
+                {
+                    using (var tx = new Transaction(Doc))
+                    {
+                        tx.Start("Creating: ");
+
+
+                        foreach (FamilyTypeObject yo in testing)
+                        {
+                            yo.CreateElement(Doc);
+
+                        };
+                        tx.Commit();
+                    }
+
+                }
+
+                //var dialog = new TaskDialog("Debug")
+                //{
+                //    MainContent = testing.Name,
+                //};
+                //dialog.Show();
+
+
+            }
+            catch (Exception ex)
             {
                 var dialog = new TaskDialog("Debug")
                 {
-                    MainContent = LstDemItems.SelectedValue.ToString()
+                    MainContent = ex.Message,
                 };
                 dialog.Show();
             }
+
+
+
+
+            //if (LstDemItems.SelectedValue != null)
+            //{
+            //    var dialog = new TaskDialog("Debug")
+            //    {
+            //        MainContent = LstDemItems.SelectedValue.ToString()
+            //    };
+            //    dialog.Show();
+            //}
         }
 
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -160,7 +250,7 @@ namespace RevitFamiliesDb
                     dialog.Show();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 var dialog = new TaskDialog("Debug")
                 {
@@ -177,14 +267,14 @@ namespace RevitFamiliesDb
             if (sel.IsValidObject)
             {
                 var elIds = sel.GetElementIds();
-                
+
                 try
                 {
                     Global.AllDemFamilyTypeObject.AddRange(HelpingMan(elIds));
-                    
+
                     RefreshThisMF();
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     var dialog = new TaskDialog("Debug")
                     {
@@ -200,7 +290,7 @@ namespace RevitFamiliesDb
         {
             List<FamilyTypeObject> lsObj = new List<FamilyTypeObject>();
 
-            foreach(ElementId eleId in eleIds)
+            foreach (ElementId eleId in eleIds)
             {
                 try
                 {
@@ -279,7 +369,7 @@ namespace RevitFamiliesDb
                     }
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 var dialog = new TaskDialog("Debug")
                 {
@@ -297,7 +387,7 @@ namespace RevitFamiliesDb
             {
                 ItemRefernce.Add(sender as System.Windows.Controls.Grid);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 var dialog = new TaskDialog("Debug")
                 {
@@ -325,7 +415,7 @@ namespace RevitFamiliesDb
 
         private void SortComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            try 
+            try
             {
                 if (e != null)
                 {
@@ -342,6 +432,12 @@ namespace RevitFamiliesDb
                             SortingStuff.Clear();
                             SortingStuff.Add("ComStructureLayers.GetWidth");
                             SortingStuff.Add("Name");
+                            break;
+                        case "Type":
+                            SortingStuff.Clear();
+                            SortingStuff.Add("Type");
+                            SortingStuff.Add("Name");
+                            SortingStuff.Add("ComStructureLayers.GetWidth");
                             break;
                         default:
                             var dialog = new TaskDialog("Debug")
@@ -382,7 +478,7 @@ namespace RevitFamiliesDb
         {
             try
             {
-                
+
 
                 RefreshThisMF();
 
@@ -396,7 +492,7 @@ namespace RevitFamiliesDb
                 //dialog.Show();
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 var dialog = new TaskDialog("Debug")
                 {
@@ -407,6 +503,46 @@ namespace RevitFamiliesDb
 
 
 
+        }
+
+        private void BtnToggleCeiling_Checked(object sender, RoutedEventArgs e)
+        {
+            RefreshThisMF();
+        }
+
+        private void BtnToggleCeiling_Unchecked(object sender, RoutedEventArgs e)
+        {
+            RefreshThisMF();
+        }
+
+        private void BtnToggleFloor_Checked(object sender, RoutedEventArgs e)
+        {
+            RefreshThisMF();
+        }
+
+        private void BtnToggleFloor_Unchecked(object sender, RoutedEventArgs e)
+        {
+            RefreshThisMF();
+        }
+
+        private void BtnToggleRoof_Checked(object sender, RoutedEventArgs e)
+        {
+            RefreshThisMF();
+        }
+
+        private void BtnToggleRoof_Unchecked(object sender, RoutedEventArgs e)
+        {
+            RefreshThisMF();
+        }
+
+        private void BtnToggleWall_Checked(object sender, RoutedEventArgs e)
+        {
+            RefreshThisMF();
+        }
+
+        private void BtnToggleWall_Unchecked(object sender, RoutedEventArgs e)
+        {
+            RefreshThisMF();
         }
     }
 
@@ -447,7 +583,7 @@ namespace RevitFamiliesDb
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            
+
             double sliderValue = (double)value;
 
             return sliderValue;

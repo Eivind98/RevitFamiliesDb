@@ -5,11 +5,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
-using System.Windows.Media.Media3D;
 
 namespace RevitFamiliesDb
 {
@@ -32,13 +29,13 @@ namespace RevitFamiliesDb
         public string Type { get; set; }
         public string DemGuid { get; set; }
         public string ThePath { get; set; }
-        
+
         public DemCompoundStructure ComStructureLayers { get; set; }
         public List<DemParameter> Parameters { get; set; }
 
-        public BitmapImage Image 
-        { 
-            get 
+        public BitmapImage Image
+        {
+            get
             {
                 if (File.Exists(ThePath))
                 {
@@ -53,17 +50,17 @@ namespace RevitFamiliesDb
                     }
                     catch (Exception)
                     {
-                        
+
                     }
                 }
 
                 return null;
-            } 
+            }
         }
 
         public FamilyTypeObject()
         {
-            
+
             DemGuid = Guid.NewGuid().ToString();
 
         }
@@ -80,17 +77,17 @@ namespace RevitFamiliesDb
 
         public FamilyTypeObject(ElementId elementId, Document doc)
         {
-            
+
             DemGuid = Guid.NewGuid().ToString();
             ThePath = Global.TheDirPath + DemGuid + ".jpg";
             Id = elementId.IntegerValue;
-            
+
             Element Ele = new FilteredElementCollector(doc)
                 .WhereElementIsElementType()
                 .FirstOrDefault(x => x.Id == elementId);
-            
+
             Name = Ele.Name;
-            Type = Ele.GetType().ToString();
+            Type = Ele.Category.Name;
 
             System.Drawing.Size imgSize = new System.Drawing.Size(200, 200);
 
@@ -107,7 +104,7 @@ namespace RevitFamiliesDb
             FileStream file = new FileStream(filename, FileMode.Create, FileAccess.Write);
 
             encoder.Save(file);
-            
+
             file.Close();
 
             try
@@ -135,19 +132,50 @@ namespace RevitFamiliesDb
         public Element CreateElement(Document doc)
         {
 
-            FloorType bullShitStuff = new FilteredElementCollector(doc).OfClass(typeof(FloorType)).First() as FloorType;
-
-
-            FloorType ele = bullShitStuff.Duplicate(Guid.NewGuid().ToString()) as FloorType;
-
-            ele.SetCompoundStructure(ComStructureLayers.Create());
-
-            foreach (DemParameter para in Parameters)
+            switch (this.Type)
             {
-                para.CreateThoseMF(ele);
+                case "Ceilings":
+                    CeilingType randomCeiling = new FilteredElementCollector(doc).OfClass(typeof(CeilingType)).First() as CeilingType;
+                    var ceilingEle = randomCeiling.Duplicate(Guid.NewGuid().ToString()) as CeilingType;
+                    ceilingEle.SetCompoundStructure(ComStructureLayers.Create());
+                    foreach (DemParameter para in Parameters)
+                    {
+                        para.CreateThoseMF(ceilingEle);
+
+                    }
+                    break;
+                case "Floors":
+                    FloorType randomFloor = new FilteredElementCollector(doc).OfClass(typeof(FloorType)).First() as FloorType;
+                    var floorEle = randomFloor.Duplicate(Guid.NewGuid().ToString()) as FloorType;
+                    floorEle.SetCompoundStructure(ComStructureLayers.Create());
+                    foreach (DemParameter para in Parameters)
+                    {
+                        para.CreateThoseMF(floorEle);
+
+                    }
+                    break;
+                case "Roofs":
+                    RoofType randomRoof = new FilteredElementCollector(doc).OfClass(typeof(RoofType)).First() as RoofType;
+                    var roofEle = randomRoof.Duplicate(Guid.NewGuid().ToString()) as RoofType;
+                    roofEle.SetCompoundStructure(ComStructureLayers.Create());
+                    foreach (DemParameter para in Parameters)
+                    {
+                        para.CreateThoseMF(roofEle);
+
+                    }
+                    break;
+                case "Walls":
+                    WallType randomWall = new FilteredElementCollector(doc).OfClass(typeof(WallType)).First() as WallType;
+                    var wallEle = randomWall.Duplicate(Guid.NewGuid().ToString()) as WallType;
+                    wallEle.SetCompoundStructure(ComStructureLayers.Create());
+                    foreach (DemParameter para in Parameters)
+                    {
+                        para.CreateThoseMF(wallEle);
+
+                    }
+                    break;
 
             }
-
             return null;
         }
 
@@ -160,7 +188,7 @@ namespace RevitFamiliesDb
 
             List<string> list = new List<string>();
 
-            foreach(FamilyTypeObject obj in ls)
+            foreach (FamilyTypeObject obj in ls)
             {
                 list.Add(obj.Name);
 
