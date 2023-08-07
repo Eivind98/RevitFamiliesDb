@@ -2,11 +2,13 @@
 using Autodesk.Revit.DB.Mechanical;
 using Autodesk.Revit.UI;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Markup;
 
 namespace RevitFamiliesDb
@@ -24,13 +26,26 @@ namespace RevitFamiliesDb
                 Trace.WriteLine("Raised");
                 try
                 {
-                    using (Transaction tx = new Transaction(doc, "name"))
+
+                    IList testing = Global.ElementsToProjectList;
+
+                    if (testing.Count > 0)
                     {
-                        tx.Start();
-                        //within this transaction and event handler execute code block 
-                        //is where the interaction with Revit is done.
-                        //tx.Commit();
+                        using (var tx = new Transaction(doc))
+                        {
+                            tx.Start("Creating");
+
+
+                            foreach (FamilyTypeObject yo in testing)
+                            {
+                                yo.CreateElement(doc);
+
+                            };
+                            tx.Commit();
+                        }
+
                     }
+
                 }
                 catch (Exception e)
                 {
@@ -51,14 +66,14 @@ namespace RevitFamiliesDb
         }
         public void GetData(MechanicalEquipment mechEq)
         {
-            
+
         }
     }
 
 
     public class Helper
     {
-        
+
         public static CompoundStructure GetCompound(Element element)
         {
             HostObjAttributes test = element as HostObjAttributes;
@@ -66,7 +81,7 @@ namespace RevitFamiliesDb
             return test.GetCompoundStructure();
 
 
-            
+
 
         }
 

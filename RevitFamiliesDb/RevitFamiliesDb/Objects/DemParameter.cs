@@ -92,7 +92,7 @@ namespace RevitFamiliesDb
                     param.Set(AsString);
                     break;
                 case 4:
-                    param.Set(AsElementId);
+                    param.Set(new ElementId(AsElementId));
                     break;
 
             }

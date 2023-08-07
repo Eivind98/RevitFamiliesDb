@@ -29,6 +29,7 @@ namespace RevitFamiliesDb
         public string Type { get; set; }
         public string DemGuid { get; set; }
         public string ThePath { get; set; }
+        public string DemFamilyName { get; set; }
 
         public DemCompoundStructure ComStructureLayers { get; set; }
         public List<DemParameter> Parameters { get; set; }
@@ -88,6 +89,8 @@ namespace RevitFamiliesDb
 
             Name = Ele.Name;
             Type = Ele.Category.Name;
+            DemFamilyName = ((ElementType)Ele).FamilyName;
+
 
             System.Drawing.Size imgSize = new System.Drawing.Size(200, 200);
 
@@ -132,12 +135,85 @@ namespace RevitFamiliesDb
         public Element CreateElement(Document doc)
         {
 
+            //Dictionary<string, Type> elementTypeMap = new Dictionary<string, Type>
+            //{
+            //    { "Ceilings", typeof(CeilingType) },
+            //    { "Floors", typeof(FloorType) },
+            //    { "Roofs", typeof(RoofType) },
+            //    { "Walls", typeof(WallType) }
+            //};
+
+
+            //if (elementTypeMap.TryGetValue(this.Type, out Type elementType))
+            //{
+            //    ElementType randomElement = new FilteredElementCollector(doc)
+            //        .OfClass(elementType)
+            //        .First(i => (i as ElementType).FamilyName == DemFamilyName) as ElementType;
+
+            //    if (randomElement != null)
+            //    {
+            //        var newElement = randomElement.Duplicate(Guid.NewGuid().ToString()) as ElementType;
+
+            //        if (ComStructureLayers != null)
+            //        {
+            //            dynamic newElementType = Convert.ChangeType(newElement, elementType);
+            //            newElementType.SetCompoundStructure(ComStructureLayers.Create());
+            //        }
+
+            //        foreach (DemParameter para in Parameters)
+            //        {
+            //            para.CreateThoseMF(newElement);
+            //        }
+            //    }
+            //}
+
+            //Type elementType = null;
+            //switch (this.Type)
+            //{
+            //    case "Ceilings":
+            //        elementType = typeof(CeilingType);
+            //        break;
+            //    case "Floors":
+            //        elementType = typeof(FloorType);
+            //        break;
+            //    case "Roofs":
+            //        elementType = typeof(RoofType);
+            //        break;
+            //    case "Walls":
+            //        elementType = typeof(WallType);
+            //        break;
+            //}
+
+            //if (elementType != null)
+            //{
+            //    ElementType randomElement = new FilteredElementCollector(doc).OfClass(elementType).First(i => (i as ElementType).FamilyName == DemFamilyName) as ElementType;
+            //    var elementEle = randomElement.Duplicate(Guid.NewGuid().ToString()) as ElementType;
+
+            //    if (ComStructureLayers != null)
+            //    {
+            //        elementEle.SetCompoundStructure(ComStructureLayers.Create());
+            //    }
+
+            //    foreach (DemParameter para in Parameters)
+            //    {
+            //        para.CreateThoseMF(elementEle);
+            //    }
+            //}
+
+
+
+
             switch (this.Type)
             {
                 case "Ceilings":
-                    CeilingType randomCeiling = new FilteredElementCollector(doc).OfClass(typeof(CeilingType)).First() as CeilingType;
+                    CeilingType randomCeiling = new FilteredElementCollector(doc).OfClass(typeof(CeilingType)).First(i => (i as ElementType).FamilyName == DemFamilyName) as CeilingType;
                     var ceilingEle = randomCeiling.Duplicate(Guid.NewGuid().ToString()) as CeilingType;
-                    ceilingEle.SetCompoundStructure(ComStructureLayers.Create());
+
+                    if (ComStructureLayers != null)
+                    {
+                        ceilingEle.SetCompoundStructure(ComStructureLayers.Create());
+                    }
+
                     foreach (DemParameter para in Parameters)
                     {
                         para.CreateThoseMF(ceilingEle);
@@ -145,9 +221,14 @@ namespace RevitFamiliesDb
                     }
                     break;
                 case "Floors":
-                    FloorType randomFloor = new FilteredElementCollector(doc).OfClass(typeof(FloorType)).First() as FloorType;
+                    FloorType randomFloor = new FilteredElementCollector(doc).OfClass(typeof(FloorType)).First(i => (i as ElementType).FamilyName == DemFamilyName) as FloorType;
                     var floorEle = randomFloor.Duplicate(Guid.NewGuid().ToString()) as FloorType;
-                    floorEle.SetCompoundStructure(ComStructureLayers.Create());
+
+                    if (ComStructureLayers != null)
+                    {
+                        floorEle.SetCompoundStructure(ComStructureLayers.Create());
+                    }
+
                     foreach (DemParameter para in Parameters)
                     {
                         para.CreateThoseMF(floorEle);
@@ -155,9 +236,12 @@ namespace RevitFamiliesDb
                     }
                     break;
                 case "Roofs":
-                    RoofType randomRoof = new FilteredElementCollector(doc).OfClass(typeof(RoofType)).First() as RoofType;
+                    RoofType randomRoof = new FilteredElementCollector(doc).OfClass(typeof(RoofType)).First(i => (i as ElementType).FamilyName == DemFamilyName) as RoofType;
                     var roofEle = randomRoof.Duplicate(Guid.NewGuid().ToString()) as RoofType;
-                    roofEle.SetCompoundStructure(ComStructureLayers.Create());
+                    if (ComStructureLayers != null)
+                    {
+                        roofEle.SetCompoundStructure(ComStructureLayers.Create());
+                    }
                     foreach (DemParameter para in Parameters)
                     {
                         para.CreateThoseMF(roofEle);
@@ -165,9 +249,12 @@ namespace RevitFamiliesDb
                     }
                     break;
                 case "Walls":
-                    WallType randomWall = new FilteredElementCollector(doc).OfClass(typeof(WallType)).First() as WallType;
+                    WallType randomWall = new FilteredElementCollector(doc).OfClass(typeof(WallType)).First(i => (i as ElementType).FamilyName == DemFamilyName) as WallType;
                     var wallEle = randomWall.Duplicate(Guid.NewGuid().ToString()) as WallType;
-                    wallEle.SetCompoundStructure(ComStructureLayers.Create());
+                    if (ComStructureLayers != null)
+                    {
+                        wallEle.SetCompoundStructure(ComStructureLayers.Create());
+                    }
                     foreach (DemParameter para in Parameters)
                     {
                         para.CreateThoseMF(wallEle);

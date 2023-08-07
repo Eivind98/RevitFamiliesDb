@@ -2,6 +2,7 @@
 using Autodesk.Revit.UI;
 using Newtonsoft.Json;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -151,37 +152,9 @@ namespace RevitFamiliesDb
             try
             {
 
-                
+                Global.ElementsToProjectList = LstDemItems.SelectedItems;
 
                 M_exEvent.Raise();
-
-
-
-
-                var testing = LstDemItems.SelectedItems;
-
-                if (testing.Count > 0)
-                {
-                    using (var tx = new Transaction(Doc))
-                    {
-                        tx.Start("Creating: ");
-
-
-                        foreach (FamilyTypeObject yo in testing)
-                        {
-                            yo.CreateElement(Doc);
-
-                        };
-                        tx.Commit();
-                    }
-
-                }
-
-                //var dialog = new TaskDialog("Debug")
-                //{
-                //    MainContent = testing.Name,
-                //};
-                //dialog.Show();
 
 
             }
