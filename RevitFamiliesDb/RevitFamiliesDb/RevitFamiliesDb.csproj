@@ -69,8 +69,13 @@
     <Compile Include="App.cs" />
     <Compile Include="ButtonBuilder.cs" />
     <Compile Include="00Starters\Command.cs" />
+    <Compile Include="Objects\DemHostObjAttribute.cs" />
+    <Compile Include="Objects\DemElementType.cs" />
+    <Compile Include="Objects\DemElement.cs" />
+    <Compile Include="Objects\DemMaterial.cs" />
     <Compile Include="Objects\DemCompoundStructure.cs" />
     <Compile Include="Objects\DemLayers.cs" />
+    <Compile Include="Objects\DemFloorType.cs" />
     <Compile Include="Objects\DemParameter.cs" />
     <Compile Include="Objects\FamilyTypeObject.cs" />
     <Compile Include="Global.cs" />
