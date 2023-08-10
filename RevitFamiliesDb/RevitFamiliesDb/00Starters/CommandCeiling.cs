@@ -1,10 +1,11 @@
-﻿#region Namespaces
+#region Namespaces
 using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 using Newtonsoft.Json;
+using RevitFamiliesDb.Objects;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,7 +17,7 @@ using System.Linq;
 namespace RevitFamiliesDb
 {
     [Transaction(TransactionMode.Manual)]
-    public class AddToList : IExternalCommand
+    public class CommandCeiling : IExternalCommand
     {
         public Result Execute(
           ExternalCommandData commandData,
@@ -29,42 +30,52 @@ namespace RevitFamiliesDb
             var doc = uidoc.Document;
 
             // Access current selection
-
             var sel = uidoc.Selection;
 
-            var elId = sel.GetElementIds().FirstOrDefault();
+            ElementId elId = sel.GetElementIds().FirstOrDefault();
 
             if (elId == null) return Result.Succeeded;
 
+            // Retrieve elements from database
             var element = new FilteredElementCollector(doc)
                 .WhereElementIsElementType()
-                .FirstOrDefault(x => x.Id == elId) as FloorType;
+                .FirstOrDefault(x => x.Id == elId) as CeilingType;
 
-            List<FamilyTypeObject> demObjects = new List<FamilyTypeObject>();
+            string path = Global.TheCeilingPath;
+
+
+            DemCeilingType floor = new DemCeilingType(element);
+
+
+            List<DemCeilingType> demObjects = new List<DemCeilingType>();
 
             try
             {
-                demObjects = JsonConvert.DeserializeObject<List<FamilyTypeObject>>(File.ReadAllText(Global.TheFloorPath));
+                demObjects = JsonConvert.DeserializeObject<List<DemCeilingType>>(File.ReadAllText(path));
 
             }
             catch
             {
-
+                var dialog = new TaskDialog("Debug")
+                {
+                    MainContent = "Something -   "
+                };
+                dialog.Show();
             }
 
+            demObjects.Add(floor);
 
-            using (var tx = new Transaction(doc))
-            {
-                tx.Start("Douche bag");
+            File.WriteAllText(path, JsonConvert.SerializeObject(demObjects));
 
-                demObjects.Add(new FamilyTypeObject(elId, doc));
-                
-                tx.Commit();
-            }
 
-            File.WriteAllText(Global.TheFloorPath, FamilyTypeObject.PrintTypeObject(demObjects));
+
+
+
 
             return Result.Succeeded;
         }
     }
+
+    
+
 }

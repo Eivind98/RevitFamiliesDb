@@ -1,6 +1,7 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Newtonsoft.Json;
+using RevitFamiliesDb.Objects;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -35,21 +36,20 @@ namespace RevitFamiliesDb
         public List<string> SortingStuff { get; set; } = new List<string>();
         public ListSortDirection AsOrDes { get; set; } = ListSortDirection.Ascending;
         public List<FamilyTypeObject> RelevantItems { get; set; } = new List<FamilyTypeObject>();
-
         Document Doc { get; set; }
         ExternalEvent M_exEvent { get; set; }
         MyEventHandler MyEvent { get; set; }
 
         public DemMainWindow(UIDocument UiDoc, ExternalEvent exEvent, MyEventHandler handler)
         {
-            
+
             Doc = UiDoc.Document;
             InitializeComponent();
             M_exEvent = exEvent;
             MyEvent = handler;
 
-
-            Global.AllDemFamilyTypeObject = LoadElementsToList();
+            
+            Global.AllDemElements = LoadDemElementsToList();
             RefreshThisMF();
 
             LstDemItems.SelectedValuePath = "DemGuid";
@@ -69,6 +69,43 @@ namespace RevitFamiliesDb
 
             AWindow.Closing += MainWindow_Closing;
         }
+
+        private List<DemElement> LoadDemElementsToList()
+        {
+            List<DemElement> yo = new List<DemElement>();
+
+            try
+            {
+                List<DemCeilingType> allDemCeilings = JsonConvert.DeserializeObject<List<DemCeilingType>>(File.ReadAllText(Global.TheCeilingPath));
+                yo.AddRange(allDemCeilings);
+
+            }
+            catch
+            {
+                var dialog = new TaskDialog("Debug")
+                {
+                    MainContent = "Ceiling"
+                };
+                dialog.Show();
+            }
+
+            try
+            {
+                List<DemFloorType> allDemFloors = JsonConvert.DeserializeObject<List<DemFloorType>>(File.ReadAllText(Global.TheFloorPath));
+                yo.AddRange(allDemFloors);
+            }
+            catch
+            {
+                var dialog = new TaskDialog("Debug")
+                {
+                    MainContent = "Floor"
+                };
+                dialog.Show();
+            }
+
+            return yo;
+        }
+
 
         private List<FamilyTypeObject> LoadElementsToList()
         {
@@ -103,30 +140,30 @@ namespace RevitFamiliesDb
                 bool noValuesToFilter = filteringTypes.All(type => type == null);
                 bool hasSearchString = !string.IsNullOrWhiteSpace(searchString);
 
-                List<FamilyTypeObject> filteredList;
+                List<DemElement> filteredList;
 
                 if (hasSearchString && noValuesToFilter)
                 {
-                    filteredList = Global.AllDemFamilyTypeObject
+                    filteredList = Global.AllDemElements
                         .Where(item => item.Name.ToLower().Contains(searchString))
                         .ToList();
                 }
                 else if (hasSearchString && !noValuesToFilter)
                 {
-                    filteredList = Global.AllDemFamilyTypeObject
-                        .Where(item => filteringTypes.Contains(item.Type))
+                    filteredList = Global.AllDemElements
+                        .Where(item => filteringTypes.Contains(item.Category))
                         .Where(item => item.Name.ToLower().Contains(searchString))
                         .ToList();
                 }
                 else if (!noValuesToFilter)
                 {
-                    filteredList = Global.AllDemFamilyTypeObject
-                        .Where(item => filteringTypes.Contains(item.Type))
+                    filteredList = Global.AllDemElements
+                        .Where(item => filteringTypes.Contains(item.Category))
                         .ToList();
                 }
                 else
                 {
-                    filteredList = Global.AllDemFamilyTypeObject;
+                    filteredList = Global.AllDemElements;
                 }
 
                 LstDemItems.ItemsSource = filteredList;
@@ -184,44 +221,46 @@ namespace RevitFamiliesDb
         {
             try
             {
-                if (Directory.Exists(Global.TheDirPath) && Directory.Exists(System.IO.Path.GetDirectoryName(Global.TheJsonPath)))
-                {
-                    try
-                    {
-                        string[] filesInFolder = Directory.GetFiles(Global.TheDirPath);
-                        List<string> objPaths = new List<string>();
-                        foreach (FamilyTypeObject famObj in Global.AllDemFamilyTypeObject)
-                        {
-                            objPaths.Add(famObj.ThePath);
-                        }
 
-                        foreach (string str in filesInFolder)
-                        {
-                            if (!objPaths.Contains(str))
-                            {
-                                File.Delete(str);
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        var dialog = new TaskDialog("Debug")
-                        {
-                            MainContent = ex.Message
-                        };
-                        dialog.Show();
-                    }
 
-                    File.WriteAllText(Global.TheJsonPath, FamilyTypeObject.PrintTypeObject(Global.AllDemFamilyTypeObject));
-                }
-                else
-                {
-                    var dialog = new TaskDialog("Debug")
-                    {
-                        MainContent = "one of these paths do not exist:" + Global.TheJsonPath + " - - - - - - - " + Global.TheDirPath
-                    };
-                    dialog.Show();
-                }
+                //if (Directory.Exists(Global.TheDirPath) && Directory.Exists(System.IO.Path.GetDirectoryName(Global.TheJsonPath)))
+                //{
+                //    try
+                //    {
+                //        string[] filesInFolder = Directory.GetFiles(Global.TheDirPath);
+                //        List<string> objPaths = new List<string>();
+                //        foreach (FamilyTypeObject famObj in Global.AllDemFamilyTypeObject)
+                //        {
+                //            objPaths.Add(famObj.ThePath);
+                //        }
+
+                //        foreach (string str in filesInFolder)
+                //        {
+                //            if (!objPaths.Contains(str))
+                //            {
+                //                File.Delete(str);
+                //            }
+                //        }
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        var dialog = new TaskDialog("Debug")
+                //        {
+                //            MainContent = ex.Message
+                //        };
+                //        dialog.Show();
+                //    }
+
+                //    File.WriteAllText(Global.TheJsonPath, FamilyTypeObject.PrintTypeObject(Global.AllDemFamilyTypeObject));
+                //}
+                //else
+                //{
+                //    var dialog = new TaskDialog("Debug")
+                //    {
+                //        MainContent = "one of these paths do not exist:" + Global.TheJsonPath + " - - - - - - - " + Global.TheDirPath
+                //    };
+                //    dialog.Show();
+                //}
             }
             catch (Exception ex)
             {
@@ -518,6 +557,23 @@ namespace RevitFamiliesDb
             RefreshThisMF();
         }
     }
+
+    public class ItemTemplateSelector : DataTemplateSelector
+    {
+        public DataTemplate Ceiling { get; set; }
+        public DataTemplate Floor { get; set; }
+
+        public override DataTemplate SelectTemplate(object item, DependencyObject container)
+        {
+            if (item is DemCeilingType)
+                return Ceiling;
+            else if (item is DemFloorType)
+                return Floor;
+
+            return base.SelectTemplate(item, container);
+        }
+    }
+
 
     public class SubtractConverter : IValueConverter
     {

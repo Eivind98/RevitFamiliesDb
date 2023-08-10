@@ -47,13 +47,33 @@
             </Grid>
         </DataTemplate>
 
+        <DataTemplate x:Key="ClassCeilingType" DataType="{x:Type local:DemCeilingType}">
+            <Grid>
+                <Label Content="{Binding ThermalProperties}"/>
+                
+            </Grid>
+
+        </DataTemplate>
+
+        <DataTemplate x:Key="ClassFloorType" DataType="{x:Type local:DemFloorType}">
+            <Grid>
+                <Label Content="{Binding IsFoundationSlab}"/>
+
+            </Grid>
+        </DataTemplate>
+
+        <local:ItemTemplateSelector x:Key="itemTemplateSelector"
+                                    Ceiling="{StaticResource ClassCeilingType}"
+                                    Floor="{StaticResource ClassFloorType}" />
+
+
+
+
     </UserControl.Resources>
 
     <Border x:Name="DemWindow" 
             Background="White" 
             Padding="10">
-
-
 
         <Grid>
             <Grid.RowDefinitions>
@@ -168,12 +188,24 @@
                         </ToggleButton>
 
                     </Grid>
-                    
+
+                    <ListView x:Name="itemListView" 
+                              ItemTemplateSelector="{StaticResource itemTemplateSelector}">
+                        
+                        
+
+
+                    </ListView>
+
+                    <StackPanel x:Name="Yo">
+                        
+                        
+                    </StackPanel>
+
+                    <Label Content="{Binding ElementName=itemListView, Path=SelectedItem.Image}"/>
 
 
                 </StackPanel>
-
-                
 
                 <ListView x:Name="LstDemItems"
                           ScrollViewer.VerticalScrollBarVisibility="Auto"
@@ -218,6 +250,9 @@
                             </GridView>
                         </ListView.View>
                     </ListView>
+
+
+                    
 
 
                 </StackPanel>

@@ -60,6 +60,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="00Starters\CommandFloor.cs" />
     <Compile Include="DemMainWindow.xaml.cs">
       <DependentUpon>DemMainWindow.xaml</DependentUpon>
     </Compile>
@@ -68,14 +69,17 @@
     <Compile Include="00Starters\AddToList.cs" />
     <Compile Include="App.cs" />
     <Compile Include="ButtonBuilder.cs" />
-    <Compile Include="00Starters\Command.cs" />
+    <Compile Include="00Starters\CommandCeiling.cs" />
+    <Compile Include="Objects\Types\DemCeilingType.cs" />
     <Compile Include="Objects\DemHostObjAttribute.cs" />
     <Compile Include="Objects\DemElementType.cs" />
     <Compile Include="Objects\DemElement.cs" />
     <Compile Include="Objects\DemMaterial.cs" />
     <Compile Include="Objects\DemCompoundStructure.cs" />
     <Compile Include="Objects\DemLayers.cs" />
-    <Compile Include="Objects\DemFloorType.cs" />
+    <Compile Include="Objects\Types\DemWallType.cs" />
+    <Compile Include="Objects\Types\DemRoofType.cs" />
+    <Compile Include="Objects\Types\DemFloorType.cs" />
     <Compile Include="Objects\DemParameter.cs" />
     <Compile Include="Objects\FamilyTypeObject.cs" />
     <Compile Include="Global.cs" />

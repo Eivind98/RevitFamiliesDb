@@ -17,7 +17,7 @@ using System.Linq;
 namespace RevitFamiliesDb
 {
     [Transaction(TransactionMode.Manual)]
-    public class Command : IExternalCommand
+    public class CommandFloor : IExternalCommand
     {
         public Result Execute(
           ExternalCommandData commandData,
@@ -41,37 +41,31 @@ namespace RevitFamiliesDb
                 .WhereElementIsElementType()
                 .FirstOrDefault(x => x.Id == elId) as FloorType;
 
-            string path = "C:\\Users\\eev_9\\OneDrive\\02 - Projects\\Programming stuff\\Yush.json";
-
+            string path = Global.TheFloorPath;
 
             DemFloorType floor = new DemFloorType(element);
 
-            File.WriteAllText(path, JsonConvert.SerializeObject(floor));
+            List<DemFloorType> demObjects = new List<DemFloorType>();
+
+            try
+            {
+                demObjects = JsonConvert.DeserializeObject<List<DemFloorType>>(File.ReadAllText(path));
+
+            }
+            catch
+            {
+                var dialog = new TaskDialog("Debug")
+                {
+                    MainContent = "Something -   "
+                };
+                dialog.Show();
+            }
+
+            demObjects.Add(floor);
+
+            File.WriteAllText(path, JsonConvert.SerializeObject(demObjects));
 
 
-            //List<FamilyTypeObject> demObjects = new List<FamilyTypeObject>();
-
-            //try
-            //{
-            //    demObjects = JsonConvert.DeserializeObject<List<FamilyTypeObject>>(File.ReadAllText(Global.TheJsonPath));
-
-            //}
-            //catch
-            //{
-
-            //}
-
-
-            //using (var tx = new Transaction(doc))
-            //{
-            //    tx.Start("Douche bag");
-
-            //    demObjects.Add(new FamilyTypeObject(elId, doc));
-
-            //    tx.Commit();
-            //}
-
-            //File.WriteAllText(Global.TheJsonPath, FamilyTypeObject.PrintTypeObject(demObjects));
 
 
 

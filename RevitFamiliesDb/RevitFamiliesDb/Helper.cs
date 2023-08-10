@@ -1,6 +1,7 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Mechanical;
 using Autodesk.Revit.UI;
+using RevitFamiliesDb.Objects;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -27,18 +28,33 @@ namespace RevitFamiliesDb
                 try
                 {
 
-                    IList testing = Global.ElementsToProjectList;
+                    IList listOfIList = Global.ElementsToProjectList;
 
-                    if (testing.Count > 0)
+                    if (listOfIList.Count > 0)
                     {
                         using (var tx = new Transaction(doc))
                         {
                             tx.Start("Creating");
 
 
-                            foreach (FamilyTypeObject yo in testing)
+                            foreach (DemElement yo in listOfIList)
                             {
-                                yo.CreateElement(doc);
+                                switch (yo.Category)
+                                {
+                                    case "Ceilings":
+                                        ((DemCeilingType)yo).CreateThisMF(doc);
+                                        break;
+                                    case "Floors":
+                                        ((DemFloorType)yo).CreateThisMF(doc);
+                                        break;
+                                    case "Roofs":
+                                        ((DemRoofType)yo).CreateThisMF(doc);
+                                        break;
+                                    case "Walls":
+                                        ((DemWallType)yo).CreateThisMF(doc);
+                                        break;
+
+                                }
 
                             };
                             tx.Commit();
@@ -73,6 +89,34 @@ namespace RevitFamiliesDb
 
     public class Helper
     {
+        public static DemElement GetDemElement(ElementId eleId, Document doc)
+        {
+            Element Ele = new FilteredElementCollector(doc)
+                .WhereElementIsElementType()
+                .FirstOrDefault(x => x.Id == eleId);
+
+            DemElement outPut = new DemElement();
+
+            switch (Ele.Category.Name)
+            {
+                case "Ceilings":
+                    outPut = new DemCeilingType(Ele as CeilingType);
+                    break;
+                case "Floors":
+                    outPut = new DemFloorType(Ele as FloorType);
+                    break;
+                case "Roofs":
+                    outPut = new DemRoofType(Ele as RoofType);
+                    break;
+                case "Walls":
+                    outPut = new DemWallType(Ele as WallType);
+                    break;
+            }
+
+            return outPut;
+        }
+
+
 
         public static CompoundStructure GetCompound(Element element)
         {
