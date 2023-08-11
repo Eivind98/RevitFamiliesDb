@@ -30,6 +30,7 @@ namespace RevitFamiliesDb
         public IList<int> GetRegionIds { get; set; }
         public IList<int> GetSegmentIds { get; set; }
         public double GetWidth { get; set; }
+        public double GetWidthMetric { get { return Math.Round(GetWidth * 0.3048, 3); } }
         public bool IsVerticallyHomogeneous { get; set; }
 
 

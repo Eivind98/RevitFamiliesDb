@@ -9,8 +9,8 @@
              MinWidth="800"
              d:DesignHeight="500" d:DesignWidth="800">
 
-    
-    
+
+
     <UserControl.Resources>
         <local:SubtractConverter x:Key="Subtract20" Value="40"/>
         <local:MetersToMM x:Key="MetersToMM"/>
@@ -47,24 +47,331 @@
             </Grid>
         </DataTemplate>
 
-        <DataTemplate x:Key="ClassCeilingType" DataType="{x:Type local:DemCeilingType}">
-            <Grid>
-                <Label Content="{Binding ThermalProperties}"/>
+        <DataTemplate x:Key="CeilingType" DataType="{x:Type local:DemCeilingType}">
+            <StackPanel>
+                <Image Stretch="Uniform" Source="{Binding Image}"/>
+                <Grid Margin="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="26"/>
+                        <RowDefinition Height="26"/>
+                        <RowDefinition Height="26"/>
+                    </Grid.RowDefinitions>
+                    
+                    <Label Content="Family Name:"
+                           HorizontalContentAlignment="Right"
+                           VerticalContentAlignment="Center"
+                           Grid.Column="0"
+                           Grid.Row="0"/>
+                    <TextBlock Text="{Binding FamilyName}"
+                               TextAlignment="Left"
+                               VerticalAlignment="Center"
+                               Grid.Column="1"
+                               Grid.Row="0"/>
+
+                    <Label Content="Name:"
+                           HorizontalContentAlignment="Right"
+                           VerticalContentAlignment="Center"
+                           Grid.Column="0"
+                           Grid.Row="1"/>
+                    <TextBlock Text="{Binding Name}"
+                               TextAlignment="Left"
+                               VerticalAlignment="Center"
+                               Grid.Column="1"
+                               Grid.Row="1"/>
+
+                    <Label Content="Width (mm):"
+                           HorizontalContentAlignment="Right"
+                           VerticalContentAlignment="Center"
+                           Grid.Column="0"
+                           Grid.Row="2"/>
+                    <TextBlock Text="{Binding DemCompoundStructure.GetWidthMetric, Converter={StaticResource MetersToMM}}"
+                               TextAlignment="Left"
+                               VerticalAlignment="Center"
+                               Grid.Column="1"
+                               Grid.Row="2"/>
+                </Grid>
                 
-            </Grid>
+                <ListView x:Name="LstLayersCeiling"
+                          Grid.Column="2"
+                          ItemsSource="{Binding DemCompoundStructure.GetLayers}"
+                          Margin="5"
+                          ScrollViewer.VerticalScrollBarVisibility="Auto"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Function" DisplayMemberBinding="{Binding RevitFunction}"/>
+                            <GridViewColumn Header="Material" DisplayMemberBinding="{Binding MaterialId}"/>
+                            <GridViewColumn Header="mm">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding MetricWidth, Converter={StaticResource MetersToMM}}" Margin="5" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </StackPanel>
 
         </DataTemplate>
 
-        <DataTemplate x:Key="ClassFloorType" DataType="{x:Type local:DemFloorType}">
+        <DataTemplate x:Key="FloorType" DataType="{x:Type local:DemFloorType}">
+            <StackPanel>
+                <Image Stretch="Uniform" Source="{Binding Image}"/>
+                <Grid Margin="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="26"/>
+                        <RowDefinition Height="26"/>
+                        <RowDefinition Height="26"/>
+                    </Grid.RowDefinitions>
+
+                    <Label Content="Family Name:"
+                           HorizontalContentAlignment="Right"
+                           VerticalContentAlignment="Center"
+                           Grid.Column="0"
+                           Grid.Row="0"/>
+                    <TextBlock Text="{Binding FamilyName}"
+                               TextAlignment="Left"
+                               VerticalAlignment="Center"
+                               Grid.Column="1"
+                               Grid.Row="0"/>
+
+                    <Label Content="Name:"
+                           HorizontalContentAlignment="Right"
+                           VerticalContentAlignment="Center"
+                           Grid.Column="0"
+                           Grid.Row="1"/>
+                    <TextBlock Text="{Binding Name}"
+                               TextAlignment="Left"
+                               VerticalAlignment="Center"
+                               Grid.Column="1"
+                               Grid.Row="1"/>
+
+                    <Label Content="Width (mm):"
+                           HorizontalContentAlignment="Right"
+                           VerticalContentAlignment="Center"
+                           Grid.Column="0"
+                           Grid.Row="2"/>
+                    <TextBlock Text="{Binding DemCompoundStructure.GetWidthMetric, Converter={StaticResource MetersToMM}}"
+                               TextAlignment="Left"
+                               VerticalAlignment="Center"
+                               Grid.Column="1"
+                               Grid.Row="2"/>
+                </Grid>
+
+                <ListView x:Name="LstLayersCeiling"
+                          Grid.Column="2"
+                          ItemsSource="{Binding DemCompoundStructure.GetLayers}"
+                          Margin="5"
+                          ScrollViewer.VerticalScrollBarVisibility="Auto"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Function" DisplayMemberBinding="{Binding RevitFunction}"/>
+                            <GridViewColumn Header="Material" DisplayMemberBinding="{Binding MaterialId}"/>
+                            <GridViewColumn Header="mm">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding MetricWidth, Converter={StaticResource MetersToMM}}" Margin="5" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="RoofType" DataType="{x:Type local:DemRoofType}">
+            <StackPanel>
+                <Image Stretch="Uniform" Source="{Binding Image}"/>
+                <Grid Margin="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="26"/>
+                        <RowDefinition Height="26"/>
+                        <RowDefinition Height="26"/>
+                    </Grid.RowDefinitions>
+
+                    <Label Content="Family Name:"
+                           HorizontalContentAlignment="Right"
+                           VerticalContentAlignment="Center"
+                           Grid.Column="0"
+                           Grid.Row="0"/>
+                    <TextBlock Text="{Binding FamilyName}"
+                               TextAlignment="Left"
+                               VerticalAlignment="Center"
+                               Grid.Column="1"
+                               Grid.Row="0"/>
+
+                    <Label Content="Name:"
+                           HorizontalContentAlignment="Right"
+                           VerticalContentAlignment="Center"
+                           Grid.Column="0"
+                           Grid.Row="1"/>
+                    <TextBlock Text="{Binding Name}"
+                               TextAlignment="Left"
+                               VerticalAlignment="Center"
+                               Grid.Column="1"
+                               Grid.Row="1"/>
+
+                    <Label Content="Width (mm):"
+                           HorizontalContentAlignment="Right"
+                           VerticalContentAlignment="Center"
+                           Grid.Column="0"
+                           Grid.Row="2"/>
+                    <TextBlock Text="{Binding DemCompoundStructure.GetWidthMetric, Converter={StaticResource MetersToMM}}"
+                               TextAlignment="Left"
+                               VerticalAlignment="Center"
+                               Grid.Column="1"
+                               Grid.Row="2"/>
+                </Grid>
+
+                <ListView x:Name="LstLayersCeiling"
+                          Grid.Column="2"
+                          ItemsSource="{Binding DemCompoundStructure.GetLayers}"
+                          Margin="5"
+                          ScrollViewer.VerticalScrollBarVisibility="Auto"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Function" DisplayMemberBinding="{Binding RevitFunction}"/>
+                            <GridViewColumn Header="Material" DisplayMemberBinding="{Binding MaterialId}"/>
+                            <GridViewColumn Header="mm">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding MetricWidth, Converter={StaticResource MetersToMM}}" Margin="5" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="WallType" DataType="{x:Type local:DemWallType}">
+            <StackPanel>
+                <Image Stretch="Uniform" Source="{Binding Image}"/>
+                <Grid Margin="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="26"/>
+                        <RowDefinition Height="26"/>
+                        <RowDefinition Height="26"/>
+                        <RowDefinition Height="26"/>
+                        <RowDefinition Height="26"/>
+                    </Grid.RowDefinitions>
+
+                    <Label Content="Family Name:"
+                           HorizontalContentAlignment="Right"
+                           VerticalContentAlignment="Center"
+                           Grid.Column="0"
+                           Grid.Row="0"/>
+                    <TextBlock Text="{Binding FamilyName}"
+                               TextAlignment="Left"
+                               VerticalAlignment="Center"
+                               Grid.Column="1"
+                               Grid.Row="0"/>
+
+                    <Label Content="Name:"
+                           HorizontalContentAlignment="Right"
+                           VerticalContentAlignment="Center"
+                           Grid.Column="0"
+                           Grid.Row="1"/>
+                    <TextBlock Text="{Binding Name}"
+                               TextAlignment="Left"
+                               VerticalAlignment="Center"
+                               Grid.Column="1"
+                               Grid.Row="1"/>
+
+                    <Label Content="Width (mm):"
+                           HorizontalContentAlignment="Right"
+                           VerticalContentAlignment="Center"
+                           Grid.Column="0"
+                           Grid.Row="2"/>
+                    <TextBlock Text="{Binding DemCompoundStructure.GetWidthMetric, Converter={StaticResource MetersToMM}}"
+                               TextAlignment="Left"
+                               VerticalAlignment="Center"
+                               Grid.Column="1"
+                               Grid.Row="2"/>
+
+                    <Label Content="Function:"
+                           HorizontalContentAlignment="Right"
+                           VerticalContentAlignment="Center"
+                           Grid.Column="0"
+                           Grid.Row="3"/>
+                    <TextBlock Text="{Binding FunctionName}"
+                               TextAlignment="Left"
+                               VerticalAlignment="Center"
+                               Grid.Column="1"
+                               Grid.Row="3"/>
+
+                    <Label Content="Kind:"
+                           HorizontalContentAlignment="Right"
+                           VerticalContentAlignment="Center"
+                           Grid.Column="0"
+                           Grid.Row="4"/>
+                    <TextBlock Text="{Binding KindName}"
+                               TextAlignment="Left"
+                               VerticalAlignment="Center"
+                               Grid.Column="1"
+                               Grid.Row="4"/>
+                </Grid>
+
+                <ListView x:Name="LstLayersCeiling"
+                          Grid.Column="2"
+                          ItemsSource="{Binding DemCompoundStructure.GetLayers}"
+                          Margin="5"
+                          ScrollViewer.VerticalScrollBarVisibility="Auto"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Function" DisplayMemberBinding="{Binding RevitFunction}"/>
+                            <GridViewColumn Header="Material" DisplayMemberBinding="{Binding MaterialId}"/>
+                            <GridViewColumn Header="mm">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding MetricWidth, Converter={StaticResource MetersToMM}}" Margin="5" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </StackPanel>
+        </DataTemplate>
+
+        <DataTemplate x:Key="MaterialType" DataType="{x:Type local:DemMaterial}">
             <Grid>
-                <Label Content="{Binding IsFoundationSlab}"/>
+                <Label Content="Still Working on this one"/>
 
             </Grid>
         </DataTemplate>
+
+
 
         <local:ItemTemplateSelector x:Key="itemTemplateSelector"
-                                    Ceiling="{StaticResource ClassCeilingType}"
-                                    Floor="{StaticResource ClassFloorType}" />
+                                    Ceiling="{StaticResource CeilingType}"
+                                    Floor="{StaticResource FloorType}" 
+                                    Roof="{StaticResource RoofType}" 
+                                    Wall="{StaticResource WallType}" 
+                                    Material="{StaticResource MaterialType}" />
+
 
 
 
@@ -112,7 +419,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="22"/>
                         </Grid.ColumnDefinitions>
-                        
+
                         <ComboBox x:Name="SortComboBox"
                                   Margin="0 0 10 0"
                                   Grid.Column="0"
@@ -191,20 +498,8 @@
 
                     <ListView x:Name="itemListView" 
                               ItemTemplateSelector="{StaticResource itemTemplateSelector}">
-                        
-                        
-
 
                     </ListView>
-
-                    <StackPanel x:Name="Yo">
-                        
-                        
-                    </StackPanel>
-
-                    <Label Content="{Binding ElementName=itemListView, Path=SelectedItem.Image}"/>
-
-
                 </StackPanel>
 
                 <ListView x:Name="LstDemItems"
@@ -212,7 +507,8 @@
                           ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                           Padding="8"
                           Grid.Column="1" 
-                          SizeChanged="LstDemItems_SizeChanged">
+                          SizeChanged="LstDemItems_SizeChanged"
+                          SelectionChanged="LstDemItems_SelectionChanged">
 
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -227,36 +523,22 @@
 
                 </ListView>
 
-                <StackPanel Margin="5" Grid.Column="2">
 
-                    <Image Stretch="Uniform" Source="{Binding ElementName=LstDemItems, Path=SelectedItem.Image}"/>
-
-                    <ListView x:Name="LayersLs"
-                              Width="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=Border}, Converter={StaticResource Subtract20}}"
+                <ListView x:Name="LstProperties"
+                          Grid.Column="2"
+                          ScrollViewer.CanContentScroll="False"
+                          
+                              Margin="5"
                               ScrollViewer.VerticalScrollBarVisibility="Auto"
                               ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                              ItemsSource="{Binding ElementName=LstDemItems, Path=SelectedItem.ComStructureLayers.GetLayers}">
-                        <ListView.View>
-                            <GridView>
-                                <GridViewColumn Header="Function" DisplayMemberBinding="{Binding RevitFunction}"/>
-                                <GridViewColumn Header="Material" DisplayMemberBinding="{Binding MaterialId}"/>
-                                <GridViewColumn Header="mm">
-                                    <GridViewColumn.CellTemplate>
-                                        <DataTemplate>
-                                            <TextBlock Text="{Binding MetricWidth, Converter={StaticResource MetersToMM}}" Margin="5" />
-                                        </DataTemplate>
-                                    </GridViewColumn.CellTemplate>
-                                </GridViewColumn>
-                            </GridView>
-                        </ListView.View>
-                    </ListView>
-
-
+                              ItemTemplateSelector="{StaticResource itemTemplateSelector}">
                     
-
-
-                </StackPanel>
-
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="IsHitTestVisible" Value="False"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                </ListView>
             </Grid>
 
             <Grid Grid.Row="2" Grid.ColumnSpan="2">

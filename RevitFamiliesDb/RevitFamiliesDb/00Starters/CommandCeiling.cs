@@ -29,48 +29,11 @@ namespace RevitFamiliesDb
             var app = uiapp.Application;
             var doc = uidoc.Document;
 
-            // Access current selection
-            var sel = uidoc.Selection;
+            List<DemElement> demSelectedElements = Helper.CreateFromSelection(uidoc);
+            List<DemElement> demExistingElements = Helper.LoadDemElementsFromFile();
 
-            ElementId elId = sel.GetElementIds().FirstOrDefault();
-
-            if (elId == null) return Result.Succeeded;
-
-            // Retrieve elements from database
-            var element = new FilteredElementCollector(doc)
-                .WhereElementIsElementType()
-                .FirstOrDefault(x => x.Id == elId) as CeilingType;
-
-            string path = Global.TheCeilingPath;
-
-
-            DemCeilingType floor = new DemCeilingType(element);
-
-
-            List<DemCeilingType> demObjects = new List<DemCeilingType>();
-
-            try
-            {
-                demObjects = JsonConvert.DeserializeObject<List<DemCeilingType>>(File.ReadAllText(path));
-
-            }
-            catch
-            {
-                var dialog = new TaskDialog("Debug")
-                {
-                    MainContent = "Something -   "
-                };
-                dialog.Show();
-            }
-
-            demObjects.Add(floor);
-
-            File.WriteAllText(path, JsonConvert.SerializeObject(demObjects));
-
-
-
-
-
+            demExistingElements.AddRange(demSelectedElements);
+            Helper.SaveDemElementsToFile(demExistingElements);
 
             return Result.Succeeded;
         }

@@ -13,7 +13,9 @@ namespace RevitFamiliesDb
     public class DemWallType : DemHostObjAttribute
     {
         public int Function { get; set; }
+        public string FunctionName { get { return ((WallFunction)Function).ToString(); } }
         public int Kind { get; set; }
+        public string KindName { get { return ((WallKind)Kind).ToString(); } }
         public string ThermalProperties { get; set; }
         
 

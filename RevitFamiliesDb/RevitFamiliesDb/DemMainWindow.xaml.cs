@@ -49,7 +49,7 @@ namespace RevitFamiliesDb
             MyEvent = handler;
 
             
-            Global.AllDemElements = LoadDemElementsToList();
+            Global.AllDemElements = Helper.LoadDemElementsFromFile();
             RefreshThisMF();
 
             LstDemItems.SelectedValuePath = "DemGuid";
@@ -68,58 +68,6 @@ namespace RevitFamiliesDb
             AWindow.Show();
 
             AWindow.Closing += MainWindow_Closing;
-        }
-
-        private List<DemElement> LoadDemElementsToList()
-        {
-            List<DemElement> yo = new List<DemElement>();
-
-            try
-            {
-                List<DemCeilingType> allDemCeilings = JsonConvert.DeserializeObject<List<DemCeilingType>>(File.ReadAllText(Global.TheCeilingPath));
-                yo.AddRange(allDemCeilings);
-
-            }
-            catch
-            {
-                var dialog = new TaskDialog("Debug")
-                {
-                    MainContent = "Ceiling"
-                };
-                dialog.Show();
-            }
-
-            try
-            {
-                List<DemFloorType> allDemFloors = JsonConvert.DeserializeObject<List<DemFloorType>>(File.ReadAllText(Global.TheFloorPath));
-                yo.AddRange(allDemFloors);
-            }
-            catch
-            {
-                var dialog = new TaskDialog("Debug")
-                {
-                    MainContent = "Floor"
-                };
-                dialog.Show();
-            }
-
-            return yo;
-        }
-
-
-        private List<FamilyTypeObject> LoadElementsToList()
-        {
-            string path = Global.TheJsonPath;
-
-            try
-            {
-                List<FamilyTypeObject> allDemObjects = JsonConvert.DeserializeObject<List<FamilyTypeObject>>(File.ReadAllText(path));
-                return allDemObjects;
-            }
-            catch
-            {
-                return new List<FamilyTypeObject>();
-            }
         }
 
         private void RefreshThisMF()
@@ -203,64 +151,14 @@ namespace RevitFamiliesDb
                 };
                 dialog.Show();
             }
-
-
-
-
-            //if (LstDemItems.SelectedValue != null)
-            //{
-            //    var dialog = new TaskDialog("Debug")
-            //    {
-            //        MainContent = LstDemItems.SelectedValue.ToString()
-            //    };
-            //    dialog.Show();
-            //}
         }
 
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             try
             {
+                Helper.SaveDemElementsToFile(Global.AllDemElements);
 
-
-                //if (Directory.Exists(Global.TheDirPath) && Directory.Exists(System.IO.Path.GetDirectoryName(Global.TheJsonPath)))
-                //{
-                //    try
-                //    {
-                //        string[] filesInFolder = Directory.GetFiles(Global.TheDirPath);
-                //        List<string> objPaths = new List<string>();
-                //        foreach (FamilyTypeObject famObj in Global.AllDemFamilyTypeObject)
-                //        {
-                //            objPaths.Add(famObj.ThePath);
-                //        }
-
-                //        foreach (string str in filesInFolder)
-                //        {
-                //            if (!objPaths.Contains(str))
-                //            {
-                //                File.Delete(str);
-                //            }
-                //        }
-                //    }
-                //    catch (Exception ex)
-                //    {
-                //        var dialog = new TaskDialog("Debug")
-                //        {
-                //            MainContent = ex.Message
-                //        };
-                //        dialog.Show();
-                //    }
-
-                //    File.WriteAllText(Global.TheJsonPath, FamilyTypeObject.PrintTypeObject(Global.AllDemFamilyTypeObject));
-                //}
-                //else
-                //{
-                //    var dialog = new TaskDialog("Debug")
-                //    {
-                //        MainContent = "one of these paths do not exist:" + Global.TheJsonPath + " - - - - - - - " + Global.TheDirPath
-                //    };
-                //    dialog.Show();
-                //}
             }
             catch (Exception ex)
             {
@@ -276,45 +174,9 @@ namespace RevitFamiliesDb
         {
             var sel = Global.UIDoc.Selection;
 
-            if (sel.IsValidObject)
-            {
-                var elIds = sel.GetElementIds();
+            Global.AllDemElements.AddRange(Helper.CreateFromSelection(Global.UIDoc));
+            RefreshThisMF();
 
-                try
-                {
-                    Global.AllDemFamilyTypeObject.AddRange(HelpingMan(elIds));
-
-                    RefreshThisMF();
-                }
-                catch (Exception ex)
-                {
-                    var dialog = new TaskDialog("Debug")
-                    {
-                        MainContent = ex.Message
-                    };
-                    dialog.Show();
-                    return;
-                }
-            }
-        }
-
-        public List<FamilyTypeObject> HelpingMan(ICollection<ElementId> eleIds)
-        {
-            List<FamilyTypeObject> lsObj = new List<FamilyTypeObject>();
-
-            foreach (ElementId eleId in eleIds)
-            {
-                try
-                {
-                    lsObj.Add(new FamilyTypeObject(eleId, Global.Doc));
-                }
-                catch
-                {
-
-                }
-            }
-
-            return lsObj;
         }
 
 
@@ -323,11 +185,11 @@ namespace RevitFamiliesDb
             try
             {
 
-                var selectedItems = LstDemItems.SelectedItems.Cast<FamilyTypeObject>().ToList();
+                var selectedItems = LstDemItems.SelectedItems.Cast<DemElement>().ToList();
 
                 foreach (var selectedItem in selectedItems)
                 {
-                    Global.AllDemFamilyTypeObject.RemoveAll(obj => obj.DemGuid == selectedItem.DemGuid);
+                    Global.AllDemElements.RemoveAll(obj => obj.UniqueId == selectedItem.UniqueId);
 
                 }
 
@@ -556,12 +418,23 @@ namespace RevitFamiliesDb
         {
             RefreshThisMF();
         }
+
+        private void LstDemItems_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+            LstProperties.ItemsSource = LstDemItems.SelectedItems;
+
+
+        }
     }
 
     public class ItemTemplateSelector : DataTemplateSelector
     {
         public DataTemplate Ceiling { get; set; }
         public DataTemplate Floor { get; set; }
+        public DataTemplate Roof { get; set; }
+        public DataTemplate Wall { get; set; }
+        public DataTemplate Material { get; set; }
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
@@ -569,6 +442,12 @@ namespace RevitFamiliesDb
                 return Ceiling;
             else if (item is DemFloorType)
                 return Floor;
+            else if (item is DemRoofType)
+                return Roof;
+            else if (item is DemWallType)
+                return Wall;
+            else if (item is DemMaterial)
+                return Material;
 
             return base.SelectTemplate(item, container);
         }
