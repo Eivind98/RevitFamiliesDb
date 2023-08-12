@@ -9,11 +9,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Markup;
-using System.Windows.Shapes;
 
 namespace RevitFamiliesDb
 {
@@ -85,19 +80,27 @@ namespace RevitFamiliesDb
                 switch (yo)
                 {
                     case DemCeilingType ceiling when yo is DemCeilingType:
-                        (ceiling).CreateThisMF(doc);
+                        ceiling.CreateThisMF(doc);
                         break;
                     case DemFloorType floor when yo is DemFloorType:
-                        (floor).CreateThisMF(doc);
+                        floor.CreateThisMF(doc);
                         break;
                     case DemRoofType roof when yo is DemRoofType:
-                        (roof).CreateThisMF(doc);
+                        roof.CreateThisMF(doc);
                         break;
                     case DemWallType wall when yo is DemWallType:
-                        (wall).CreateThisMF(doc);
+                        wall.CreateThisMF(doc);
+                        break;
+                    case DemMaterial material when yo is DemMaterial:
+                        material.CreateThisMF(doc);
                         break;
                 }
             }
+        }
+
+        public static DemElement GetDemElement(ElementId eleId, Document doc)
+        {
+            return GetDemElement(doc.GetElement(eleId));
         }
 
         public static DemElement GetDemElement(Element ele)
@@ -123,6 +126,9 @@ namespace RevitFamiliesDb
                     break;
                 case WallType wall when ele is WallType:
                     outPut = new DemWallType(wall);
+                    break;
+                case Material material when ele is Material:
+                    outPut = new DemMaterial(material);
                     break;
             }
 

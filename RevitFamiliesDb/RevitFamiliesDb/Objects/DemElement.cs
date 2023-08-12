@@ -17,7 +17,6 @@ namespace RevitFamiliesDb.Objects
         public List<DemParameter> DemParameter { get; set; }
         public string UniqueId { get; set; }
 
-
         public DemElement() { }
 
         public DemElement(Element element)

@@ -70,11 +70,12 @@
     <Compile Include="DemMainWindow.xaml.cs">
       <DependentUpon>DemMainWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Objects\DemColor.cs" />
     <Compile Include="Objects\Types\DemCeilingType.cs" />
     <Compile Include="Objects\DemHostObjAttribute.cs" />
     <Compile Include="Objects\DemElementType.cs" />
     <Compile Include="Objects\DemElement.cs" />
-    <Compile Include="Objects\DemMaterial.cs" />
+    <Compile Include="Objects\Types\DemMaterial.cs" />
     <Compile Include="Objects\DemCompoundStructure.cs" />
     <Compile Include="Objects\DemLayers.cs" />
     <Compile Include="Objects\Types\DemWallType.cs" />
