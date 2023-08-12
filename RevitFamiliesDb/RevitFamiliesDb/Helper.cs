@@ -76,66 +76,53 @@ namespace RevitFamiliesDb
         }
     }
 
-
     public class Helper
     {
         public static void CreateDemElementsInRevit(List<DemElement> demElements, Document doc)
         {
-            Dictionary<string, Action<DemElement, Document>> categoryToCreateMethod = new Dictionary<string, Action<DemElement, Document>>
-            {
-                { "Ceilings", (yo, Doc) => ((DemCeilingType)yo).CreateThisMF(Doc) },
-                { "Floors", (yo, Doc) => ((DemFloorType)yo).CreateThisMF(Doc) },
-                { "Roofs", (yo, Doc) => ((DemRoofType)yo).CreateThisMF(Doc) },
-                { "Walls", (yo, Doc) => ((DemWallType)yo).CreateThisMF(Doc) }
-            };
-
             foreach (DemElement yo in demElements)
             {
-                if (categoryToCreateMethod.TryGetValue(yo.Category, out var createMethod))
+                switch (yo)
                 {
-                    createMethod(yo, doc);
+                    case DemCeilingType ceiling when yo is DemCeilingType:
+                        (ceiling).CreateThisMF(doc);
+                        break;
+                    case DemFloorType floor when yo is DemFloorType:
+                        (floor).CreateThisMF(doc);
+                        break;
+                    case DemRoofType roof when yo is DemRoofType:
+                        (roof).CreateThisMF(doc);
+                        break;
+                    case DemWallType wall when yo is DemWallType:
+                        (wall).CreateThisMF(doc);
+                        break;
                 }
             }
-
-
-
-            //foreach (DemElement yo in demElements)
-            //{
-            //    switch (yo.Category)
-            //    {
-            //        case "Ceilings":
-            //            ((DemCeilingType)yo).CreateThisMF(doc);
-            //            break;
-            //        case "Floors":
-            //            ((DemFloorType)yo).CreateThisMF(doc);
-            //            break;
-            //        case "Roofs":
-            //            ((DemRoofType)yo).CreateThisMF(doc);
-            //            break;
-            //        case "Walls":
-            //            ((DemWallType)yo).CreateThisMF(doc);
-            //            break;
-            //    }
-            //};
         }
 
         public static DemElement GetDemElement(Element ele)
         {
             DemElement outPut = null;
+            ElementId TypeId = ele.GetTypeId();
 
-            switch (ele.Category.Name)
+            if (TypeId != ElementId.InvalidElementId)
             {
-                case "Ceilings":
-                    outPut = new DemCeilingType(ele as CeilingType);
+                ele = ele.Document.GetElement(TypeId);
+            }
+
+            switch (ele)
+            {
+                case CeilingType ceiling when ele is CeilingType:
+                    outPut = new DemCeilingType(ceiling);
                     break;
-                case "Floors":
-                    outPut = new DemFloorType(ele as FloorType);
+                case FloorType floor when ele is FloorType:
+                    outPut = new DemFloorType(floor);
                     break;
-                case "Roofs":
-                    outPut = new DemRoofType(ele as RoofType);
+                case RoofType roof when ele is RoofType:
+                    outPut = new DemRoofType(roof);
                     break;
-                case "Walls":
-                    outPut = new DemWallType(ele as WallType);
+                case WallType wall when ele is WallType:
+                    outPut = new DemWallType(wall);
                     break;
             }
 
@@ -161,7 +148,6 @@ namespace RevitFamiliesDb
             }
 
             return demElements;
-
         }
 
         public static List<DemElement> LoadDemElementsFromFile()
@@ -206,25 +192,21 @@ namespace RevitFamiliesDb
 
             foreach (DemElement ele in demElements)
             {
-                switch (ele.Category)
+                switch (ele)
                 {
-                    case "Ceilings":
-                        DemCeilingType ceiling = ele as DemCeilingType;
+                    case DemCeilingType ceiling when ele is DemCeilingType:
                         demCeilingTypes.Add(ceiling);
                         imagePaths.Add(ceiling.ImagePath);
                         break;
-                    case "Floors":
-                        DemFloorType floor = ele as DemFloorType;
+                    case DemFloorType floor when ele is DemFloorType:
                         demFloorTypes.Add(floor);
                         imagePaths.Add(floor.ImagePath);
                         break;
-                    case "Roofs":
-                        DemRoofType roof = ele as DemRoofType;
+                    case DemRoofType roof when ele is DemRoofType:
                         demRoofTypes.Add(roof);
                         imagePaths.Add(roof.ImagePath);
                         break;
-                    case "Walls":
-                        DemWallType wall = ele as DemWallType;
+                    case DemWallType wall when ele is DemWallType:
                         demWallTypes.Add(wall);
                         imagePaths.Add(wall.ImagePath);
                         break;
@@ -246,54 +228,6 @@ namespace RevitFamiliesDb
             File.WriteAllText(Global.TheRoofPath, JsonConvert.SerializeObject(demRoofTypes));
             File.WriteAllText(Global.TheWallPath, JsonConvert.SerializeObject(demWallTypes));
         }
-
-
-        public static void SaveDemElementsToFile(DemElement demElement)
-        {
-
-            Dictionary<string, string> categoryPaths = new Dictionary<string, string>
-            {
-                { "Ceilings", Global.TheCeilingPath },
-                { "Floors", Global.TheFloorPath },
-                { "Roofs", Global.TheRoofPath },
-                { "Walls", Global.TheWallPath }
-            };
-
-            if (categoryPaths.TryGetValue(demElement.Category, out string filePath))
-            {
-                File.WriteAllText(filePath, JsonConvert.SerializeObject(demElement));
-            }
-
-            //switch (demElement.Category)
-            //{
-            //    case "Ceilings":
-            //        File.WriteAllText(Global.TheCeilingPath, JsonConvert.SerializeObject(demElement as DemCeilingType));
-            //        break;
-            //    case "Floors":
-            //        File.WriteAllText(Global.TheFloorPath, JsonConvert.SerializeObject(demElement as DemFloorType));
-            //        break;
-            //    case "Roofs":
-            //        File.WriteAllText(Global.TheRoofPath, JsonConvert.SerializeObject(demElement as DemRoofType));
-            //        break;
-            //    case "Walls":
-            //        File.WriteAllText(Global.TheWallPath, JsonConvert.SerializeObject(demElement as DemWallType));
-            //        break;
-            //}
-        }
-
-
-
-        public static CompoundStructure GetCompound(Element element)
-        {
-            HostObjAttributes test = element as HostObjAttributes;
-
-            return test.GetCompoundStructure();
-
-
-
-
-        }
-
 
     }
 }

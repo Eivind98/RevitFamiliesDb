@@ -27,7 +27,15 @@ namespace RevitFamiliesDb.Objects
         {
             try
             {
-                return new DemCompoundStructure(host.GetCompoundStructure());
+                if(host.GetCompoundStructure() != null)
+                {
+                    return new DemCompoundStructure(host.GetCompoundStructure());
+                }
+                else
+                {
+                    return null;
+                }
+                
             }
             catch
             {

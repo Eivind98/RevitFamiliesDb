@@ -496,10 +496,6 @@
 
                     </Grid>
 
-                    <ListView x:Name="itemListView" 
-                              ItemTemplateSelector="{StaticResource itemTemplateSelector}">
-
-                    </ListView>
                 </StackPanel>
 
                 <ListView x:Name="LstDemItems"

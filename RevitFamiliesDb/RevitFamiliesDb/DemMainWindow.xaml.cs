@@ -34,7 +34,7 @@ namespace RevitFamiliesDb
     {
         public Window AWindow { get; set; }
         public List<string> SortingStuff { get; set; } = new List<string>();
-        public ListSortDirection AsOrDes { get; set; } = ListSortDirection.Ascending;
+        public bool AsOrDes { get; set; } = false;
         public List<FamilyTypeObject> RelevantItems { get; set; } = new List<FamilyTypeObject>();
         Document Doc { get; set; }
         ExternalEvent M_exEvent { get; set; }
@@ -114,16 +114,9 @@ namespace RevitFamiliesDb
                     filteredList = Global.AllDemElements;
                 }
 
-                LstDemItems.ItemsSource = filteredList;
+                List<DemElement> sortedList = filteredList.OrderBy(element => element.Name).ToList();
+                LstDemItems.ItemsSource = sortedList;
 
-
-
-                LstDemItems.Items.SortDescriptions.Clear();
-
-                foreach (string s in SortingStuff)
-                {
-                    LstDemItems.Items.SortDescriptions.Add(new SortDescription(s, AsOrDes));
-                }
             }
             catch
             {
@@ -240,6 +233,13 @@ namespace RevitFamiliesDb
                         GridLengthConverter gridLengthConverter = new GridLengthConverter();
 
                         item.RowDefinitions[0].Height = (GridLength)gridLengthConverter.ConvertFrom(e.NewValue.ToString());
+
+                        TextBlock label = item.FindName("LblName") as TextBlock;
+                        if (label != null)
+                        {
+                            double newFontSize = e.NewValue/6.4;
+                            label.FontSize = newFontSize;
+                        }
                     }
                 }
             }
@@ -300,18 +300,18 @@ namespace RevitFamiliesDb
                         case "Name":
                             SortingStuff.Clear();
                             SortingStuff.Add("Name");
-                            SortingStuff.Add("ComStructureLayers.GetWidth");
+                            SortingStuff.Add("Width");
                             break;
                         case "Thickness":
                             SortingStuff.Clear();
-                            SortingStuff.Add("ComStructureLayers.GetWidth");
+                            SortingStuff.Add("Width");
                             SortingStuff.Add("Name");
                             break;
                         case "Type":
                             SortingStuff.Clear();
-                            SortingStuff.Add("Type");
+                            SortingStuff.Add("Category");
                             SortingStuff.Add("Name");
-                            SortingStuff.Add("ComStructureLayers.GetWidth");
+                            SortingStuff.Add("Width");
                             break;
                         default:
                             var dialog = new TaskDialog("Debug")
@@ -338,13 +338,13 @@ namespace RevitFamiliesDb
 
         private void BtnToggleAsOrDes_Checked(object sender, RoutedEventArgs e)
         {
-            AsOrDes = ListSortDirection.Descending;
+            AsOrDes = true;
             RefreshThisMF();
         }
 
         private void BtnToggleAsOrDes_Unchecked(object sender, RoutedEventArgs e)
         {
-            AsOrDes = ListSortDirection.Ascending;
+            AsOrDes = false;
             RefreshThisMF();
         }
 

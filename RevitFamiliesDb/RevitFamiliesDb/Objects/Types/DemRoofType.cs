@@ -21,8 +21,7 @@ namespace RevitFamiliesDb
 
         public DemRoofType(RoofType roof) : base(roof)
         {
-            ThermalProperties = roof.ThermalProperties.ToString();
-
+            ThermalProperties = roof.ThermalProperties?.ToString();
         }
 
         public void CreateThisMF(Document doc)

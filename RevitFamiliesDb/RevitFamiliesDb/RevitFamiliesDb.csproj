@@ -61,15 +61,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="00Starters\CommandFloor.cs" />
-    <Compile Include="DemMainWindow.xaml.cs">
-      <DependentUpon>DemMainWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="00Starters\StartProgram.cs" />
     <Compile Include="00Starters\CreateFromList.cs" />
     <Compile Include="00Starters\AddToList.cs" />
     <Compile Include="App.cs" />
     <Compile Include="ButtonBuilder.cs" />
     <Compile Include="00Starters\CommandCeiling.cs" />
+    <Compile Include="DemMainWindow.xaml.cs">
+      <DependentUpon>DemMainWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Objects\Types\DemCeilingType.cs" />
     <Compile Include="Objects\DemHostObjAttribute.cs" />
     <Compile Include="Objects\DemElementType.cs" />
@@ -96,7 +96,7 @@
   <ItemGroup>
     <Page Include="DemMainWindow.xaml">
       <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
+      <Generator>XamlIntelliSenseFileGenerator</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup />

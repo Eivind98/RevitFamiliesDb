@@ -36,7 +36,8 @@ namespace RevitFamiliesDb.Objects
                 }
             }
 
-            UniqueId = element.UniqueId;
+            UniqueId = Guid.NewGuid().ToString();
+            //UniqueId = element.UniqueId;
         }
 
 

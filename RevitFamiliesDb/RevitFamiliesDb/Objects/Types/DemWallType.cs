@@ -26,9 +26,9 @@ namespace RevitFamiliesDb
 
         public DemWallType(WallType wall) : base(wall)
         {
-            Function = (int)wall.Function;
-            Kind = (int)wall.Kind;
-            ThermalProperties = wall.ThermalProperties.ToString();
+            Function = (int)wall?.Function;
+            Kind = (int)wall?.Kind;
+            ThermalProperties = wall.ThermalProperties?.ToString();
 
         }
 
