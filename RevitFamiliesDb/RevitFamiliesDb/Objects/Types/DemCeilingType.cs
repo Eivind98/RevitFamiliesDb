@@ -23,6 +23,7 @@ namespace RevitFamiliesDb
         public DemCeilingType(CeilingType ceiling) : base(ceiling)
         {
             ThermalProperties = ceiling.ThermalProperties?.ToString();
+
         }
 
         public void CreateThisMF(Document doc)

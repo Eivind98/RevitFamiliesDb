@@ -4,6 +4,7 @@ using Autodesk.Revit.UI;
 using RevitFamiliesDb.Objects;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,6 +32,8 @@ namespace RevitFamiliesDb
         public int Transparency { get; set; }
         public bool UseRenderAppearanceForShading { get; set; }
 
+        public DemMaterial() { }
+
         public DemMaterial(Material material) : base(material)
         {
             AppearanceAssetId = material.AppearanceAssetId.IntegerValue;
@@ -53,10 +56,13 @@ namespace RevitFamiliesDb
             UseRenderAppearanceForShading = material.UseRenderAppearanceForShading;
         }
 
-        public void CreateThisMF(Document doc)
+        public ElementId CreateThisMF(Document doc)
         {
-            Material thisFucker = doc.GetElement(Material.Create(doc, this.Name)) as Material;
-
+            Trace.Write("Creating Material");
+            ElementId eleId = Material.Create(doc, Name);
+            Trace.Write("Creating Material1");
+            Material thisFucker = doc.GetElement(eleId) as Material;
+            Trace.Write("Creating Material2");
             thisFucker.Name = Name;
             thisFucker.Color = Color.ConvertToRevitColor();
             thisFucker.CutBackgroundPatternColor = CutBackgroundPatternColor.ConvertToRevitColor();
@@ -75,7 +81,8 @@ namespace RevitFamiliesDb
             thisFucker.ThermalAssetId = new ElementId(ThermalAssetId);
             thisFucker.Transparency = Transparency;
             thisFucker.UseRenderAppearanceForShading = UseRenderAppearanceForShading;
-
+            Trace.Write("Creating Material3");
+            return eleId;
         }
 
     }

@@ -28,12 +28,15 @@ namespace RevitFamiliesDb
             var uidoc = uiapp.ActiveUIDocument;
             var app = uiapp.Application;
             var doc = uidoc.Document;
-
+            Trace.Write("1");
             List<DemElement> demSelectedElements = Helper.CreateFromSelection(uidoc);
+            Trace.Write("2");
             List<DemElement> demExistingElements = Helper.LoadDemElementsFromFile();
-
+            Trace.Write("3");
             demExistingElements.AddRange(demSelectedElements);
+            Trace.Write("4");
             Helper.SaveDemElementsToFile(demExistingElements);
+            Trace.Write("5");
 
             return Result.Succeeded;
         }

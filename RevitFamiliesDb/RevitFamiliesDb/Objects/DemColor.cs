@@ -15,6 +15,7 @@ namespace RevitFamiliesDb
         public byte Green { get; set; }
         public byte Blue { get; set; }
 
+        public DemColor() { }
 
         public DemColor(Color color)
         {

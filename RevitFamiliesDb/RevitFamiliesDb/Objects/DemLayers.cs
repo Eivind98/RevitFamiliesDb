@@ -20,6 +20,7 @@ namespace RevitFamiliesDb
         public bool LayerCapFlag { get; set; }
         public int LayerId { get; set; }
         public int MaterialId { get; set; }
+        public string MaterialGuid { get; set; }
         public string MaterialName { get; set; }
         public double Width { get; set; }
         public double MetricWidth { get { return Math.Round(Width * 0.3048, 3); } }

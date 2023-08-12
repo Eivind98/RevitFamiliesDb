@@ -38,7 +38,7 @@ namespace RevitFamiliesDb
                             {
                                 Helper.CreateDemElementsInRevit(Global.ElementsToProjectList.Cast<DemElement>().ToList(), doc);
                             }
-                            catch(Exception ex)
+                            catch (Exception ex)
                             {
                                 Trace.WriteLine("Trying to create them items");
                                 Trace.WriteLine(ex.Message);
@@ -150,8 +150,16 @@ namespace RevitFamiliesDb
                 if (demElement != null)
                 {
                     demElements.Add(demElement);
+                    List<DemMaterial> tust = GetDemMaterialFromAndForElement(demElement, doc);
+                    if(tust.Count() != 0)
+                    {
+                        demElements.AddRange(tust);
+                    }
                 }
             }
+
+
+
 
             return demElements;
         }
@@ -163,7 +171,7 @@ namespace RevitFamiliesDb
             try
             {
                 output.AddRange(JsonConvert.DeserializeObject<List<DemCeilingType>>(File.ReadAllText(Global.TheCeilingPath)));
-            } 
+            }
             catch { }
 
             try
@@ -184,6 +192,14 @@ namespace RevitFamiliesDb
             }
             catch { }
 
+            try
+            {
+                output.AddRange(JsonConvert.DeserializeObject<List<DemMaterial>>(File.ReadAllText(Global.TheMaterialPath)));
+            }
+            catch {
+                Trace.WriteLine("This Sucks ASSSSSS");
+            }
+
             return output;
         }
 
@@ -195,6 +211,7 @@ namespace RevitFamiliesDb
             List<DemFloorType> demFloorTypes = new List<DemFloorType>();
             List<DemRoofType> demRoofTypes = new List<DemRoofType>();
             List<DemWallType> demWallTypes = new List<DemWallType>();
+            List<DemMaterial> demMaterial = new List<DemMaterial>();
 
             foreach (DemElement ele in demElements)
             {
@@ -216,6 +233,9 @@ namespace RevitFamiliesDb
                         demWallTypes.Add(wall);
                         imagePaths.Add(wall.ImagePath);
                         break;
+                    case DemMaterial material when ele is DemMaterial:
+                        demMaterial.Add(material);
+                        break;
                 }
             }
 
@@ -233,6 +253,31 @@ namespace RevitFamiliesDb
             File.WriteAllText(Global.TheFloorPath, JsonConvert.SerializeObject(demFloorTypes));
             File.WriteAllText(Global.TheRoofPath, JsonConvert.SerializeObject(demRoofTypes));
             File.WriteAllText(Global.TheWallPath, JsonConvert.SerializeObject(demWallTypes));
+            File.WriteAllText(Global.TheMaterialPath, JsonConvert.SerializeObject(demMaterial));
+        }
+
+        public static List<DemMaterial> GetDemMaterialFromAndForElement(DemElement ele, Document doc)
+        {
+            List<DemMaterial> lst = new List<DemMaterial>();
+
+            if (ele is DemHostObjAttribute)
+            {
+                if(((DemHostObjAttribute)ele).DemCompoundStructure != null)
+                {
+                    foreach (DemLayers l in (ele as DemHostObjAttribute).DemCompoundStructure.GetLayers)
+                    {
+                        var tist = l.MaterialId;
+                        if (tist != -1)
+                        {
+                            DemMaterial mat = new DemMaterial(doc.GetElement(new ElementId(tist)) as Material);
+                            lst.Add(mat);
+                            l.MaterialGuid = mat.UniqueId;
+                        }
+                    }
+                }
+                
+            }
+            return lst;
         }
 
     }

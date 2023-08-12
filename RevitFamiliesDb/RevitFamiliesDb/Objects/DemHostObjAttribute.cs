@@ -21,26 +21,16 @@ namespace RevitFamiliesDb.Objects
         public DemHostObjAttribute(HostObjAttributes host) : base(host)
         {
             DemCompoundStructure = CreateDemCompoundStructure(host);
+            
         }
 
         public DemCompoundStructure CreateDemCompoundStructure(HostObjAttributes host)
         {
-            try
+            if (host.GetCompoundStructure() is CompoundStructure compoundStructure)
             {
-                if(host.GetCompoundStructure() != null)
-                {
-                    return new DemCompoundStructure(host.GetCompoundStructure());
-                }
-                else
-                {
-                    return null;
-                }
-                
+                return new DemCompoundStructure(compoundStructure);
             }
-            catch
-            {
-                return null;
-            }
+            return null;
         }
 
 
