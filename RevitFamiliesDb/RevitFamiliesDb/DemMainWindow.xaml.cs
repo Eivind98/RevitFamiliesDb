@@ -11,6 +11,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -77,12 +78,12 @@ namespace RevitFamiliesDb
                 string searchString = TxBoxSearch.Text.ToLower();
                 LstDemItems.ItemsSource = null;
 
-                List<string> filteringTypes = new List<string>
+                List<Type> filteringTypes = new List<Type>
                 {
-                    (bool)BtnToggleCeiling.IsChecked ? "Ceilings" : null,
-                    (bool)BtnToggleFloor.IsChecked ? "Floors" : null,
-                    (bool)BtnToggleRoof.IsChecked ? "Roofs" : null,
-                    (bool)BtnToggleWall.IsChecked ? "Walls" : null
+                    (bool)BtnToggleCeiling.IsChecked ? typeof(DemCeilingType) : null,
+                    (bool)BtnToggleFloor.IsChecked ? typeof(DemFloorType) : null,
+                    (bool)BtnToggleRoof.IsChecked ? typeof(DemRoofType) : null,
+                    (bool)BtnToggleWall.IsChecked ? typeof(DemWallType) : null
                 };
 
                 bool noValuesToFilter = filteringTypes.All(type => type == null);
@@ -99,14 +100,14 @@ namespace RevitFamiliesDb
                 else if (hasSearchString && !noValuesToFilter)
                 {
                     filteredList = Global.AllDemElements
-                        .Where(item => filteringTypes.Contains(item.Category))
+                        .Where(item => filteringTypes.Contains(GetElementType(item)))
                         .Where(item => item.Name.ToLower().Contains(searchString))
                         .ToList();
                 }
                 else if (!noValuesToFilter)
                 {
                     filteredList = Global.AllDemElements
-                        .Where(item => filteringTypes.Contains(item.Category))
+                        .Where(item => filteringTypes.Contains(GetElementType(item)))
                         .ToList();
                 }
                 else
@@ -124,6 +125,29 @@ namespace RevitFamiliesDb
             }
         }
 
+        public Type GetElementType(DemElement ele)
+        {
+            if (ele is DemCeilingType)
+            {
+                return typeof(DemCeilingType);
+            }
+            else if (ele is DemFloorType)
+            {
+                return typeof(DemFloorType);
+            }
+            else if (ele is DemRoofType)
+            {
+                return typeof(DemRoofType);
+            }
+            else if (ele is DemWallType)
+            {
+                return typeof(DemWallType);
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         private void BtnAddToProject_Click(object sender, RoutedEventArgs e)
         {
@@ -426,6 +450,7 @@ namespace RevitFamiliesDb
 
 
         }
+
     }
 
     public class ItemTemplateSelector : DataTemplateSelector
