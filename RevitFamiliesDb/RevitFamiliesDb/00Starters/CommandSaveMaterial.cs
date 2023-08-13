@@ -17,7 +17,7 @@ using System.Linq;
 namespace RevitFamiliesDb
 {
     [Transaction(TransactionMode.Manual)]
-    public class CommandCeiling : IExternalCommand
+    public class CommandSaveMaterial : IExternalCommand
     {
         public Result Execute(
           ExternalCommandData commandData,
@@ -28,14 +28,25 @@ namespace RevitFamiliesDb
             var uidoc = uiapp.ActiveUIDocument;
             var app = uiapp.Application;
             var doc = uidoc.Document;
+
+            // Access current selection
+            var sel = uidoc.Selection;
+
             Trace.Write("1");
+
             List<DemElement> demSelectedElements = Helper.CreateFromSelection(uidoc);
+
+            List<DemMaterial> mat = new List<DemMaterial>();
+
+            mat.Add(Helper.GetDemMaterialFromAndForElement(demSelectedElements[0], doc)[0]);
+
             Trace.Write("2");
-            List<DemElement> demExistingElements = Helper.LoadDemElementsFromFile();
-            Trace.Write("3");
-            demExistingElements.AddRange(demSelectedElements);
+            
             Trace.Write("4");
-            Helper.SaveDemElementsToFile(demExistingElements);
+
+            Trace.Write("3");
+            File.WriteAllText(Global.TheMaterialPath, JsonConvert.SerializeObject(mat));
+
             Trace.Write("5");
 
             return Result.Succeeded;

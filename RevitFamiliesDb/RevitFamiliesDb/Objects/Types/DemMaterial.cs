@@ -58,12 +58,26 @@ namespace RevitFamiliesDb
 
         public ElementId CreateThisMF(Document doc)
         {
-            Trace.Write("Creating Material");
-            ElementId eleId = Material.Create(doc, Name);
+            FilteredElementCollector collector = new FilteredElementCollector(doc);
+            collector.OfClass(typeof(Material));
+            string temporaryName = Name;
+            int counter = 1;
+            foreach (Element elem in collector)
+            {
+                Material existingMaterial = elem as Material;
+                if (existingMaterial != null && existingMaterial.Name == temporaryName)
+                {
+                    temporaryName = $"{Name}_{counter}";
+                    counter++;
+                }
+            }
+
+
+            Trace.Write("Creating Material Yush!!");
+            ElementId eleId = Material.Create(doc, temporaryName);
             Trace.Write("Creating Material1");
             Material thisFucker = doc.GetElement(eleId) as Material;
             Trace.Write("Creating Material2");
-            thisFucker.Name = Name;
             thisFucker.Color = Color.ConvertToRevitColor();
             thisFucker.CutBackgroundPatternColor = CutBackgroundPatternColor.ConvertToRevitColor();
             thisFucker.CutBackgroundPatternId = new ElementId(CutBackgroundPatternId);

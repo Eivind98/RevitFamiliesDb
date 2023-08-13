@@ -23,7 +23,7 @@ namespace RevitFamiliesDb
             // Add a new ribbon panel
             RibbonPanel panel = application.CreateRibbonPanel(tabName, "IFC Tools");
 
-            new ButtonBuilder("Export IFC", typeof(CommandCeiling))
+            new ButtonBuilder("Export IFC", typeof(CommandCreateMaterial))
                 .Text("Hello Eivind")
                 .Tooltip("Go to 3D View you want to export")
                 .ImagePath("C:\\Users\\eev_9\\source\\repos\\Eivind98\\EivindsAddins\\ExampleAddIn\\Logos\\Door Orientation.png")

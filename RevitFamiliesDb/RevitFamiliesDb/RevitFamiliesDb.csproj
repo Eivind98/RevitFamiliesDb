@@ -60,13 +60,13 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="00Starters\CommandFloor.cs" />
+    <Compile Include="00Starters\CommandSaveMaterial.cs" />
     <Compile Include="00Starters\StartProgram.cs" />
     <Compile Include="00Starters\CreateFromList.cs" />
     <Compile Include="00Starters\AddToList.cs" />
     <Compile Include="App.cs" />
     <Compile Include="ButtonBuilder.cs" />
-    <Compile Include="00Starters\CommandCeiling.cs" />
+    <Compile Include="00Starters\CommandCreateMaterial.cs" />
     <Compile Include="DemMainWindow.xaml.cs">
       <DependentUpon>DemMainWindow.xaml</DependentUpon>
     </Compile>
