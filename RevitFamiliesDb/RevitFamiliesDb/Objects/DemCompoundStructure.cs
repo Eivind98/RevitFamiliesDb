@@ -39,7 +39,7 @@ namespace RevitFamiliesDb
 
         }
 
-        public DemCompoundStructure(CompoundStructure comStructure)
+        public DemCompoundStructure(CompoundStructure comStructure, Document doc)
         {
 
             EndCap = (int)comStructure.EndCap;
@@ -55,7 +55,7 @@ namespace RevitFamiliesDb
             CanSplitAndMergeRegionsBeUsed = comStructure.CanSplitAndMergeRegionsBeUsed();
             GetFirstCoreLayerIndex = comStructure.GetFirstCoreLayerIndex();
             GetLastCoreLayerIndex = comStructure.GetLastCoreLayerIndex();
-            GetLayers = comStructure.GetLayers().Select(layer => new DemLayers(layer)).ToList(); ;
+            GetLayers = comStructure.GetLayers().Select(layer => new DemLayers(layer, doc)).ToList(); ;
             GetWidth = comStructure.GetWidth();
             IsVerticallyHomogeneous = comStructure.IsVerticallyHomogeneous();
             
@@ -70,10 +70,10 @@ namespace RevitFamiliesDb
 
         }
 
-        public CompoundStructure Create()
+        public CompoundStructure Create(Document doc)
         {
 
-            IList<CompoundStructureLayer> layers = GetLayers.CreateLayers();
+            IList<CompoundStructureLayer> layers = GetLayers.CreateLayers(doc);
 
             CompoundStructure output = CompoundStructure.CreateSimpleCompoundStructure(layers);
             output.EndCap = (EndCapCondition)EndCap;

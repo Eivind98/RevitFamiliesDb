@@ -36,7 +36,7 @@ namespace RevitFamiliesDb
 
             if (DemCompoundStructure != null)
             {
-                floorEle.SetCompoundStructure(DemCompoundStructure.Create());
+                floorEle.SetCompoundStructure(DemCompoundStructure.Create(doc));
             }
 
             foreach (DemParameter para in this.DemParameter)

@@ -32,7 +32,7 @@ namespace RevitFamiliesDb
 
             if (DemCompoundStructure != null)
             {
-                roofEle.SetCompoundStructure(DemCompoundStructure.Create());
+                roofEle.SetCompoundStructure(DemCompoundStructure.Create(doc));
             }
 
             foreach (DemParameter para in this.DemParameter)

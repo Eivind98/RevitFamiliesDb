@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -21,6 +22,7 @@ namespace RevitFamiliesDb
         public int LayerId { get; set; }
         public int MaterialId { get; set; }
         public string MaterialGuid { get; set; }
+        public DemMaterial TheMaterial { get; set; }
         public string MaterialName { get; set; }
         public double Width { get; set; }
         public double MetricWidth { get { return Math.Round(Width * 0.3048, 3); } }
@@ -30,9 +32,11 @@ namespace RevitFamiliesDb
 
         }
 
-        public DemLayers(CompoundStructureLayer strucLayer)
+        public DemLayers(CompoundStructureLayer strucLayer, Document doc)
         {
             Function = (int)strucLayer.Function;
+
+            
 
             if (Function == 200)
             {
@@ -40,17 +44,34 @@ namespace RevitFamiliesDb
                 DeckProfileId = strucLayer.DeckProfileId.IntegerValue;
             }
             
+
             
             IsValidObject = strucLayer.IsValidObject;
             LayerCapFlag = strucLayer.LayerCapFlag;
             LayerId = strucLayer.LayerId;
             MaterialId = strucLayer.MaterialId.IntegerValue;
-            
             Width = strucLayer.Width;
+
+            if(MaterialId != -1)
+            {
+                try
+                {
+                    var test = doc.GetElement(new ElementId(MaterialId)) as Material;
+                    TheMaterial = new DemMaterial(test);
+                }
+                catch
+                {
+                    Trace.Write("Testing" + MaterialId);
+                }
+                
+
+                
+            }
             
+
         }
 
-        public CompoundStructureLayer CreateLayer()
+        public CompoundStructureLayer CreateLayer(Document doc)
         {
             CompoundStructureLayer Output = new CompoundStructureLayer();
 
@@ -63,7 +84,8 @@ namespace RevitFamiliesDb
             }
             
             Output.LayerCapFlag = LayerCapFlag;
-            Output.MaterialId = new ElementId(MaterialId);
+
+            Output.MaterialId = TheMaterial.CreateThisMF(doc);
             Output.Width = Width;
 
             return Output;
@@ -80,13 +102,13 @@ namespace RevitFamiliesDb
     public static class DemLayersExtensions
     {
         // Extension method to create a list of CompoundStructureLayers from a list of DemLayers objects
-        public static IList<CompoundStructureLayer> CreateLayers(this List<DemLayers> demLayersList)
+        public static IList<CompoundStructureLayer> CreateLayers(this List<DemLayers> demLayersList, Document doc)
         {
             IList<CompoundStructureLayer> layersList = new List<CompoundStructureLayer>();
 
             foreach (var demLayer in demLayersList)
             {
-                var compoundStructureLayer = demLayer.CreateLayer();
+                var compoundStructureLayer = demLayer.CreateLayer(doc);
                 layersList.Add(compoundStructureLayer);
             }
 

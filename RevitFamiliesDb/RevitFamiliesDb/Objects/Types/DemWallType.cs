@@ -40,7 +40,7 @@ namespace RevitFamiliesDb
 
             if (DemCompoundStructure != null)
             {
-                WallEle.SetCompoundStructure(DemCompoundStructure.Create());
+                WallEle.SetCompoundStructure(DemCompoundStructure.Create(doc));
             }
 
             foreach (DemParameter para in this.DemParameter)

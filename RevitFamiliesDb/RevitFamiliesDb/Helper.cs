@@ -192,13 +192,13 @@ namespace RevitFamiliesDb
             }
             catch { }
 
-            try
-            {
-                output.AddRange(JsonConvert.DeserializeObject<List<DemMaterial>>(File.ReadAllText(Global.TheMaterialPath)));
-            }
-            catch {
-                Trace.WriteLine("This Sucks ASSSSSS");
-            }
+            //try
+            //{
+            //    output.AddRange(JsonConvert.DeserializeObject<List<DemMaterial>>(File.ReadAllText(Global.TheMaterialPath)));
+            //}
+            //catch {
+            //    Trace.WriteLine("This Sucks ASSSSSS");
+            //}
 
             return output;
         }

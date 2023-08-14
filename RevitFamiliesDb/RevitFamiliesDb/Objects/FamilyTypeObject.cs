@@ -110,14 +110,6 @@ namespace RevitFamiliesDb
 
             file.Close();
 
-            try
-            {
-                ComStructureLayers = new DemCompoundStructure((Ele as HostObjAttributes).GetCompoundStructure());
-            }
-            catch
-            {
-
-            }
 
             Parameters = new List<DemParameter>();
 
@@ -203,66 +195,66 @@ namespace RevitFamiliesDb
 
 
 
-            switch (this.Type)
-            {
-                case "Ceilings":
-                    CeilingType randomCeiling = new FilteredElementCollector(doc).OfClass(typeof(CeilingType)).First(i => (i as ElementType).FamilyName == DemFamilyName) as CeilingType;
-                    var ceilingEle = randomCeiling.Duplicate(Guid.NewGuid().ToString()) as CeilingType;
+            //switch (this.Type)
+            //{
+            //    case "Ceilings":
+            //        CeilingType randomCeiling = new FilteredElementCollector(doc).OfClass(typeof(CeilingType)).First(i => (i as ElementType).FamilyName == DemFamilyName) as CeilingType;
+            //        var ceilingEle = randomCeiling.Duplicate(Guid.NewGuid().ToString()) as CeilingType;
 
-                    if (ComStructureLayers != null)
-                    {
-                        ceilingEle.SetCompoundStructure(ComStructureLayers.Create());
-                    }
+            //        if (ComStructureLayers != null)
+            //        {
+            //            ceilingEle.SetCompoundStructure(ComStructureLayers.Create());
+            //        }
 
-                    foreach (DemParameter para in Parameters)
-                    {
-                        para.CreateThoseMF(ceilingEle);
+            //        foreach (DemParameter para in Parameters)
+            //        {
+            //            para.CreateThoseMF(ceilingEle);
 
-                    }
-                    break;
-                case "Floors":
-                    FloorType randomFloor = new FilteredElementCollector(doc).OfClass(typeof(FloorType)).First(i => (i as ElementType).FamilyName == DemFamilyName) as FloorType;
-                    var floorEle = randomFloor.Duplicate(Guid.NewGuid().ToString()) as FloorType;
+            //        }
+            //        break;
+            //    case "Floors":
+            //        FloorType randomFloor = new FilteredElementCollector(doc).OfClass(typeof(FloorType)).First(i => (i as ElementType).FamilyName == DemFamilyName) as FloorType;
+            //        var floorEle = randomFloor.Duplicate(Guid.NewGuid().ToString()) as FloorType;
 
-                    if (ComStructureLayers != null)
-                    {
-                        floorEle.SetCompoundStructure(ComStructureLayers.Create());
-                    }
+            //        if (ComStructureLayers != null)
+            //        {
+            //            floorEle.SetCompoundStructure(ComStructureLayers.Create());
+            //        }
 
-                    foreach (DemParameter para in Parameters)
-                    {
-                        para.CreateThoseMF(floorEle);
+            //        foreach (DemParameter para in Parameters)
+            //        {
+            //            para.CreateThoseMF(floorEle);
 
-                    }
-                    break;
-                case "Roofs":
-                    RoofType randomRoof = new FilteredElementCollector(doc).OfClass(typeof(RoofType)).First(i => (i as ElementType).FamilyName == DemFamilyName) as RoofType;
-                    var roofEle = randomRoof.Duplicate(Guid.NewGuid().ToString()) as RoofType;
-                    if (ComStructureLayers != null)
-                    {
-                        roofEle.SetCompoundStructure(ComStructureLayers.Create());
-                    }
-                    foreach (DemParameter para in Parameters)
-                    {
-                        para.CreateThoseMF(roofEle);
+            //        }
+            //        break;
+            //    case "Roofs":
+            //        RoofType randomRoof = new FilteredElementCollector(doc).OfClass(typeof(RoofType)).First(i => (i as ElementType).FamilyName == DemFamilyName) as RoofType;
+            //        var roofEle = randomRoof.Duplicate(Guid.NewGuid().ToString()) as RoofType;
+            //        if (ComStructureLayers != null)
+            //        {
+            //            roofEle.SetCompoundStructure(ComStructureLayers.Create());
+            //        }
+            //        foreach (DemParameter para in Parameters)
+            //        {
+            //            para.CreateThoseMF(roofEle);
 
-                    }
-                    break;
-                case "Walls":
-                    WallType randomWall = new FilteredElementCollector(doc).OfClass(typeof(WallType)).First(i => (i as ElementType).FamilyName == DemFamilyName) as WallType;
-                    var wallEle = randomWall.Duplicate(Guid.NewGuid().ToString()) as WallType;
-                    if (ComStructureLayers != null)
-                    {
-                        wallEle.SetCompoundStructure(ComStructureLayers.Create());
-                    }
-                    foreach (DemParameter para in Parameters)
-                    {
-                        para.CreateThoseMF(wallEle);
+            //        }
+            //        break;
+            //    case "Walls":
+            //        WallType randomWall = new FilteredElementCollector(doc).OfClass(typeof(WallType)).First(i => (i as ElementType).FamilyName == DemFamilyName) as WallType;
+            //        var wallEle = randomWall.Duplicate(Guid.NewGuid().ToString()) as WallType;
+            //        if (ComStructureLayers != null)
+            //        {
+            //            wallEle.SetCompoundStructure(ComStructureLayers.Create());
+            //        }
+            //        foreach (DemParameter para in Parameters)
+            //        {
+            //            para.CreateThoseMF(wallEle);
 
-                    }
-                    break;
+            //        }
+            //        break;
 
-            }
+            //}
             return null;
         }
 

@@ -34,7 +34,7 @@ namespace RevitFamiliesDb
 
             if (DemCompoundStructure != null)
             {
-                CeilingEle.SetCompoundStructure(DemCompoundStructure.Create());
+                CeilingEle.SetCompoundStructure(DemCompoundStructure.Create(doc));
             }
 
             foreach (DemParameter para in this.DemParameter)

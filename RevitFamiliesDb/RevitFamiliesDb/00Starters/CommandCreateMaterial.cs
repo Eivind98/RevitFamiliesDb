@@ -34,7 +34,8 @@ namespace RevitFamiliesDb
             try
             {
                 demSelectedElements = JsonConvert.DeserializeObject<List<DemMaterial>>(File.ReadAllText(Global.TheMaterialPath));
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Trace.WriteLine(ex.Message);
             }

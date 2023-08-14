@@ -28,7 +28,7 @@ namespace RevitFamiliesDb.Objects
         {
             if (host.GetCompoundStructure() is CompoundStructure compoundStructure)
             {
-                return new DemCompoundStructure(compoundStructure);
+                return new DemCompoundStructure(compoundStructure, host.Document);
             }
             return null;
         }
