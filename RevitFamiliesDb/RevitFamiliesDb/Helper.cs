@@ -150,11 +150,11 @@ namespace RevitFamiliesDb
                 if (demElement != null)
                 {
                     demElements.Add(demElement);
-                    List<DemMaterial> tust = GetDemMaterialFromAndForElement(demElement, doc);
-                    if(tust.Count() != 0)
-                    {
-                        demElements.AddRange(tust);
-                    }
+                    //List<DemMaterial> tust = GetDemMaterialFromAndForElement(demElement, doc);
+                    //if(tust.Count() != 0)
+                    //{
+                    //    demElements.AddRange(tust);
+                    //}
                 }
             }
 

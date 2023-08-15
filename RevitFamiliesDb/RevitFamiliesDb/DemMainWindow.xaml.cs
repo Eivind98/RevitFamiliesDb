@@ -175,13 +175,9 @@ namespace RevitFamiliesDb
 
         private void BtnAdd_Click(object sender, RoutedEventArgs e)
         {
-            var sel = Global.UIDoc.Selection;
-
             Global.AllDemElements.AddRange(Helper.CreateFromSelection(Global.UIDoc));
             RefreshThisMF();
-
         }
-
 
         private void BtnDelete_Click(object sender, RoutedEventArgs e)
         {
