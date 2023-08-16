@@ -4,16 +4,18 @@ using Autodesk.Revit.UI;
 using RevitFamiliesDb.Objects;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace RevitFamiliesDb
 {
     public class DemMaterial : DemElement
     {
-        public int AppearanceAssetId { get; set; }
+        public DemAppearanceAssetElement AppearanceAssetId { get; set; }
         public DemColor Color { get; set; }
         public DemColor CutBackgroundPatternColor { get; set; }
         public int CutBackgroundPatternId { get; set; }
@@ -36,7 +38,9 @@ namespace RevitFamiliesDb
 
         public DemMaterial(Material material) : base(material)
         {
-            AppearanceAssetId = material.AppearanceAssetId.IntegerValue;
+            var assetTest = new FilteredElementCollector(material.Document).OfClass(typeof(AppearanceAssetElement)).First(i => i.Id == material.Id) as AppearanceAssetElement;
+
+            AppearanceAssetId = new DemAppearanceAssetElement(assetTest);
             Color = new DemColor(material.Color);
             CutBackgroundPatternColor = new DemColor(material.CutBackgroundPatternColor);
             CutBackgroundPatternId = material.CutBackgroundPatternId.IntegerValue;
@@ -78,6 +82,8 @@ namespace RevitFamiliesDb
             Trace.Write("Creating Material1");
             Material thisFucker = doc.GetElement(eleId) as Material;
             Trace.Write("Creating Material2");
+
+            thisFucker.AppearanceAssetId = AppearanceAssetId.CreateThisMF(doc);
             thisFucker.Color = Color.ConvertToRevitColor();
             thisFucker.CutBackgroundPatternColor = CutBackgroundPatternColor.ConvertToRevitColor();
             thisFucker.CutBackgroundPatternId = new ElementId(CutBackgroundPatternId);
