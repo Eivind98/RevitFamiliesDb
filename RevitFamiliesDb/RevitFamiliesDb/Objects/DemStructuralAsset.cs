@@ -99,21 +99,36 @@ namespace RevitFamiliesDb.Objects
             
 
 
-            var thAsset = new ThermalAsset("Thermal1", ThermalMaterialType.Solid);
-            thAsset.Name = "SomeThermalAsset";
-            thAsset.Behavior = StructuralBehavior.Isotropic;
-            thAsset.ThermalConductivity = 0.00;
-            thAsset.SpecificHeatOfVaporization = 0.0;
-            thAsset.Porosity = 0.0;
-            thAsset.Density = 0.0;
-            thAsset.Emissivity = 0.0;
-            thAsset.Reflectivity = 0.0;
-            thAsset.Permeability = 0.0;
-            thAsset.ElectricalResistivity = 0.0;
-            thAsset.Compressibility = 0.0;
-            var pse = PropertySetElement.Create(mat.Document, thAsset);
+            var strAsset = new StructuralAsset(Name, (StructuralAssetClass)StructuralAssetClass);
 
-            mat.SetMaterialAspectByPropertySet(MaterialAspect.Thermal, pse.Id);
+            strAsset.Behavior = (StructuralBehavior)Behavior;
+            strAsset.Name = Name;
+            strAsset.ConcreteBendingReinforcement = ConcreteBendingReinforcement;
+            strAsset.ConcreteCompression = ConcreteCompression;
+            strAsset.ConcreteShearReinforcement = ConcreteShearReinforcement;
+            strAsset.Density = Density;
+            strAsset.Lightweight = Lightweight;
+            strAsset.MetalReductionFactor = MetalReductionFactor;
+            strAsset.MetalResistanceCalculationStrength = MetalResistanceCalculationStrenth;
+            strAsset.MetalThermallyTreated = MetalThermallyTreated;
+            strAsset.MinimumTensileStrength = MinimumTensileStrength;
+            strAsset.MinimumYieldStress = MinimumYieldStress;
+            strAsset.PoissonRatio = PoissonRatio.CreateThisMF();
+            strAsset.ShearModulus = ShearModulus.CreateThisMF();
+            strAsset.SubClass = SubClass;
+            strAsset.ThermalExpansionCoefficient = ThermalExpansionCoefficient.CreateThisMF();
+            strAsset.WoodBendingStrength = WoodBendingStrength;
+            strAsset.WoodGrade = WoodGrade;
+            strAsset.WoodParallelCompressionStrength = WoodParallelCompressionStrength;
+            strAsset.WoodParallelShearStrength = WoodParallelShearStrength;
+            strAsset.WoodPerpendicularCompressionStrength = WoodPerpendicularCompressionStrength;
+            strAsset.WoodPerpendicularShearStrength = WoodPerpendicularShearStrength;
+            strAsset.WoodSpecies = WoodSpecies;
+            strAsset.YoungModulus = YoungModulus.CreateThisMF();
+
+            var pse = PropertySetElement.Create(mat.Document, strAsset);
+
+            mat.SetMaterialAspectByPropertySet(MaterialAspect.Structural, pse.Id);
 
         }
 

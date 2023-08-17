@@ -35,13 +35,10 @@ namespace RevitFamiliesDb.Objects
 
         }
 
-        public Asset CreateThisMF(Asset assetElement)
+        public XYZ CreateThisMF()
         {
-            Asset outPut = assetElement;
-
-
-
-            return outPut;
+            
+            return new XYZ(X,Y,Z);
         }
 
     }

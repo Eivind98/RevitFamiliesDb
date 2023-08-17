@@ -26,6 +26,7 @@ namespace RevitFamiliesDb
         public int Shininess { get; set; }
         public int Smoothness { get; set; }
         public int StructuralAssetId { get; set; }
+        public DemStructuralAsset DemStructuralAsset { get; set; }
         public DemColor SurfaceBackgroundPatternColor { get; set; }
         public int SurfaceBackgroundPatternID { get; set; }
         public DemColor SurfaceForegroundPatternColor { get; set; }
@@ -51,6 +52,7 @@ namespace RevitFamiliesDb
             Shininess = material.Shininess;
             Smoothness = material.Smoothness;
             StructuralAssetId = material.StructuralAssetId.IntegerValue;
+            DemStructuralAsset = new DemStructuralAsset(material);
             SurfaceBackgroundPatternColor = new DemColor(material.SurfaceBackgroundPatternColor);
             SurfaceBackgroundPatternID = material.SurfaceBackgroundPatternId.IntegerValue;
             SurfaceForegroundPatternColor = new DemColor(material.SurfaceForegroundPatternColor);
@@ -101,6 +103,7 @@ namespace RevitFamiliesDb
             thisFucker.ThermalAssetId = new ElementId(ThermalAssetId);
             thisFucker.Transparency = Transparency;
             thisFucker.UseRenderAppearanceForShading = UseRenderAppearanceForShading;
+            DemStructuralAsset.CreateThisMF(thisFucker);
             Trace.Write("Creating Material3");
             return eleId;
         }
