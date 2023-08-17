@@ -1,5 +1,6 @@
 ﻿using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Mechanical;
+using Autodesk.Revit.DB.Visual;
 using Autodesk.Revit.UI;
 using Newtonsoft.Json;
 using RevitFamiliesDb.Objects;
@@ -278,6 +279,63 @@ namespace RevitFamiliesDb
                 
             }
             return lst;
+        }
+
+        void ChangeRenderingTexturePath(Document doc)
+        {
+            // As there is only one material in the sample 
+            // project, we can use FilteredElementCollector 
+            // and grab the first result
+
+            Material mat = new FilteredElementCollector(doc)
+              .OfClass(typeof(Material))
+              .FirstElement() as Material;
+
+            // Fixed path for new texture
+            // Texture included in sample files
+
+            string texturePath = Path.Combine(
+              Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+              "new_texture.png");
+
+            using (Transaction t = new Transaction(doc))
+            {
+                t.Start("Changing material texture path");
+
+                using (AppearanceAssetEditScope editScope = new AppearanceAssetEditScope(doc))
+                {
+                    Asset editableAsset = editScope.Start(mat.AppearanceAssetId);
+
+                    // Getting the correct AssetProperty
+                    AssetProperty assetProperty = editableAsset.FindByName("generic_diffuse");
+
+                    Asset connectedAsset = assetProperty.GetConnectedProperty(0) as Asset;
+
+                    var testingAsset = assetProperty.GetAllConnectedProperties();
+
+                    foreach (var prop in testingAsset)
+                    {
+                        Trace.WriteLine(prop.Name);
+                        Trace.WriteLine(prop.Type);
+                        Trace.WriteLine(prop.IsReadOnly);
+                    }
+
+                    // Getting the right connected Asset
+                    if (connectedAsset.Name == "UnifiedBitmapSchema")
+                    {
+                        AssetPropertyString path = connectedAsset.FindByName(UnifiedBitmap.UnifiedbitmapBitmap) as AssetPropertyString;
+
+                        if (path.IsValidValue(texturePath))path.Value = texturePath;
+                    }
+                    editScope.Commit(true);
+                }
+                TaskDialog.Show("Material texture path",
+                  "Material texture path changed to:\n"
+                  + texturePath);
+
+                t.Commit();
+                t.Dispose();
+            }
         }
 
     }

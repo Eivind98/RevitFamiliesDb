@@ -2,6 +2,7 @@
 using Autodesk.Revit.ApplicationServices;
 using Autodesk.Revit.Attributes;
 using Autodesk.Revit.DB;
+using Autodesk.Revit.DB.Visual;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 using Newtonsoft.Json;
@@ -28,41 +29,28 @@ namespace RevitFamiliesDb
             var app = uiapp.Application;
             var doc = uidoc.Document;
 
-            // Access current selection
+            var sel = uidoc.Selection.GetElementIds();
 
-            var sel = uidoc.Selection;
+            WallType wallType = new FilteredElementCollector(doc).OfClass(typeof(WallType)).First(i => i.Id == sel.First()) as WallType;
+            Trace.Write("1");
+            var test = wallType.GetCompoundStructure().GetLayers()[0].MaterialId;
+            Trace.Write("2");
+            var Yo = new FilteredElementCollector(doc).OfClass(typeof(Material)).First(i => i.Id == test) as Material;
+            Trace.Write("3");
+            var nah = new FilteredElementCollector(doc).OfClass(typeof(AppearanceAssetElement)).First(i => i.Id == Yo.AppearanceAssetId) as AppearanceAssetElement;
+            Trace.Write("4");
+            var nam = (new FilteredElementCollector(doc).OfClass(typeof(AppearanceAssetElement)).First() as AppearanceAssetElement).GetRenderingAsset();
 
-            var elId = sel.GetElementIds().FirstOrDefault();
-
-            if (elId == null) return Result.Succeeded;
-
-            var element = new FilteredElementCollector(doc)
-                .WhereElementIsElementType()
-                .FirstOrDefault(x => x.Id == elId) as FloorType;
-
-            List<FamilyTypeObject> demObjects = new List<FamilyTypeObject>();
-
-            try
-            {
-                demObjects = JsonConvert.DeserializeObject<List<FamilyTypeObject>>(File.ReadAllText(Global.TheFloorPath));
-
-            }
-            catch
-            {
-
-            }
-
+            Trace.Write("5");
 
             using (var tx = new Transaction(doc))
             {
                 tx.Start("Douche bag");
 
-                demObjects.Add(new FamilyTypeObject(elId, doc));
-                
+                nah.SetRenderingAsset(nam);
+
                 tx.Commit();
             }
-
-            File.WriteAllText(Global.TheFloorPath, FamilyTypeObject.PrintTypeObject(demObjects));
 
             return Result.Succeeded;
         }

@@ -70,6 +70,8 @@
     <Compile Include="DemMainWindow.xaml.cs">
       <DependentUpon>DemMainWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Objects\DemXYZ.cs" />
+    <Compile Include="Objects\DemStructuralAsset.cs" />
     <Compile Include="Objects\DemAsset.cs" />
     <Compile Include="Objects\DemAssetProperties.cs" />
     <Compile Include="Objects\DemAssetProperty.cs" />
