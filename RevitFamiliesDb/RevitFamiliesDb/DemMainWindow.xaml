@@ -104,7 +104,7 @@
                     <ListView.View>
                         <GridView>
                             <GridViewColumn Header="Function" DisplayMemberBinding="{Binding RevitFunction}"/>
-                            <GridViewColumn Header="Material" DisplayMemberBinding="{Binding MaterialId}"/>
+                            <GridViewColumn Header="Material" DisplayMemberBinding="{Binding MaterialName}"/>
                             <GridViewColumn Header="mm">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
@@ -176,7 +176,7 @@
                     <ListView.View>
                         <GridView>
                             <GridViewColumn Header="Function" DisplayMemberBinding="{Binding RevitFunction}"/>
-                            <GridViewColumn Header="Material" DisplayMemberBinding="{Binding MaterialId}"/>
+                            <GridViewColumn Header="Material" DisplayMemberBinding="{Binding MaterialName}"/>
                             <GridViewColumn Header="mm">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
@@ -247,7 +247,7 @@
                     <ListView.View>
                         <GridView>
                             <GridViewColumn Header="Function" DisplayMemberBinding="{Binding RevitFunction}"/>
-                            <GridViewColumn Header="Material" DisplayMemberBinding="{Binding MaterialId}"/>
+                            <GridViewColumn Header="Material" DisplayMemberBinding="{Binding MaterialName}"/>
                             <GridViewColumn Header="mm">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
@@ -342,7 +342,7 @@
                     <ListView.View>
                         <GridView>
                             <GridViewColumn Header="Function" DisplayMemberBinding="{Binding RevitFunction}"/>
-                            <GridViewColumn Header="Material" DisplayMemberBinding="{Binding MaterialId}"/>
+                            <GridViewColumn Header="Material" DisplayMemberBinding="{Binding MaterialName}"/>
                             <GridViewColumn Header="mm">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>

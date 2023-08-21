@@ -12,7 +12,7 @@ namespace RevitFamiliesDb
 {
     public class DemLayers
     {
-        
+
         public int DeckEmbeddingType { get; set; }
         public int DeckProfileId { get; set; }
         public int Function { get; set; }
@@ -23,7 +23,13 @@ namespace RevitFamiliesDb
         public int MaterialId { get; set; }
         public string MaterialGuid { get; set; }
         public DemMaterial TheMaterial { get; set; }
-        public string MaterialName { get; set; }
+        public string MaterialName
+        {
+            get
+            {
+                return TheMaterial is null ? "No Material Defined" : TheMaterial.Name;
+            }
+        }
         public double Width { get; set; }
         public double MetricWidth { get { return Math.Round(Width * 0.3048, 3); } }
 
@@ -36,38 +42,40 @@ namespace RevitFamiliesDb
         {
             Function = (int)strucLayer.Function;
 
-            
+
 
             if (Function == 200)
             {
                 DeckEmbeddingType = (int)strucLayer.DeckEmbeddingType;
                 DeckProfileId = strucLayer.DeckProfileId.IntegerValue;
             }
-            
 
-            
+
+
             IsValidObject = strucLayer.IsValidObject;
             LayerCapFlag = strucLayer.LayerCapFlag;
             LayerId = strucLayer.LayerId;
             MaterialId = strucLayer.MaterialId.IntegerValue;
             Width = strucLayer.Width;
 
-            if(MaterialId != -1)
+            if (MaterialId != -1)
             {
                 try
                 {
-                    var test = doc.GetElement(new ElementId(MaterialId)) as Material;
+                    Trace.Write("IS it this one?");
+                    var test = doc.GetElement(strucLayer.MaterialId) as Material;
+                    Trace.Write("OOOOOR is it this one?");
                     TheMaterial = new DemMaterial(test);
                 }
                 catch
                 {
                     Trace.Write("Testing" + MaterialId);
                 }
-                
 
-                
+
+
             }
-            
+
 
         }
 
@@ -82,7 +90,7 @@ namespace RevitFamiliesDb
                 Output.DeckEmbeddingType = (StructDeckEmbeddingType)DeckEmbeddingType;
                 Output.DeckProfileId = new ElementId(DeckProfileId);
             }
-            
+
             Output.LayerCapFlag = LayerCapFlag;
 
             Output.MaterialId = TheMaterial.CreateThisMF(doc);
@@ -90,7 +98,7 @@ namespace RevitFamiliesDb
 
             return Output;
         }
-        
+
         public string PrintThisShit()
         {
             return JsonConvert.SerializeObject(this);

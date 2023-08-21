@@ -2,6 +2,7 @@
 using Autodesk.Revit.DB.Visual;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -30,11 +31,13 @@ namespace RevitFamiliesDb.Objects
 
         public DemAppearanceAssetElement(AppearanceAssetElement assetElement) : base(assetElement)
         {
-            
 
 
-            test2 = assetElement.Duplicate("TestName");
-            TestAsset = assetElement.GetRenderingAsset();
+            //Trace.Write("12");
+            //test2 = assetElement.Duplicate("TestName");
+            //Trace.Write("13");
+            //TestAsset = assetElement.GetRenderingAsset();
+            //Trace.Write("14");
 
             //test2 = AppearanceAssetElement.Create(element.Document, "someName", new Asset());
 

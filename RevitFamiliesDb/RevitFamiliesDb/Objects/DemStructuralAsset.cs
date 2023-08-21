@@ -3,6 +3,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Visual;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -97,10 +98,8 @@ namespace RevitFamiliesDb.Objects
         public void CreateThisMF(Material mat)
         {
             
-
-
             var strAsset = new StructuralAsset(Name, (StructuralAssetClass)StructuralAssetClass);
-
+            Trace.Write("Creating Material8");
             strAsset.Behavior = (StructuralBehavior)Behavior;
             strAsset.Name = Name;
             strAsset.ConcreteBendingReinforcement = ConcreteBendingReinforcement;
@@ -113,10 +112,10 @@ namespace RevitFamiliesDb.Objects
             strAsset.MetalThermallyTreated = MetalThermallyTreated;
             strAsset.MinimumTensileStrength = MinimumTensileStrength;
             strAsset.MinimumYieldStress = MinimumYieldStress;
-            strAsset.PoissonRatio = PoissonRatio.CreateThisMF();
-            strAsset.ShearModulus = ShearModulus.CreateThisMF();
+            strAsset.PoissonRatio = PoissonRatio.CreateThisMF() ?? null;
+            strAsset.ShearModulus = ShearModulus.CreateThisMF() ?? null;
             strAsset.SubClass = SubClass;
-            strAsset.ThermalExpansionCoefficient = ThermalExpansionCoefficient.CreateThisMF();
+            strAsset.ThermalExpansionCoefficient = ThermalExpansionCoefficient.CreateThisMF() ?? null;
             strAsset.WoodBendingStrength = WoodBendingStrength;
             strAsset.WoodGrade = WoodGrade;
             strAsset.WoodParallelCompressionStrength = WoodParallelCompressionStrength;
@@ -124,10 +123,10 @@ namespace RevitFamiliesDb.Objects
             strAsset.WoodPerpendicularCompressionStrength = WoodPerpendicularCompressionStrength;
             strAsset.WoodPerpendicularShearStrength = WoodPerpendicularShearStrength;
             strAsset.WoodSpecies = WoodSpecies;
-            strAsset.YoungModulus = YoungModulus.CreateThisMF();
-
+            strAsset.YoungModulus = YoungModulus.CreateThisMF() ?? null;
+            Trace.Write("Creating Material9");
             var pse = PropertySetElement.Create(mat.Document, strAsset);
-
+            Trace.Write("Creating Material9");
             mat.SetMaterialAspectByPropertySet(MaterialAspect.Structural, pse.Id);
 
         }

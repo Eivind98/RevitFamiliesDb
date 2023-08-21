@@ -37,7 +37,7 @@ namespace RevitFamiliesDb
 
                             try
                             {
-                                Helper.CreateDemElementsInRevit(Global.ElementsToProjectList.Cast<DemElement>().ToList(), doc);
+                                Helper.CreateDemElementsInRevit(listOfIList.Cast<DemElement>().ToList(), doc);
                             }
                             catch (Exception ex)
                             {

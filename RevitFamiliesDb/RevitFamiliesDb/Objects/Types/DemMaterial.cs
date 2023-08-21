@@ -39,23 +39,23 @@ namespace RevitFamiliesDb
 
         public DemMaterial(Material material) : base(material)
         {
-            var assetTest = new FilteredElementCollector(material.Document).OfClass(typeof(AppearanceAssetElement)).First(i => i.Id == material.Id) as AppearanceAssetElement;
-
-            AppearanceAssetId = new DemAppearanceAssetElement(assetTest);
-            Color = new DemColor(material.Color);
-            CutBackgroundPatternColor = new DemColor(material.CutBackgroundPatternColor);
+            var assetTest = new FilteredElementCollector(material.Document).OfClass(typeof(AppearanceAssetElement)).First(i => i.Id == material.AppearanceAssetId) as AppearanceAssetElement;
+            
+            //AppearanceAssetId = new DemAppearanceAssetElement(assetTest);
+            Color = new DemColor(material.Color) ?? null;
+            CutBackgroundPatternColor = new DemColor(material.CutBackgroundPatternColor) ?? null;
             CutBackgroundPatternId = material.CutBackgroundPatternId.IntegerValue;
-            CutForegroundPatternColor = new DemColor(material.CutForegroundPatternColor);
+            CutForegroundPatternColor = new DemColor(material.CutForegroundPatternColor) ?? null;
             CutForegroundPatternId = material.CutForegroundPatternId.IntegerValue;
             MaterialCategory = material.MaterialCategory;
             MaterialClass = material.MaterialClass;
             Shininess = material.Shininess;
             Smoothness = material.Smoothness;
             StructuralAssetId = material.StructuralAssetId.IntegerValue;
-            DemStructuralAsset = new DemStructuralAsset(material);
-            SurfaceBackgroundPatternColor = new DemColor(material.SurfaceBackgroundPatternColor);
+            DemStructuralAsset = new DemStructuralAsset(material) ?? null;
+            SurfaceBackgroundPatternColor = new DemColor(material.SurfaceBackgroundPatternColor) ?? null;
             SurfaceBackgroundPatternID = material.SurfaceBackgroundPatternId.IntegerValue;
-            SurfaceForegroundPatternColor = new DemColor(material.SurfaceForegroundPatternColor);
+            SurfaceForegroundPatternColor = new DemColor(material.SurfaceForegroundPatternColor) ?? null;
             SurfaceForegroundPatternID = material.SurfaceForegroundPatternId.IntegerValue;
             ThermalAssetId = material.ThermalAssetId.IntegerValue;
             Transparency = material.Transparency;
@@ -85,24 +85,35 @@ namespace RevitFamiliesDb
             Material thisFucker = doc.GetElement(eleId) as Material;
             Trace.Write("Creating Material2");
 
-            thisFucker.AppearanceAssetId = AppearanceAssetId.CreateThisMF(doc);
-            thisFucker.Color = Color.ConvertToRevitColor();
-            thisFucker.CutBackgroundPatternColor = CutBackgroundPatternColor.ConvertToRevitColor();
-            thisFucker.CutBackgroundPatternId = new ElementId(CutBackgroundPatternId);
-            thisFucker.CutForegroundPatternColor = CutForegroundPatternColor.ConvertToRevitColor();
-            thisFucker.CutForegroundPatternId = new ElementId(CutForegroundPatternId);
+            //thisFucker.AppearanceAssetId = AppearanceAssetId.CreateThisMF(doc) ?? null;
+            Trace.Write("Creating Material2");
+            thisFucker.Color = Color.ConvertToRevitColor() ?? null;
+            Trace.Write("Creating Material2");
+            thisFucker.CutBackgroundPatternColor = CutBackgroundPatternColor.ConvertToRevitColor() ?? null;
+            Trace.Write("Creating Material2");
+            thisFucker.CutBackgroundPatternId = new ElementId(CutBackgroundPatternId) ?? null;
+            Trace.Write("Creating Material3");
+            thisFucker.CutForegroundPatternColor = CutForegroundPatternColor.ConvertToRevitColor() ?? null;
+            Trace.Write("Creating Material3");
+            thisFucker.CutForegroundPatternId = new ElementId(CutForegroundPatternId) ?? null;
+            Trace.Write("Creating Material3");
             thisFucker.MaterialCategory = MaterialCategory;
+            Trace.Write("Creating Material4");
             thisFucker.MaterialClass = MaterialClass;
+            Trace.Write("Creating Material4");
             thisFucker.Shininess = Shininess;
+            Trace.Write("Creating Material4");
             thisFucker.Smoothness = Smoothness;
-            thisFucker.StructuralAssetId = new ElementId(StructuralAssetId);
-            thisFucker.SurfaceBackgroundPatternColor = SurfaceBackgroundPatternColor.ConvertToRevitColor();
-            thisFucker.SurfaceBackgroundPatternId = new ElementId(SurfaceBackgroundPatternID);
-            thisFucker.SurfaceForegroundPatternColor = SurfaceForegroundPatternColor.ConvertToRevitColor();
-            thisFucker.SurfaceForegroundPatternId = new ElementId(SurfaceForegroundPatternID);
-            thisFucker.ThermalAssetId = new ElementId(ThermalAssetId);
+            Trace.Write("Creating Material4");
+            thisFucker.StructuralAssetId = new ElementId(StructuralAssetId) ?? null;
+            thisFucker.SurfaceBackgroundPatternColor = SurfaceBackgroundPatternColor.ConvertToRevitColor() ?? null;
+            thisFucker.SurfaceBackgroundPatternId = new ElementId(SurfaceBackgroundPatternID) ?? null;
+            thisFucker.SurfaceForegroundPatternColor = SurfaceForegroundPatternColor.ConvertToRevitColor() ?? null;
+            thisFucker.SurfaceForegroundPatternId = new ElementId(SurfaceForegroundPatternID) ?? null;
+            thisFucker.ThermalAssetId = new ElementId(ThermalAssetId) ?? null;
             thisFucker.Transparency = Transparency;
             thisFucker.UseRenderAppearanceForShading = UseRenderAppearanceForShading;
+            Trace.Write("Creating Material7");
             DemStructuralAsset.CreateThisMF(thisFucker);
             Trace.Write("Creating Material3");
             return eleId;
