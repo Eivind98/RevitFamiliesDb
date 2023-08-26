@@ -24,7 +24,7 @@ namespace RevitFamiliesDb
             ThermalProperties = roof.ThermalProperties?.ToString();
         }
 
-        public void CreateThisMF(Document doc)
+        public override ElementId CreateThisMF(Document doc)
         {
 
             RoofType randomRoof = new FilteredElementCollector(doc).OfClass(typeof(RoofType)).First(i => (i as ElementType).FamilyName == this.FamilyName) as RoofType;
@@ -41,6 +41,7 @@ namespace RevitFamiliesDb
 
             }
 
+            return ElementId.InvalidElementId;
 
         }
 

@@ -1,14 +1,14 @@
 ﻿using Autodesk.Revit.DB;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RevitFamiliesDb.Objects
 {
-    public class DemElement
+    public interface IDemElement
+    {
+        ElementId CreateThisMF(Document doc);
+    }
+    public class DemElement : IDemElement
     {
         public int AssemblyInstanceId {  get; set; }
         public string Category { get; set; }
@@ -39,8 +39,9 @@ namespace RevitFamiliesDb.Objects
             //UniqueId = element.UniqueId;
         }
 
-
-
-
+        public virtual ElementId CreateThisMF(Document doc)
+        {
+            return ElementId.InvalidElementId;
+        }
     }
 }

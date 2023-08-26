@@ -20,9 +20,28 @@ namespace RevitFamiliesDb
         public bool IsValidObject { get; set; }
         public bool LayerCapFlag { get; set; }
         public int LayerId { get; set; }
-        public int MaterialId { get; set; }
+        public int MaterialId { get; set; } = -1;
         public string MaterialGuid { get; set; }
+
+        //private DemMaterial _theMaterial;
         public DemMaterial TheMaterial { get; set; }
+        //[JsonIgnore]
+        //public DemMaterial TheMaterial
+        //{
+        //    get
+        //    {
+        //        if (_theMaterial == null && MaterialId != -1)
+        //        {
+        //            // get material
+        //            _theMaterial = MaterialLoader.Load(MaterialId); // loadsomething
+        //        }
+        //        return _theMaterial;
+        //    }
+        //    set
+        //    {
+
+        //    }
+        //}
         public string MaterialName
         {
             get

@@ -35,10 +35,9 @@ namespace RevitFamiliesDb
             M_exEvent = exEvent;
             MyEvent = handler;
 
-            
-            Global.AllDemElements = Helper.LoadDemElementsFromFile();
-            RefreshThisMF();
 
+            Global.AllDemElements = Helper.LoadDemElementsFromFile();
+            
             LstDemItems.SelectedValuePath = "DemGuid";
 
             AWindow = new Window()
@@ -55,16 +54,18 @@ namespace RevitFamiliesDb
             AWindow.Show();
 
             AWindow.Closing += MainWindow_Closing;
+
+            RefreshThisMF();
         }
 
         private void RefreshThisMF()
         {
-            try
-            {
-                string searchString = TxBoxSearch.Text.ToLower();
-                LstDemItems.ItemsSource = null;
+            if (TxBoxSearch == null) return;
 
-                List<Type> filteringTypes = new List<Type>
+            string searchString = TxBoxSearch.Text.ToLower();
+            LstDemItems.ItemsSource = null;
+
+            List<Type> filteringTypes = new List<Type>
                 {
                     (bool)BtnToggleCeiling.IsChecked ? typeof(DemCeilingType) : null,
                     (bool)BtnToggleFloor.IsChecked ? typeof(DemFloorType) : null,
@@ -72,44 +73,39 @@ namespace RevitFamiliesDb
                     (bool)BtnToggleWall.IsChecked ? typeof(DemWallType) : null
                 };
 
-                bool noValuesToFilter = filteringTypes.All(type => type == null);
-                bool hasSearchString = !string.IsNullOrWhiteSpace(searchString);
+            bool noValuesToFilter = filteringTypes.All(type => type == null);
+            bool hasSearchString = !string.IsNullOrWhiteSpace(searchString);
 
-                List<DemElement> filteredList;
+            List<DemElement> filteredList;
 
-                if (hasSearchString && noValuesToFilter)
-                {
-                    filteredList = Global.AllDemElements
-                        .Where(item => item.Name.ToLower().Contains(searchString))
-                        .ToList();
-                }
-                else if (hasSearchString && !noValuesToFilter)
-                {
-                    filteredList = Global.AllDemElements
-                        .Where(item => filteringTypes.Contains(GetElementType(item)))
-                        .Where(item => item.Name.ToLower().Contains(searchString))
-                        .ToList();
-                }
-                else if (!noValuesToFilter)
-                {
-                    filteredList = Global.AllDemElements
-                        .Where(item => filteringTypes.Contains(GetElementType(item)))
-                        .ToList();
-                }
-                else
-                {
-                    filteredList = Global.AllDemElements;
-                }
-
-                List<DemElement> sortedList = filteredList.OrderBy(element => element.Name).ToList();
-                LstDemItems.ItemsSource = sortedList;
-
-            }
-            catch
+            if (hasSearchString && noValuesToFilter)
             {
-
+                filteredList = Global.AllDemElements
+                    .Where(item => item.Name.ToLower().Contains(searchString))
+                    .ToList();
             }
+            else if (hasSearchString && !noValuesToFilter)
+            {
+                filteredList = Global.AllDemElements
+                    .Where(item => filteringTypes.Contains(GetElementType(item)))
+                    .Where(item => item.Name.ToLower().Contains(searchString))
+                    .ToList();
+            }
+            else if (!noValuesToFilter)
+            {
+                filteredList = Global.AllDemElements
+                    .Where(item => filteringTypes.Contains(GetElementType(item)))
+                    .ToList();
+            }
+            else
+            {
+                filteredList = Global.AllDemElements;
+            }
+
+            List<DemElement> sortedList = filteredList.OrderBy(element => element.Name).ToList();
+            LstDemItems.ItemsSource = sortedList;
         }
+
 
         public Type GetElementType(DemElement ele)
         {
@@ -243,7 +239,7 @@ namespace RevitFamiliesDb
                         TextBlock label = item.FindName("LblName") as TextBlock;
                         if (label != null)
                         {
-                            double newFontSize = e.NewValue/6.4;
+                            double newFontSize = e.NewValue / 6.4;
                             label.FontSize = newFontSize;
                         }
                     }

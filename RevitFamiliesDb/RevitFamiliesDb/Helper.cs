@@ -78,24 +78,7 @@ namespace RevitFamiliesDb
         {
             foreach (DemElement yo in demElements)
             {
-                switch (yo)
-                {
-                    case DemCeilingType ceiling when yo is DemCeilingType:
-                        ceiling.CreateThisMF(doc);
-                        break;
-                    case DemFloorType floor when yo is DemFloorType:
-                        floor.CreateThisMF(doc);
-                        break;
-                    case DemRoofType roof when yo is DemRoofType:
-                        roof.CreateThisMF(doc);
-                        break;
-                    case DemWallType wall when yo is DemWallType:
-                        wall.CreateThisMF(doc);
-                        break;
-                    case DemMaterial material when yo is DemMaterial:
-                        material.CreateThisMF(doc);
-                        break;
-                }
+                yo.CreateThisMF(doc);
             }
         }
 
@@ -136,6 +119,7 @@ namespace RevitFamiliesDb
             return outPut;
         }
 
+
         public static List<DemElement> CreateFromSelection(UIDocument uidoc)
         {
             List<DemElement> demElements = new List<DemElement>();
@@ -165,41 +149,34 @@ namespace RevitFamiliesDb
             return demElements;
         }
 
+
+        public static List<T> LoadJsonWithErrorHandling<T>(string path)
+        {
+            try
+            {
+                var content = File.ReadAllText(path);
+                return JsonConvert.DeserializeObject<List<T>>(content);
+            }
+            catch (JsonReaderException)
+            {
+
+            }
+            catch (JsonSerializationException)
+            {
+
+            }
+
+            return new List<T>();
+        }
+
         public static List<DemElement> LoadDemElementsFromFile()
         {
             List<DemElement> output = new List<DemElement>();
 
-            try
-            {
-                output.AddRange(JsonConvert.DeserializeObject<List<DemCeilingType>>(File.ReadAllText(Global.TheCeilingPath)));
-            }
-            catch { }
-
-            try
-            {
-                output.AddRange(JsonConvert.DeserializeObject<List<DemFloorType>>(File.ReadAllText(Global.TheFloorPath)));
-            }
-            catch { }
-
-            try
-            {
-                output.AddRange(JsonConvert.DeserializeObject<List<DemRoofType>>(File.ReadAllText(Global.TheRoofPath)));
-            }
-            catch { }
-
-            try
-            {
-                output.AddRange(JsonConvert.DeserializeObject<List<DemWallType>>(File.ReadAllText(Global.TheWallPath)));
-            }
-            catch { }
-
-            //try
-            //{
-            //    output.AddRange(JsonConvert.DeserializeObject<List<DemMaterial>>(File.ReadAllText(Global.TheMaterialPath)));
-            //}
-            //catch {
-            //    Trace.WriteLine("This Sucks ASSSSSS");
-            //}
+            output.AddRange(LoadJsonWithErrorHandling<DemCeilingType>(Global.TheCeilingPath));
+            output.AddRange(LoadJsonWithErrorHandling<DemFloorType>(Global.TheFloorPath));
+            output.AddRange(LoadJsonWithErrorHandling<DemRoofType>(Global.TheRoofPath));
+            output.AddRange(LoadJsonWithErrorHandling<DemWallType>(Global.TheWallPath));
 
             return output;
         }
@@ -263,7 +240,7 @@ namespace RevitFamiliesDb
 
             if (ele is DemHostObjAttribute)
             {
-                if(((DemHostObjAttribute)ele).DemCompoundStructure != null)
+                if (((DemHostObjAttribute)ele).DemCompoundStructure != null)
                 {
                     foreach (DemLayers l in (ele as DemHostObjAttribute).DemCompoundStructure.GetLayers)
                     {
@@ -276,7 +253,7 @@ namespace RevitFamiliesDb
                         }
                     }
                 }
-                
+
             }
             return lst;
         }
@@ -325,7 +302,7 @@ namespace RevitFamiliesDb
                     {
                         AssetPropertyString path = connectedAsset.FindByName(UnifiedBitmap.UnifiedbitmapBitmap) as AssetPropertyString;
 
-                        if (path.IsValidValue(texturePath))path.Value = texturePath;
+                        if (path.IsValidValue(texturePath)) path.Value = texturePath;
                     }
                     editScope.Commit(true);
                 }

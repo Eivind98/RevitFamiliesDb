@@ -76,25 +76,27 @@ namespace RevitFamiliesDb
         public Parameter CreateThoseMF(Element ele)
         {
             Parameter param = ele.LookupParameter(Name);
-
-            switch (StorageType)
+            if(param != null)
             {
-                case 0:
+                switch (StorageType)
+                {
+                    case 0:
 
-                    break;
-                case 1:
-                    param.Set(AsInteger);
-                    break;
-                case 2:
-                    param.Set(AsDouble);
-                    break;
-                case 3:
-                    param.Set(AsString);
-                    break;
-                case 4:
-                    param.Set(new ElementId(AsElementId));
-                    break;
+                        break;
+                    case 1:
+                        param.Set(AsInteger);
+                        break;
+                    case 2:
+                        param.Set(AsDouble);
+                        break;
+                    case 3:
+                        param.Set(AsString);
+                        break;
+                    case 4:
+                        param.Set(new ElementId(AsElementId));
+                        break;
 
+                }
             }
 
             return null;

@@ -32,7 +32,7 @@ namespace RevitFamiliesDb
 
         }
 
-        public void CreateThisMF(Document doc)
+        public override ElementId CreateThisMF(Document doc)
         {
 
             WallType randomWall = new FilteredElementCollector(doc).OfClass(typeof(WallType)).First(i => (i as ElementType).FamilyName == this.FamilyName) as WallType;
@@ -49,6 +49,7 @@ namespace RevitFamiliesDb
 
             }
 
+            return ElementId.InvalidElementId;
         }
     }
 }

@@ -21,11 +21,12 @@ namespace RevitFamiliesDb.Objects
         public double ConcreteBendingReinforcement { get; set; }
         public double ConcreteCompression { get; set; }
         public double ConcreteShearReinforcement { get; set; }
+        public double ConcreteShearStrengthReduction { get; set; }
         public double Density { get; set; }
         public bool IsValidObject { get; set; }
         public bool Lightweight { get; set; }
         public double MetalReductionFactor { get; set; }
-        public double MetalResistanceCalculationStrenth { get; set; }
+        public double MetalResistanceCalculationStrength { get; set; }
         public bool MetalThermallyTreated { get; set; }
         public double MinimumTensileStrength { get; set; }
         public double MinimumYieldStress { get; set; }
@@ -65,11 +66,12 @@ namespace RevitFamiliesDb.Objects
                     ConcreteBendingReinforcement = asset.ConcreteBendingReinforcement;
                     ConcreteCompression = asset.ConcreteCompression;
                     ConcreteShearReinforcement = asset.ConcreteShearReinforcement;
+                    ConcreteShearStrengthReduction = asset.ConcreteShearStrengthReduction;
                     Density = asset.Density;
                     IsValidObject = asset.IsValidObject;
                     Lightweight = asset.Lightweight;
                     MetalReductionFactor = asset.MetalReductionFactor;
-                    MetalResistanceCalculationStrenth = asset.MetalResistanceCalculationStrength;
+                    MetalResistanceCalculationStrength = asset.MetalResistanceCalculationStrength;
                     MetalThermallyTreated = asset.MetalThermallyTreated;
                     MinimumTensileStrength = asset.MinimumTensileStrength;
                     MinimumYieldStress = asset.MinimumYieldStress;
@@ -97,37 +99,85 @@ namespace RevitFamiliesDb.Objects
 
         public void CreateThisMF(Material mat)
         {
-            
-            var strAsset = new StructuralAsset(Name, (StructuralAssetClass)StructuralAssetClass);
+
+            var doc = mat.Document;
+
+            FilteredElementCollector collector = new FilteredElementCollector(doc);
+            var existingPropertySets = collector.OfClass(typeof(PropertySetElement)).ToElements();
+
+            string temporaryName = Name + " - " + Guid.NewGuid().ToString();
+            //int counter = 1;
+            //foreach (Element elem in existingPropertySets)
+            //{
+            //    PropertySetElement existingPropertySet = elem as PropertySetElement;
+            //    if (existingPropertySet != null && existingPropertySet.Name == temporaryName)
+            //    {
+            //        temporaryName = $"{Name}_{counter}";
+            //        counter++;
+            //    }
+            //}
+
+            var strAsset = new StructuralAsset(temporaryName, (StructuralAssetClass)StructuralAssetClass);
             Trace.Write("Creating Material8");
             strAsset.Behavior = (StructuralBehavior)Behavior;
-            strAsset.Name = Name;
-            strAsset.ConcreteBendingReinforcement = ConcreteBendingReinforcement;
-            strAsset.ConcreteCompression = ConcreteCompression;
-            strAsset.ConcreteShearReinforcement = ConcreteShearReinforcement;
             strAsset.Density = Density;
             strAsset.Lightweight = Lightweight;
-            strAsset.MetalReductionFactor = MetalReductionFactor;
-            strAsset.MetalResistanceCalculationStrength = MetalResistanceCalculationStrenth;
-            strAsset.MetalThermallyTreated = MetalThermallyTreated;
-            strAsset.MinimumTensileStrength = MinimumTensileStrength;
-            strAsset.MinimumYieldStress = MinimumYieldStress;
-            strAsset.PoissonRatio = PoissonRatio.CreateThisMF() ?? null;
-            strAsset.ShearModulus = ShearModulus.CreateThisMF() ?? null;
+            switch (StructuralAssetClass)
+            {
+                case 2:
+                    strAsset.MinimumTensileStrength = MinimumTensileStrength;
+                    strAsset.MinimumYieldStress = MinimumYieldStress;
+                    break;
+                case 3:
+                    strAsset.MetalReductionFactor = MetalReductionFactor;
+                    strAsset.MetalResistanceCalculationStrength = MetalResistanceCalculationStrength;
+                    strAsset.MetalThermallyTreated = MetalThermallyTreated;
+                    goto case 2; // Reuse the code for case 2 properties
+                case 4:
+                    strAsset.ConcreteBendingReinforcement = ConcreteBendingReinforcement;
+                    strAsset.ConcreteCompression = ConcreteCompression;
+                    strAsset.ConcreteShearReinforcement = ConcreteShearReinforcement;
+                    strAsset.ConcreteShearStrengthReduction = ConcreteShearStrengthReduction;
+                    break;
+                case 5:
+                    strAsset.WoodBendingStrength = WoodBendingStrength;
+                    strAsset.WoodGrade = WoodGrade;
+                    strAsset.WoodParallelCompressionStrength = WoodParallelCompressionStrength;
+                    strAsset.WoodParallelShearStrength = WoodParallelShearStrength;
+                    strAsset.WoodPerpendicularCompressionStrength = WoodPerpendicularCompressionStrength;
+                    strAsset.WoodPerpendicularShearStrength = WoodPerpendicularShearStrength;
+                    strAsset.WoodSpecies = WoodSpecies;
+                    break;
+            }
+
+            if (Behavior == 1 || Behavior == 2)
+            {
+                strAsset.PoissonRatio = PoissonRatio.CreateThisMF();
+                strAsset.ShearModulus = ShearModulus.CreateThisMF();
+                strAsset.ThermalExpansionCoefficient = ThermalExpansionCoefficient.CreateThisMF();
+                strAsset.YoungModulus = YoungModulus.CreateThisMF();
+            }
+            else if (Behavior == 0)
+            {
+                strAsset.SetPoissonRatio(PoissonRatio.X);
+                strAsset.SetShearModulus(ShearModulus.X);
+                strAsset.SetThermalExpansionCoefficient(ThermalExpansionCoefficient.X);
+                strAsset.SetYoungModulus(YoungModulus.X);
+            }
+
             strAsset.SubClass = SubClass;
-            strAsset.ThermalExpansionCoefficient = ThermalExpansionCoefficient.CreateThisMF() ?? null;
-            strAsset.WoodBendingStrength = WoodBendingStrength;
-            strAsset.WoodGrade = WoodGrade;
-            strAsset.WoodParallelCompressionStrength = WoodParallelCompressionStrength;
-            strAsset.WoodParallelShearStrength = WoodParallelShearStrength;
-            strAsset.WoodPerpendicularCompressionStrength = WoodPerpendicularCompressionStrength;
-            strAsset.WoodPerpendicularShearStrength = WoodPerpendicularShearStrength;
-            strAsset.WoodSpecies = WoodSpecies;
-            strAsset.YoungModulus = YoungModulus.CreateThisMF() ?? null;
+
             Trace.Write("Creating Material9");
-            var pse = PropertySetElement.Create(mat.Document, strAsset);
-            Trace.Write("Creating Material9");
-            mat.SetMaterialAspectByPropertySet(MaterialAspect.Structural, pse.Id);
+            if (mat.Document.IsModifiable)
+            {
+                PropertySetElement pse = PropertySetElement.Create(doc, strAsset);
+                mat.SetMaterialAspectByPropertySet(MaterialAspect.Structural, pse.Id);
+            }
+            else
+            {
+                Trace.WriteLine("Document is not valid or modifiable.");
+            }
+
 
         }
 
