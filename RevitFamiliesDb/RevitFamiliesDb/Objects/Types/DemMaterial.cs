@@ -15,7 +15,8 @@ namespace RevitFamiliesDb
 {
     public class DemMaterial : DemElement
     {
-        public DemAppearanceAssetElement AppearanceAssetId { get; set; }
+        public int AppearanceAssetId { get; set; }
+        public DemAppearanceAssetElement DemAppearanceAsset { get; set; }
         public DemColor Color { get; set; }
         public DemColor CutBackgroundPatternColor { get; set; }
         public int CutBackgroundPatternId { get; set; }
@@ -40,9 +41,8 @@ namespace RevitFamiliesDb
 
         public DemMaterial(Material material) : base(material)
         {
-            var assetTest = new FilteredElementCollector(material.Document).OfClass(typeof(AppearanceAssetElement)).First(i => i.Id == material.AppearanceAssetId) as AppearanceAssetElement;
-
-            //AppearanceAssetId = new DemAppearanceAssetElement(assetTest);
+            AppearanceAssetId = material.AppearanceAssetId.IntegerValue;
+            DemAppearanceAsset = new DemAppearanceAssetElement(material);
             Color = new DemColor(material.Color) ?? null;
             CutBackgroundPatternColor = new DemColor(material.CutBackgroundPatternColor) ?? null;
             CutBackgroundPatternId = material.CutBackgroundPatternId.IntegerValue;
