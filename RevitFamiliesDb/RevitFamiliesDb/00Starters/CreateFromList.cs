@@ -6,6 +6,7 @@ using Autodesk.Revit.DB.Visual;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 using Newtonsoft.Json;
+using RevitFamiliesDb.Objects;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -28,69 +29,273 @@ namespace RevitFamiliesDb
             var uidoc = uiapp.ActiveUIDocument;
             var doc = uidoc.Document;
 
-            //List<FamilyTypeObject> demObjects = JsonConvert.DeserializeObject<List<FamilyTypeObject>>(File.ReadAllText("C:\\Users\\eev_9\\OneDrive\\02 - Projects\\Programming stuff\\Test.json"));
+            Application los = uiapp.Application;
 
-            //using (var tx = new Transaction(doc))
+            IList<Asset> unfilteredList = los.GetAssets((AssetType)4);
+
+            Material mat = new FilteredElementCollector(doc).OfClass(typeof(Material)).First(i => i.Id == new ElementId(423)) as Material;
+            AppearanceAssetElement appearanceElem = mat.Document.GetElement(mat.AppearanceAssetId) as AppearanceAssetElement;
+            var collector = new FilteredElementCollector(doc).OfClass(typeof(AppearanceAssetElement));
+
+            //List<AppearanceAssetElement> ls = new List<AppearanceAssetElement>();
+
+            //foreach (AppearanceAssetElement ele in collector)
             //{
-            //    tx.Start("Douche bag");
+            //    ls.Add(ele);
 
-            //    demObjects[0].CreateElement(doc);
+            //}
 
-            //    tx.Commit();
+            Trace.Write(unfilteredList.Count);
+
+            Asset renderAss = appearanceElem.GetRenderingAsset();
+
+            int thatAss = renderAss.Size;
+
+            List<string> thoseAssets = new List<string>();
+
+            for (int idx = 0; idx < thatAss; idx++)
+            {
+                AssetProperty ap = renderAss[idx];
+
+                thoseAssets.Add(ap.Name);
+                Trace.WriteLine(ap.Name);
+            }
+
+
+
+
+            IList<Asset> filteredList = unfilteredList.Where(i => i.Size == thatAss).ToList();
+
+            Asset theOne = null;
+            foreach(var asset in filteredList)
+            {
+                bool boho = true;
+
+
+                foreach(var po in thoseAssets)
+                {
+                    try
+                    {
+                        asset.FindByName(po);
+                    }
+                    catch
+                    {
+                        boho = false;
+                        break;
+                    }
+                }
+                
+                if(boho)
+                {
+                    theOne = asset;
+                    break;
+                }
+            }
+
+            if (theOne != null)
+            {
+                thoseAssets.Sort();
+                Trace.WriteLine("---------------------------------");
+                Trace.WriteLine(thoseAssets.Count);
+                foreach (var po in thoseAssets)
+                {
+                    Trace.WriteLine(po);
+                }
+                Trace.WriteLine("---------------------------------");
+                Trace.WriteLine(theOne.Size);
+                for (int idx = 0; idx < theOne.Size; idx++)
+                {
+                    AssetProperty ap = theOne[idx];
+                    Trace.WriteLine(ap.Name);
+                }
+            }
+
+
+            //foreach (Asset ele in ls)
+            //{
+            //    Trace.Write($"{ele.Size} - {ele.Name}");
+            //}
+
+            
+
+            //using (Transaction t = new Transaction(doc))
+            //{
+            //    t.Start("Changing material texture path");
+
+            //    var ka = unfilteredList.First(i => i.Name == "ACADGen-010");
+
+            //    Trace.WriteLine(ka.Name);
+
+            //    appearanceElem.SetRenderingAsset(ka);
+
+            //    t.Commit();
+            //    t.Dispose();
+            //}
+
+            Trace.WriteLine(appearanceElem.GetRenderingAsset().Name);
+
+
+            //using (Transaction t = new Transaction(doc))
+            //{
+            //    t.Start("Changing material texture path");
+
+            //    using (AppearanceAssetEditScope editScope = new AppearanceAssetEditScope(doc))
+            //    {
+            //        Material mat = new FilteredElementCollector(doc).OfClass(typeof(Material)).First(i => i.Id == new ElementId(404414)) as Material;
+            //        //string texturePath = "Another Folder\\Absolutely.jpg";
+
+            //        ElementId appearanceId = mat.AppearanceAssetId;
+            //        AppearanceAssetElement appearanceElem = mat.Document.GetElement(appearanceId) as AppearanceAssetElement;
+            //        Asset theAsset = appearanceElem.GetRenderingAsset();
+
+            //        Asset editableAsset = editScope.Start(appearanceId);
+
+            //        //AssetPropertyDoubleArray4d mg = new AssetPropertyDoubleArray4d("", );
+
+            //        Trace.Write(editableAsset.IsValidSchemaIdentifier("Metal"));
+
+
+            //        var la = editableAsset.FindByName("generic_diffuse");
+
+
+            //        editScope.Commit(true);
+            //    }
+
+            //    t.Commit();
+            //    t.Dispose();
             //}
 
 
-            //var sel = uidoc.Selection.GetElementIds();
-
-            //WallType wallType = new FilteredElementCollector(doc).OfClass(typeof(WallType)).First(i => i.Id == sel.First()) as WallType;
-
-            //var yo = wallType.GetCompoundStructure().GetLayers().First().MaterialId;
-
-            Material mat = new FilteredElementCollector(doc).OfClass(typeof(Material)).First(i => i.Id == new ElementId(423)) as Material;
-            string texturePath = "";
 
 
-            ElementId appearanceId = mat.AppearanceAssetId;
-            AppearanceAssetElement appearanceElem = mat.Document.GetElement(appearanceId) as AppearanceAssetElement;
-            Asset theAsset = appearanceElem.GetRenderingAsset();
-            List<AssetProperty> assets = new List<AssetProperty>();
-            for (int idx = 0; idx < theAsset.Size; idx++)
-            {
-                AssetProperty ap = theAsset[idx];
-                assets.Add(ap);
-            }
+
+            //using (Transaction t = new Transaction(doc))
+            //{
+            //    t.Start("Changing material texture path");
+
+            //    using (AppearanceAssetEditScope editScope = new AppearanceAssetEditScope(doc))
+            //    {
+
+            //        Asset editableAsset = editScope.Start(mat.AppearanceAssetId);
+
+
+            //        List<AssetProperty> someJoke = new List<AssetProperty>();
+            //        for (int idx = 0; idx < editableAsset.Size; idx++)
+            //        {
+            //            AssetProperty ap = editableAsset[idx];
+
+            //            someJoke.Add(ap);
+            //        }
+
+            //        foreach(AssetProperty ap in someJoke)
+            //        {
+            //            Trace.Write(ap.Name);
+            //        }
+
+            //        if (editableAsset.IsEditable())
+            //        {
+            //            Trace.Write("Is Edible");
+            //        }
+            //        else
+            //        {
+            //            Trace.Write("Is Not Edible");
+            //        }
+
+            //        //editableAsset.AddConnectedAsset("UnifiedBitmapSchema");
+            //        AssetProperty theAssetWeWant = null;
+            //        for (int idx = 0; idx < editableAsset.Size; idx++)
+            //        {
+            //            AssetProperty ap = editableAsset[idx];
+
+            //            if(ap.Name == "generic_diffuse")
+            //            {
+            //                theAssetWeWant = ap;
+            //            }
+
+            //            someJoke.Add(ap);
+            //        }
+            //        if(theAssetWeWant != null)
+            //        {
+            //            Trace.Write(theAssetWeWant.Name);
+            //            Trace.Write(theAssetWeWant.Type);
+            //            Trace.Write(theAssetWeWant.IsReadOnly);
+            //            Trace.Write(theAssetWeWant.IsValidObject);
+            //            Trace.Write(theAssetWeWant.IsEditable());
+            //            Trace.Write(theAssetWeWant.GetAllConnectedProperties().Count);
+
+            //            var bro = theAssetWeWant.GetConnectedProperty(0);
+
+            //            Trace.Write(bro.Name);
+            //            Trace.Write(bro.Type);
+            //            Trace.Write(bro.IsReadOnly);
+            //            Trace.Write(bro.IsValidObject);
+            //            Trace.Write(bro.IsEditable());
+            //            Trace.Write(bro.GetAllConnectedProperties().Count);
+
+
+            //        }
+
+
+            //        var yo = editableAsset.FindByName("UnifiedBitmapSchema");
+
+
+
+            //        editScope.Commit(true);
+            //    }
+
+            //    t.Commit();
+            //    t.Dispose();
+            //}
+
+
+
+            //int anin = assets.IndexOf(tas);
+
+            //theAsset.GetConnectedProperty(anin);
+
+            //Trace.Write(tes);
+
+
+            //dem = dem.OrderBy(ap => ap.Name).ToList();
+            //Trace.WriteLine(dem.Count);
+            //foreach (var asset in dem)
+            //{
+            //    Trace.Write($" ({asset.ValueType.Name}) - {asset.Name}: {asset.GetValue}");
+            //}
+
+
             // order the properties!
-            assets = assets.OrderBy(ap => ap.Name).ToList();
-            for (int idx = 0; idx < assets.Count; idx++)
-            {
-                AssetProperty ap = assets[idx];
-                Type type = ap.GetType();
-                object apVal = null;
-                try
-                {
-                    // using .net reflection to get the value
-                    var prop = type.GetProperty("Value");
-                    if (prop != null && prop.GetIndexParameters().Length == 0)
-                    {
-                        apVal = prop.GetValue(ap);
-                    }
-                    else
-                    {
-                        apVal = "<No Value Property>";
-                    }
-                }
-                catch (Exception ex)
-                {
-                    apVal = ex.GetType().Name + "-" + ex.Message;
-                }
+            //assets = assets.OrderBy(ap => ap.Name).ToList();
+            //for (int idx = 0; idx < assets.Count; idx++)
+            //{
+            //    AssetProperty ap = assets[idx];
+            //    Type type = ap.GetType();
+            //    object apVal = null;
+            //    try
+            //    {
+            //        // using .net reflection to get the value
+            //        var prop = type.GetProperty("Value");
+            //        if (prop != null && prop.GetIndexParameters().Length == 0)
+            //        {
+            //            apVal = prop.GetValue(ap);
+            //        }
+            //        else
+            //        {
+            //            apVal = "<No Value Property>";
+            //        }
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        apVal = ex.GetType().Name + "-" + ex.Message;
+            //    }
 
-                if (apVal is DoubleArray)
-                {
-                    var doubles = apVal as DoubleArray;
-                    apVal = doubles.Cast<double>().Aggregate("", (s, d) => s + Math.Round(d, 5) + ",");
-                }
-                Trace.Write(idx + " : [" + ap.Type + "] " + ap.Name + " = " + apVal);
-            }
+            //    if (apVal is DoubleArray)
+            //    {
+            //        var doubles = apVal as DoubleArray;
+            //        apVal = doubles.Cast<double>().Aggregate("", (s, d) => s + Math.Round(d, 5) + ",");
+            //    }
+            //    Trace.Write(idx + " : [" + ap.Type + "] " + ap.Name + " = " + apVal);
+            //}
 
 
 
@@ -124,7 +329,7 @@ namespace RevitFamiliesDb
             //                Trace.Write(editableAsset[i].IsReadOnly);
             //                Trace.Write(editableAsset[i].IsValidObject);
             //                Trace.Write(editableAsset[i].NumberOfConnectedProperties);
-                            
+
             //            }
             //            catch(Exception e)
             //            {
@@ -168,7 +373,7 @@ namespace RevitFamiliesDb
             //        //}
             //        editScope.Commit(true);
             //    }
-                
+
             //    t.Commit();
             //    t.Dispose();
             //}
@@ -178,5 +383,28 @@ namespace RevitFamiliesDb
 
             return Result.Succeeded;
         }
+
+        private void AddTexturePath(AssetProperty asset, string texturePath)
+        {
+            Asset connectedAsset = null;
+
+            if (asset.NumberOfConnectedProperties == 0)
+            {
+                asset.AddConnectedAsset("UnifiedBitmapSchema");
+            }
+
+            connectedAsset = (Asset)asset.GetConnectedProperty(0);
+            AssetPropertyString path = (AssetPropertyString)connectedAsset.FindByName(UnifiedBitmap.UnifiedbitmapBitmap);
+
+            //if (!path.IsValidValue(texturePath))
+            //{
+            //    File.Create("texture.png");
+            //    texturePath = Path.GetFullPath("texture.png");
+            //}
+
+            path.Value = texturePath;
+
+        }
+
     }
 }

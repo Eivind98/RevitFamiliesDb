@@ -19,7 +19,7 @@ namespace RevitFamiliesDb.Objects
     public class DemAppearanceAssetElement : DemElement
     {
 
-        public DemAsset TheOneAndOnlyAsset { get; set; }
+        public DemAssetProperty TheOneAndOnlyAsset { get; set; }
         //public Asset TestAsset { get; set; }
         //public AppearanceAssetElement test2 { get; set; }
 

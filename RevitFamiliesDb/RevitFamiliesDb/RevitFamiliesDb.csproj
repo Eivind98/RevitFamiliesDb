@@ -73,9 +73,9 @@
     <Compile Include="Objects\DemThermalAsset.cs" />
     <Compile Include="Objects\DemXYZ.cs" />
     <Compile Include="Objects\DemStructuralAsset.cs" />
-    <Compile Include="Objects\DemAsset.cs" />
-    <Compile Include="Objects\DemAssetProperties.cs" />
     <Compile Include="Objects\DemAssetProperty.cs" />
+    <Compile Include="Objects\DemAssetProperties.cs" />
+    <Compile Include="Objects\DemAsset.cs" />
     <Compile Include="Objects\DemColor.cs" />
     <Compile Include="Objects\DemAppearanceAssetElement.cs" />
     <Compile Include="Objects\Types\DemCeilingType.cs" />
