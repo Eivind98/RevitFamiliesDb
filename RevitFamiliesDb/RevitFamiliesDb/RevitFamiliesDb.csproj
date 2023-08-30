@@ -78,6 +78,8 @@
     <Compile Include="Objects\DemAsset.cs" />
     <Compile Include="Objects\DemColor.cs" />
     <Compile Include="Objects\DemAppearanceAssetElement.cs" />
+    <Compile Include="Objects\DemParentSchema.cs" />
+    <Compile Include="Objects\DemChildSchema.cs" />
     <Compile Include="Objects\Types\DemCeilingType.cs" />
     <Compile Include="Objects\DemHostObjAttribute.cs" />
     <Compile Include="Objects\DemElementType.cs" />

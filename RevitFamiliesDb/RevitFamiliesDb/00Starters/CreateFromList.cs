@@ -37,13 +37,6 @@ namespace RevitFamiliesDb
             AppearanceAssetElement appearanceElem = mat.Document.GetElement(mat.AppearanceAssetId) as AppearanceAssetElement;
             var collector = new FilteredElementCollector(doc).OfClass(typeof(AppearanceAssetElement));
 
-            //List<AppearanceAssetElement> ls = new List<AppearanceAssetElement>();
-
-            //foreach (AppearanceAssetElement ele in collector)
-            //{
-            //    ls.Add(ele);
-
-            //}
 
             Trace.Write(unfilteredList.Count);
 
@@ -58,11 +51,8 @@ namespace RevitFamiliesDb
                 AssetProperty ap = renderAss[idx];
 
                 thoseAssets.Add(ap.Name);
-                Trace.WriteLine(ap.Name);
+                //Trace.WriteLine(ap.Name);
             }
-
-
-
 
             IList<Asset> filteredList = unfilteredList.Where(i => i.Size == thatAss).ToList();
 
@@ -92,23 +82,38 @@ namespace RevitFamiliesDb
                 }
             }
 
-            if (theOne != null)
+            List<DemParentSchema> superHard = new List<DemParentSchema> ();
+
+            for (int idx = 0; idx < thatAss; idx++)
             {
-                thoseAssets.Sort();
-                Trace.WriteLine("---------------------------------");
-                Trace.WriteLine(thoseAssets.Count);
-                foreach (var po in thoseAssets)
+                AssetProperty ap = renderAss[idx];
+                
+                //Trace.WriteLine(ap.NumberOfConnectedProperties);
+
+                if(ap.NumberOfConnectedProperties != 0)
                 {
-                    Trace.WriteLine(po);
-                }
-                Trace.WriteLine("---------------------------------");
-                Trace.WriteLine(theOne.Size);
-                for (int idx = 0; idx < theOne.Size; idx++)
-                {
-                    AssetProperty ap = theOne[idx];
-                    Trace.WriteLine(ap.Name);
+                    superHard.Add(new DemParentSchema(ap));
                 }
             }
+
+            foreach(var hard in superHard)
+            {
+                Trace.Write("-------------------------------");
+                Trace.Write(hard.Name);
+
+                if (hard.Properties != null)
+                {
+                    foreach (var po in hard.Properties)
+                    {
+                        Trace.Write(po.Name);
+                        //Trace.Write(po.TheType);
+                        //Trace.Write(po.value);
+                    }
+
+                }
+            }
+            
+
 
 
             //foreach (Asset ele in ls)
@@ -116,7 +121,7 @@ namespace RevitFamiliesDb
             //    Trace.Write($"{ele.Size} - {ele.Name}");
             //}
 
-            
+
 
             //using (Transaction t = new Transaction(doc))
             //{
@@ -131,9 +136,6 @@ namespace RevitFamiliesDb
             //    t.Commit();
             //    t.Dispose();
             //}
-
-            Trace.WriteLine(appearanceElem.GetRenderingAsset().Name);
-
 
             //using (Transaction t = new Transaction(doc))
             //{

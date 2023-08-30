@@ -19,10 +19,7 @@ namespace RevitFamiliesDb.Objects
     public class DemAppearanceAssetElement : DemElement
     {
 
-        public DemAssetProperty TheOneAndOnlyAsset { get; set; }
-        //public Asset TestAsset { get; set; }
-        //public AppearanceAssetElement test2 { get; set; }
-
+        public List<DemParentSchema> TheOneAndOnlyAsset { get; set; } = new List<DemParentSchema>();
 
         public DemAppearanceAssetElement()
         {
@@ -32,20 +29,15 @@ namespace RevitFamiliesDb.Objects
 
         public DemAppearanceAssetElement(Material material) : base(material)
         {
-
             var assetTest = new FilteredElementCollector(material.Document).OfClass(typeof(AppearanceAssetElement)).First(i => i.Id == material.AppearanceAssetId) as AppearanceAssetElement;
+            var renderingAsset = assetTest.GetRenderingAsset();
 
-
-
-            //Trace.Write("12");
-            //test2 = assetElement.Duplicate("TestName");
-            //Trace.Write("13");
-            //TestAsset = assetElement.GetRenderingAsset();
-            //Trace.Write("14");
-
-            //test2 = AppearanceAssetElement.Create(element.Document, "someName", new Asset());
-
-
+            for (int idx = 0; idx < renderingAsset.Size; idx++)
+            {
+                AssetProperty ap = renderingAsset[idx];
+                TheOneAndOnlyAsset.Add(new DemParentSchema(ap));
+                
+            }
 
         }
 
@@ -53,12 +45,7 @@ namespace RevitFamiliesDb.Objects
         {
             FilteredElementCollector collector = new FilteredElementCollector(doc);
             collector.OfClass(typeof(AppearanceAssetElement));
-
             AppearanceAssetElement test3 = (collector.FirstOrDefault() as AppearanceAssetElement).Duplicate("RandoName");
-
-            //test3.SetRenderingAsset(TestAsset);
-
-            //test3.SetRenderingAsset(TheOneAndOnlyAsset.CreateThisMF(test3.GetRenderingAsset()));
 
 
 

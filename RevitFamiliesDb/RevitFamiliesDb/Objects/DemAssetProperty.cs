@@ -18,6 +18,7 @@ namespace RevitFamiliesDb.Objects
     {
         public Type ValueType { get; set; }
         public string Name { get; set; }
+        public List<DemAssetProperty> DemConnectedProperties { get; set; }
         public object TheValue { get; set; } = null;
         public string GetValue
         {
@@ -48,7 +49,7 @@ namespace RevitFamiliesDb.Objects
 
         }
 
-        public DemAssetProperty(AssetProperty ap)
+        public DemAssetProperty(Asset ap)
         {
             Type type = ap.GetType();
             ValueType = type;
